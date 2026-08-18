@@ -1,0 +1,41 @@
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  --mat-sys-primary: #059669;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: #d1fae5;
+  --mat-sys-on-primary-container: #064e3b;
+  --mat-sys-secondary: #047857;
+  --mat-sys-on-secondary: #ffffff;
+  --mat-sys-secondary-container: #d1fae5;
+  --mat-sys-on-secondary-container: #064e3b;
+  --primary: #059669;
+  --primary-dark: #064e3b;
+  --primary-hover: #047857;
+  --primary-soft: #ecfdf7;
+  --sidebar-text: #d1fae5;
+  --accent: #f59e0b;
+  --page-bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: "Segoe UI", sans-serif;
+  font-size: 17px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}

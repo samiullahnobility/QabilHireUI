@@ -1,0 +1,62 @@
+<main class="page">
+  <section class="hero">
+    <div class="hero-copy">
+      <mat-chip class="tag" color="primary" selected>AI-powered interview preparation</mat-chip>
+      <h1>Practice smarter. Improve faster.<br>Interview with confidence.</h1>
+      <p>Analyze your resume, measure job fit, practice adaptive AI interviews, and follow a personalized improvement plan.</p>
+      <div class="actions">
+        <a mat-flat-button color="primary" routerLink="/auth/register">Start Free Interview</a>
+        <a mat-stroked-button routerLink="/auth/login">View Demo</a>
+      </div>
+    </div>
+
+    <mat-card class="preview">
+      <mat-card-title>Interview Readiness</mat-card-title>
+      <mat-card-content>
+        <div class="stats">
+          <mat-card class="stat" appearance="outlined">
+            <div class="dot green"></div>
+            <div><strong>82%</strong><span>Overall readiness</span></div>
+          </mat-card>
+          <mat-card class="stat" appearance="outlined">
+            <div class="dot blue"></div>
+            <div><strong>76%</strong><span>Resume score</span></div>
+          </mat-card>
+        </div>
+        <div class="metric"><span>Readiness</span><mat-progress-bar mode="determinate" value="82" color="accent"></mat-progress-bar><b>82%</b></div>
+        <div class="metric"><span>Communication</span><mat-progress-bar mode="determinate" value="74"></mat-progress-bar><b>74%</b></div>
+        <div class="metric"><span>Confidence</span><mat-progress-bar mode="determinate" value="68" color="warn"></mat-progress-bar><b>68%</b></div>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <section class="cards">
+    <mat-card class="card" appearance="outlined"><h3>Analyze</h3><p>One focused step toward your next role.</p></mat-card>
+    <mat-card class="card" appearance="outlined"><h3>Match</h3><p>One focused step toward your next role.</p></mat-card>
+    <mat-card class="card" appearance="outlined"><h3>Practice</h3><p>One focused step toward your next role.</p></mat-card>
+    <mat-card class="card" appearance="outlined"><h3>Evaluate</h3><p>One focused step toward your next role.</p></mat-card>
+    <mat-card class="card" appearance="outlined"><h3>Improve</h3><p>One focused step toward your next role.</p></mat-card>
+  </section>
+
+  <section class="home-section" id="features">
+    <div><span class="section-label">Features</span><h2>One workspace for focused interview preparation.</h2><p>Analyze your resume, measure job fit, practice adaptive questions, and turn feedback into a clear improvement plan.</p><a mat-stroked-button routerLink="/features">Explore all features</a></div>
+    <img src="/assets/images/interview-coaching.png" alt="Candidate using QabilHire interview coaching">
+  </section>
+
+  <section class="home-section reverse" id="how-it-works">
+    <div><span class="section-label">How it works</span><h2>Go from resume to interview-ready in four steps.</h2><p>Add your context, review your match, practice realistic questions, and act on feedback at your own pace.</p><a mat-stroked-button routerLink="/how-it-works">See the process</a></div>
+    <img src="/assets/images/how-it-works.png" alt="Four-step interview preparation journey">
+  </section>
+
+  <section class="home-section" id="benefits">
+    <div><span class="section-label">Benefits</span><h2>Spend less time guessing and make every practice count.</h2><p>Focus on high-impact gaps, understand every score, and build confidence through repeatable private practice.</p><a mat-stroked-button routerLink="/benefits">View the benefits</a></div>
+    <img src="/assets/images/candidate-benefits.png" alt="Candidate celebrating improved interview readiness">
+  </section>
+
+  <section class="trust-strip" id="responsible-ai"><div><span class="section-label">Responsible AI</span><h2>AI coaching that keeps people in control.</h2><p>Private by design, explainable feedback, candidate-controlled data, and no automated hiring decisions.</p></div><a mat-flat-button routerLink="/responsible-ai">Our responsible AI principles</a></section>
+
+  <footer class="footer">
+    <span>Private by design • Responsible AI • Candidate-controlled data</span>
+    <a mat-flat-button color="primary" routerLink="/auth/register">Build interview confidence</a>
+  </footer>
+</main>

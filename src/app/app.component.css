@@ -1,0 +1,4 @@
+.topbar{position:sticky;top:0;z-index:50;height:76px;padding:0 4%;border-bottom:1px solid var(--border);background:rgba(255,255,255,.96);color:var(--text);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:14px;font-size:20px}.logo{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--primary);color:#fff}
+nav{display:flex;justify-content:center;gap:clamp(18px,3vw,56px);margin:auto}nav a{color:var(--text-secondary);font-size:16px}.start{height:46px;border-radius:10px;font-size:15px}
+@media(max-width:820px){.topbar{padding:0 16px}.brand strong{display:none}nav{display:none}.start{margin-left:auto}}
