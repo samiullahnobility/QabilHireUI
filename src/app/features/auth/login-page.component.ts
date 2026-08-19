@@ -34,9 +34,9 @@ export class LoginPageComponent {
 
     this.submitting.set(true);
     this.auth.login(this.form.getRawValue()).pipe(finalize(() => this.submitting.set(false))).subscribe({
-      next: () => {
+      next: response => {
         this.notifications.success('Welcome back to QabilHire.');
-        void this.router.navigateByUrl('/');
+        void this.router.navigateByUrl(response.user.profileComplete ? '/app/dashboard' : '/onboarding/profile');
       },
       error: error => this.notifications.error(error, 'Unable to sign in.')
     });

@@ -1,0 +1,30 @@
+<div class="candidate-shell">
+  <aside class="sidebar" [class.open]="menuOpen()">
+    <a class="brand" routerLink="/app/dashboard" (click)="closeMenu()"><span>Q</span><strong>QabilHire</strong></a>
+    <p class="section-label">AI CAREER PREPARATION</p>
+    <nav aria-label="Candidate navigation">
+      <a routerLink="/app/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+      <a routerLink="/app/resume/upload" routerLinkActive="active" (click)="closeMenu()">Resume Analysis</a>
+      <a routerLink="/app/job-match" routerLinkActive="active" (click)="closeMenu()">Job Match</a>
+      <a routerLink="/app/interviews/setup" routerLinkActive="active" (click)="closeMenu()">Mock Interviews</a>
+      <a routerLink="/app/progress" routerLinkActive="active" (click)="closeMenu()">Progress</a>
+      <a routerLink="/app/career-coach" routerLinkActive="active" (click)="closeMenu()">Career Coach</a>
+      <a routerLink="/app/profile" routerLinkActive="active" (click)="closeMenu()">Profile &amp; Settings</a>
+    </nav>
+    <a class="interview-cta" routerLink="/app/interviews/setup" (click)="closeMenu()">Start Mock Interview</a>
+    <div class="user-card">
+      <span class="avatar"></span><div><strong>{{ user()?.fullName || 'Candidate' }}</strong><small>QabilHire Candidate</small></div>
+      <button type="button" (click)="logout()">Sign out</button>
+    </div>
+  </aside>
+  @if (menuOpen()) { <button class="backdrop" type="button" aria-label="Close navigation" (click)="closeMenu()"></button> }
+  <section class="workspace">
+    <header class="workspace-header">
+      <button class="menu-button" type="button" (click)="toggleMenu()" aria-label="Toggle navigation">Menu</button>
+      <div class="page-heading" id="candidate-page-heading"></div>
+      <label class="search"><span class="sr-only">Search</span><input type="search" placeholder="Search..."></label>
+      <span class="header-avatar" aria-hidden="true"></span>
+    </header>
+    <main><router-outlet /></main>
+  </section>
+</div>

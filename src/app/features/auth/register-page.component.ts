@@ -48,7 +48,7 @@ export class RegisterPageComponent {
       .subscribe({
         next: () => {
           this.notifications.success('Your QabilHire account has been created.');
-          void this.router.navigateByUrl('/');
+          void this.router.navigateByUrl('/onboarding/profile');
         },
         error: error => this.notifications.error(error, 'Unable to create your account.')
       });
