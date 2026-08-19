@@ -1,0 +1,14 @@
+.resume-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin:0 0 28px}
+.eyebrow{display:block;color:var(--text-secondary);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.resume-head h1{margin:8px 0 4px;font-size:28px;letter-spacing:-.03em}
+.resume-head p{margin:0;color:var(--text-secondary)}
+.upload-link,.resume-actions a,.resume-actions button,.empty a{padding:14px 18px;border-radius:12px;border:0;background:var(--primary);color:#fff;font-weight:700}
+.resume-card{padding:28px;margin-bottom:16px;border:1px solid var(--border);border-radius:18px;background:#fff}
+.state,.empty{display:grid;gap:14px}
+.resume-row{display:flex;justify-content:space-between;gap:20px;align-items:center}
+.resume-row h2{margin:0 0 6px;font-size:22px}
+.resume-row p{margin:0;color:var(--text-secondary)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:58px;height:58px;border-radius:50%;background:#eefaf4;color:var(--primary);font-weight:800}
+.active-badge{display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;background:#e7f9ef;color:var(--primary);font-weight:700}
+.resume-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.resume-actions button{background:#ef4444}

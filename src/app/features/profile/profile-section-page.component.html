@@ -12,7 +12,7 @@
 </form>}
 @else{
 <section class="panel unavailable"><span class="status">Planned</span>
- @if(section==='resume'){<h2>Resume tools are coming next</h2><p>This screen will support PDF/DOCX upload, replacement, removal, and the resume used for profile analysis.</p>}
+ @if(section==='resume'){<h2>Resume management</h2><p>Use this page to manage the saved resume used for analysis and matching.</p><a routerLink="/app/profile/resume">Open resume management</a>}
  @if(section==='security'){<h2>Account security tools are coming next</h2><p>This screen will support authenticated password changes, session history, and signing out other devices.</p>}
  @if(section==='privacy'){<h2>Privacy controls are coming next</h2><p>This screen will support a personal-data export and a protected account-deletion workflow.</p>}
  <a routerLink="/app/profile">Back to profile &amp; settings</a>

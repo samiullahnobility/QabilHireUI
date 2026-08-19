@@ -1,0 +1,35 @@
+<header class="view-title">
+  <div>
+    <h1>Resume score: {{ resume()?.score ?? '0' }}/100</h1>
+    <p>Specific improvements for your target role</p>
+  </div>
+  <div class="search"></div>
+</header>
+
+@if(loading()){
+  <section class="analysis-card">Loading analysis...</section>
+}
+@else if(resume()){
+  <section class="metrics">
+    <article><span>{{ resume()!.score ?? 0 }}%</span><small>Overall score</small></article>
+    <article><span>82%</span><small>ATS compatibility</small></article>
+    <article><span>68%</span><small>Keyword strength</small></article>
+    <article><span>64%</span><small>Impact statements</small></article>
+  </section>
+
+  <section class="analysis-card">
+    <h2>Highest-impact improvements</h2>
+    <div class="improvement">
+      <strong>Quantify API impact</strong>
+      <p>Replace generic bullets with measurable results from your resume.</p>
+    </div>
+    <div class="improvement">
+      <strong>Strengthen leadership evidence</strong>
+      <p>Add mentoring, review, and technical decision examples.</p>
+    </div>
+    <div class="improvement">
+      <strong>Add missing keywords</strong>
+      <p>Include role-specific tools and technologies.</p>
+    </div>
+  </section>
+}

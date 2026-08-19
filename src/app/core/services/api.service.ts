@@ -15,6 +15,10 @@ export class ApiService {
     return this.http.post<TResponse>(`${API_BASE_URL}/${path}`, body, { withCredentials: true });
   }
 
+  postForm<TResponse>(path: string, body: FormData): Observable<TResponse> {
+    return this.http.post<TResponse>(`${API_BASE_URL}/${path}`, body, { withCredentials: true });
+  }
+
   put<TResponse, TRequest>(path: string, body: TRequest): Observable<TResponse> {
     return this.http.put<TResponse>(`${API_BASE_URL}/${path}`, body, { withCredentials: true });
   }

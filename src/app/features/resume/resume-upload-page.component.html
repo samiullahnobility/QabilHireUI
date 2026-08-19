@@ -1,0 +1,34 @@
+<header class="upload-head">
+  <div>
+    <h1>Upload your resume</h1>
+    <p>Get specific, actionable AI feedback</p>
+  </div>
+  <div class="avatar"></div>
+</header>
+
+<section class="drop-card">
+  <h2>Upload your resume</h2>
+  <p>PDF or DOCX · Maximum 10 MB</p>
+  <input #fileInput class="file-input" type="file" accept=".pdf,.docx" (change)="choose($event)">
+  <button mat-flat-button type="button" (click)="fileInput.click()">
+    <mat-icon>upload_file</mat-icon>
+    {{ selectedFile()?.name || 'Choose file' }}
+  </button>
+  <button mat-stroked-button type="button" (click)="upload()" [disabled]="uploading() || !selectedFile()">
+    {{ uploading() ? (extracting() ? 'Extracting resume...' : 'Uploading...') : 'Upload and continue' }}
+  </button>
+</section>
+
+@if(uploaded()){
+  <section class="file-card">
+    <div>
+      <h3>{{ uploaded()!.fileName }}</h3>
+      <p>{{ uploaded()!.sizeBytes }} bytes · Ready to analyze</p>
+    </div>
+    <span class="status">Ready</span>
+  </section>
+}
+
+<footer class="upload-footer">
+  <p>Encrypted and used only for your personal feedback.</p>
+</footer>
