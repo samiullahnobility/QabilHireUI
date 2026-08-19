@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeApiService } from './resume-api.service';
-import { ResumeResponse } from './resume-api.models';
+import { ResumeAnalysisData, ResumeResponse } from './resume-api.models';
 
 @Component({
   standalone: true,
@@ -18,11 +18,16 @@ export class ResumeAnalysisPageComponent {
   private readonly notifications = inject(NotificationService);
   readonly loading = signal(true);
   readonly resume = signal<ResumeResponse | null>(null);
+  readonly analysis = signal<ResumeAnalysisData | null>(null);
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.api.get(id).pipe(finalize(() => this.loading.set(false))).subscribe({
-      next: resume => this.resume.set(resume),
+      next: resume => {
+        this.resume.set(resume);
+        try { this.analysis.set(resume.analysisJson ? JSON.parse(resume.analysisJson) : null); }
+        catch { this.analysis.set(null); }
+      },
       error: error => this.notifications.error(error, 'Unable to load resume analysis.')
     });
   }

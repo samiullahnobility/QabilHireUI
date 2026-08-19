@@ -22,12 +22,17 @@ export interface ResumeResponse {
 
 export interface ResumeExtractedData {
   contact: { name: string; email: string; phone: string; linkedIn: string; website: string };
-  summary: string;
-  skills: string[];
-  experience: string[];
-  education: string[];
-  projects: string[];
-  certifications: string[];
-  languages: string[];
-  additional: string[];
+  sections: ResumeExtractedSection[];
+}
+
+export interface ResumeExtractedSection { heading: string; category: string; items: string[]; }
+
+export interface ResumeAnalysisData {
+  score: number;
+  atsCompatibility: number;
+  keywordStrength: number;
+  impactStatements: number;
+  strengths: string[];
+  missingKeywords: string[];
+  suggestions: string[];
 }

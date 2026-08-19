@@ -29,12 +29,13 @@ export class ResumeEditPageComponent {
   readonly data = signal<ResumeExtractedData>(this.emptyData());
   readonly issues = computed(() => {
     const data = this.data();
+    const categories = new Set(data.sections.map(section => section.category));
     const issues: string[] = [];
     if (!data.contact.name.trim()) issues.push('Name needs review.');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.email)) issues.push('Enter a valid email address.');
-    if (!data.experience.length) issues.push('No experience entries were detected.');
-    if (!data.education.length) issues.push('No education entries were detected.');
-    if (!data.skills.length) issues.push('No skills were detected.');
+    if (!categories.has('experience')) issues.push('No experience section was detected.');
+    if (!categories.has('education')) issues.push('No education section was detected.');
+    if (!categories.has('skills')) issues.push('No skills section was detected.');
     return issues;
   });
   readonly hasBlockingIssues = computed(() => this.issues().some(issue => issue.includes('valid email')));
@@ -44,7 +45,7 @@ export class ResumeEditPageComponent {
     this.api.get(id).pipe(finalize(() => this.loading.set(false))).subscribe({
       next: current => {
         this.resume.set(current);
-        try { this.data.set(current.extractedJson ? JSON.parse(current.extractedJson) : this.emptyData()); }
+        try { this.data.set(this.normalizeData(current.extractedJson ? JSON.parse(current.extractedJson) : this.emptyData())); }
         catch { this.data.set(this.emptyData()); }
       },
       error: error => this.notifications.error(error, 'Unable to load extracted resume data.')
@@ -75,42 +76,58 @@ export class ResumeEditPageComponent {
     this.api.extract(current.id).pipe(finalize(() => this.extracting.set(false))).subscribe({
       next: resume => {
         this.resume.set(resume);
-        this.data.set(resume.extractedJson ? JSON.parse(resume.extractedJson) : this.emptyData());
+        this.data.set(this.normalizeData(resume.extractedJson ? JSON.parse(resume.extractedJson) : this.emptyData()));
         this.notifications.success('Resume extracted again.');
       },
       error: error => this.notifications.error(error, 'Unable to extract the resume again.')
     });
   }
 
-  setList(field: keyof Pick<ResumeExtractedData, 'skills' | 'experience' | 'education' | 'projects' | 'certifications' | 'languages' | 'additional'>, value: string): void {
-    this.data.update(data => ({ ...data, [field]: value.split('\n').map(item => item.trim()).filter(Boolean) }));
+  updateHeading(sectionIndex: number, heading: string): void {
+    this.data.update(data => ({ ...data, sections: data.sections.map((section, index) => index === sectionIndex ? { ...section, heading } : section) }));
   }
 
-  updateItem(field: ListField, index: number, value: string): void {
-    this.data.update(data => ({ ...data, [field]: data[field].map((item, itemIndex) => itemIndex === index ? value : item) }));
+  updateItem(sectionIndex: number, itemIndex: number, value: string): void {
+    this.data.update(data => ({ ...data, sections: data.sections.map((section, index) => index === sectionIndex ? { ...section, items: section.items.map((item, childIndex) => childIndex === itemIndex ? value : item) } : section) }));
   }
 
-  addItem(field: ListField): void {
-    this.data.update(data => ({ ...data, [field]: [...data[field], ''] }));
+  addItem(sectionIndex: number): void {
+    this.data.update(data => ({ ...data, sections: data.sections.map((section, index) => index === sectionIndex ? { ...section, items: [...section.items, ''] } : section) }));
   }
 
-  removeItem(field: ListField, index: number): void {
-    this.data.update(data => ({ ...data, [field]: data[field].filter((_, itemIndex) => itemIndex !== index) }));
+  removeItem(sectionIndex: number, itemIndex: number): void {
+    this.data.update(data => ({ ...data, sections: data.sections.map((section, index) => index === sectionIndex ? { ...section, items: section.items.filter((_, childIndex) => childIndex !== itemIndex) } : section) }));
   }
 
-  moveItem(field: ListField, index: number, direction: -1 | 1): void {
-    const target = index + direction;
-    if (target < 0 || target >= this.data()[field].length) return;
+  moveItem(sectionIndex: number, itemIndex: number, direction: -1 | 1): void {
+    const target = itemIndex + direction;
+    const section = this.data().sections[sectionIndex];
+    if (target < 0 || target >= section.items.length) return;
     this.data.update(data => {
-      const items = [...data[field]];
-      [items[index], items[target]] = [items[target], items[index]];
-      return { ...data, [field]: items };
+      const sections = [...data.sections];
+      const items = [...sections[sectionIndex].items];
+      [items[itemIndex], items[target]] = [items[target], items[itemIndex]];
+      sections[sectionIndex] = { ...sections[sectionIndex], items };
+      return { ...data, sections };
     });
   }
 
+  removeSection(sectionIndex: number): void {
+    this.data.update(data => ({ ...data, sections: data.sections.filter((_, index) => index !== sectionIndex) }));
+  }
+
   private emptyData(): ResumeExtractedData {
-    return { contact: { name: '', email: '', phone: '', linkedIn: '', website: '' }, summary: '', skills: [], experience: [], education: [], projects: [], certifications: [], languages: [], additional: [] };
+    return { contact: { name: '', email: '', phone: '', linkedIn: '', website: '' }, sections: [] };
+  }
+
+  private normalizeData(value: any): ResumeExtractedData {
+    if (Array.isArray(value?.sections)) return value;
+    const headings: Record<string, string> = { summary: 'Professional Summary', skills: 'Skills', experience: 'Experience', education: 'Education', projects: 'Projects', certifications: 'Certifications', languages: 'Languages', additional: 'Additional Information' };
+    const sections = Object.entries(headings).flatMap(([category, heading]) => {
+      const source = value?.[category];
+      const items = Array.isArray(source) ? source : source ? [source] : [];
+      return items.length ? [{ heading, category, items }] : [];
+    });
+    return { contact: value?.contact ?? this.emptyData().contact, sections };
   }
 }
-
-type ListField = 'experience' | 'education' | 'projects' | 'certifications' | 'languages' | 'additional';
