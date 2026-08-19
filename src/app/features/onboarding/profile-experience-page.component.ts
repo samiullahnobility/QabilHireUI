@@ -6,8 +6,8 @@ import { ProfileDraftService } from './profile-draft.service';
 @Component({standalone:true,selector:'app-profile-experience-page',imports:[ReactiveFormsModule],templateUrl:'./profile-experience-page.component.html',styleUrl:'./profile-setup.shared.css',changeDetection:ChangeDetectionStrategy.OnPush})
 export class ProfileExperiencePageComponent{
  private readonly draft=inject(ProfileDraftService);private readonly router=inject(Router);private readonly fb=inject(FormBuilder);
- readonly form=this.fb.nonNullable.group({company:[this.draft.value().company,Validators.required],responsibilities:[this.draft.value().responsibilities,Validators.required],achievement:[this.draft.value().achievement,Validators.required]});
+ readonly form=this.fb.nonNullable.group({qualification:[this.draft.value().qualification||this.draft.value().education,Validators.required],institution:[this.draft.value().institution,Validators.required],graduationYear:[this.draft.value().graduationYear,Validators.required],company:[this.draft.value().company,Validators.required],currentRole:[this.draft.value().currentRole,Validators.required],experienceDuration:[this.draft.value().experienceDuration,Validators.required],achievement:[this.draft.value().achievement,Validators.required]});
  hasUnsavedChanges():boolean{return this.form.dirty;}
- back():void{this.draft.update(this.form.getRawValue());this.form.markAsPristine();void this.router.navigateByUrl('/onboarding/profile');}
- submit():void{if(this.form.invalid){this.form.markAllAsTouched();return;}this.draft.update(this.form.getRawValue());this.form.markAsPristine();void this.router.navigateByUrl('/onboarding/profile/education');}
+ back():void{const value=this.form.getRawValue();this.draft.update({...value,responsibilities:value.achievement});this.form.markAsPristine();void this.router.navigateByUrl('/onboarding/profile');}
+ submit():void{if(this.form.invalid){this.form.markAllAsTouched();return;}const value=this.form.getRawValue();this.draft.update({...value,responsibilities:value.achievement});this.form.markAsPristine();void this.router.navigateByUrl('/onboarding/profile/education');}
 }

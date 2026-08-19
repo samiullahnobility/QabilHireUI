@@ -1,0 +1,19 @@
+<header class="view-title"><div><a routerLink="/app/profile">&larr; Profile &amp; settings</a><h1>{{title}}</h1><p>{{subtitle}}</p></div></header>
+@if(loading()){<section class="panel state" aria-live="polite">Loading your profile...</section>}
+@else if(isEditable){
+<form [formGroup]="form" (ngSubmit)="save()">
+ <section class="panel">
+  @if(section==='personal'){<div class="fields"><label class="wide">Professional headline<input formControlName="headline"></label><label>Experience level<select formControlName="experienceLevel"><option>Entry-level (0–2 years)</option><option>Mid-level (3–5 years)</option><option>Senior (6+ years)</option></select></label><label>Current role<input formControlName="currentRole"></label><label>Education summary<input formControlName="education"></label><label>LinkedIn profile<input type="url" formControlName="linkedInUrl"></label><label class="wide">Portfolio or GitHub<input type="url" formControlName="portfolioUrl"></label></div>}
+  @if(section==='career'){<div class="fields"><label>Target role<input formControlName="targetRole"></label><label>Industry<input formControlName="industry"></label><label class="wide">Preferred location<input formControlName="location"></label><label class="wide">Career goal<textarea formControlName="careerGoal"></textarea></label></div>}
+  @if(section==='skills'){<div class="fields"><h2 class="wide">Education</h2><label>Degree / qualification<input formControlName="qualification"></label><label>Institution<input formControlName="institution"></label><label>Graduation year<input formControlName="graduationYear"></label><h2 class="wide divider">Work experience</h2><label>Company<input formControlName="company"></label><label>Role<input formControlName="currentRole"></label><label>Duration<input formControlName="experienceDuration"></label><label>Skill level<select formControlName="skillLevel"><option value="">Select level</option><option>Learning</option><option>Working knowledge</option><option>Proficient</option><option>Expert</option></select></label><label class="wide">Key responsibilities<textarea formControlName="responsibilities"></textarea></label><label class="wide">Key achievement<textarea formControlName="achievement"></textarea></label><label class="wide">Skills <small>Separate with commas</small><input formControlName="skills"></label></div>}
+  @if(section==='interview'){<fieldset><legend>Preferred interview formats</legend><p>Select every format you want QabilHire to use for preparation.</p><div class="choices">@for(option of preferenceOptions;track option){<button type="button" [class.selected]="selected.has(option)" (click)="togglePreference(option)"><span>{{selected.has(option)?'✓':'+'}}</span>{{option}}</button>}</div></fieldset>}
+ </section>
+ <div class="save-bar"><a routerLink="/app/profile">Cancel</a><button type="submit" [disabled]="saving()">{{saving()?'Saving...':'Save changes'}}</button></div>
+</form>}
+@else{
+<section class="panel unavailable"><span class="status">Planned</span>
+ @if(section==='resume'){<h2>Resume tools are coming next</h2><p>This screen will support PDF/DOCX upload, replacement, removal, and the resume used for profile analysis.</p>}
+ @if(section==='security'){<h2>Account security tools are coming next</h2><p>This screen will support authenticated password changes, session history, and signing out other devices.</p>}
+ @if(section==='privacy'){<h2>Privacy controls are coming next</h2><p>This screen will support a personal-data export and a protected account-deletion workflow.</p>}
+ <a routerLink="/app/profile">Back to profile &amp; settings</a>
+</section>}

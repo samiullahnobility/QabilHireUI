@@ -16,6 +16,8 @@ import { FeaturesPageComponent } from './features/public/features-page.component
 import { HowItWorksPageComponent } from './features/public/how-it-works-page.component';
 import { ResponsibleAiPageComponent } from './features/public/responsible-ai-page.component';
 import { ProfilePageComponent } from './features/profile/profile-page.component';
+import { ProfileManagementPageComponent } from './features/profile/profile-management-page.component';
+import { ProfileSectionPageComponent } from './features/profile/profile-section-page.component';
 import { CandidateLayoutComponent } from './layouts/candidate-layout/candidate-layout.component';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
@@ -47,7 +49,15 @@ export const routes: Routes = [
   {
     path: 'app', component: CandidateLayoutComponent, canActivate: [authGuard], children: [
       { path: 'dashboard', component: DashboardPageComponent },
-      { path: 'profile', component: ProfilePageComponent, canDeactivate: [unsavedChangesGuard] },
+      { path: 'profile', component: ProfileManagementPageComponent },
+      { path: 'profile/edit', component: ProfilePageComponent, canDeactivate: [unsavedChangesGuard] },
+      { path: 'profile/personal', component: ProfileSectionPageComponent, data: { section: 'personal' }, canDeactivate: [unsavedChangesGuard] },
+      { path: 'profile/career', component: ProfileSectionPageComponent, data: { section: 'career' }, canDeactivate: [unsavedChangesGuard] },
+      { path: 'profile/skills-experience', component: ProfileSectionPageComponent, data: { section: 'skills' }, canDeactivate: [unsavedChangesGuard] },
+      { path: 'profile/interview-preferences', component: ProfileSectionPageComponent, data: { section: 'interview' }, canDeactivate: [unsavedChangesGuard] },
+      { path: 'profile/resume', component: ProfileSectionPageComponent, data: { section: 'resume' } },
+      { path: 'profile/security', component: ProfileSectionPageComponent, data: { section: 'security' } },
+      { path: 'profile/privacy', component: ProfileSectionPageComponent, data: { section: 'privacy' } },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: '**', redirectTo: 'dashboard' }
     ]

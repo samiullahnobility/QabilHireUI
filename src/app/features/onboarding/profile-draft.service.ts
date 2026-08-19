@@ -2,8 +2,8 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 
-export interface ProfileDraft { headline:string; experienceLevel:string; education:string; currentRole:string; skills:string[]; company:string; responsibilities:string; achievement:string; institution:string; qualification:string; linkedInUrl:string; portfolioUrl:string; targetRole:string; industry:string; location:string; preferences:string[]; careerGoal:string; }
-const initial: ProfileDraft={headline:'',experienceLevel:'',education:'',currentRole:'',skills:[],company:'',responsibilities:'',achievement:'',institution:'',qualification:'',linkedInUrl:'',portfolioUrl:'',targetRole:'',industry:'',location:'',preferences:[],careerGoal:''};
+export interface ProfileDraft { headline:string; experienceLevel:string; education:string; currentRole:string; skills:string[]; company:string; responsibilities:string; achievement:string; institution:string; qualification:string; graduationYear:string; experienceDuration:string; skillLevel:string; linkedInUrl:string; portfolioUrl:string; targetRole:string; industry:string; location:string; preferences:string[]; careerGoal:string; }
+const initial: ProfileDraft={headline:'',experienceLevel:'',education:'',currentRole:'',skills:[],company:'',responsibilities:'',achievement:'',institution:'',qualification:'',graduationYear:'',experienceDuration:'',skillLevel:'',linkedInUrl:'',portfolioUrl:'',targetRole:'',industry:'',location:'',preferences:[],careerGoal:''};
 @Injectable({providedIn:'root'})
 export class ProfileDraftService {
   private readonly api=inject(ApiService);

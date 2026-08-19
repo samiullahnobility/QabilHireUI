@@ -1,0 +1,1 @@
+<header class="view-title"><h1>Manage your preparation profile</h1><p>Preferences, security, privacy, and data</p></header><section class="management-list">@for(section of sections;track section.title){<article><div><h2>{{section.title}}</h2><p>{{section.description}}</p></div><a [routerLink]="section.link">Manage</a></article>}</section>
