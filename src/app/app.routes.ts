@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/auth/auth.guard';
+import { authGuard, guestGuard, profileCompleteGuard } from './core/auth/auth.guard';
 import { ForgotPasswordPageComponent } from './features/auth/forgot-password-page.component';
 import { LoginPageComponent } from './features/auth/login-page.component';
 import { RegisterPageComponent } from './features/auth/register-page.component';
@@ -51,7 +51,7 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'app', component: CandidateLayoutComponent, canActivate: [authGuard], children: [
+    path: 'app', component: CandidateLayoutComponent, canActivate: [authGuard, profileCompleteGuard], children: [
       { path: 'dashboard', component: DashboardPageComponent },
       { path: 'profile', component: ProfileManagementPageComponent },
       { path: 'resume', component: ResumeUploadPageComponent, data: { title: 'Upload your resume', subtitle: 'Get specific, actionable AI feedback' } },
