@@ -46,8 +46,10 @@ export class RegisterPageComponent {
     this.auth.register({ fullName: value.name, email: value.email, password: value.password })
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
-        next: () => {
-          this.notifications.success('Your QabilHire account has been created.');
+        next: response => {
+          const message = response.message ?? 'Your QabilHire account has been created.';
+          if (response.emailEnabled === false) this.notifications.warning(message);
+          else this.notifications.success(message);
           void this.router.navigateByUrl('/onboarding/profile');
         },
         error: error => this.notifications.error(error, 'Unable to create your account.')

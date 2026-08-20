@@ -31,4 +31,11 @@ export interface AuthResponse {
   accessToken: string;
   expiresAtUtc: string;
   user: AuthUser;
+  message?: string | null;
+  emailEnabled?: boolean;
+}
+
+export interface EmailOperationResponse {
+  message: string;
+  emailEnabled: boolean;
 }

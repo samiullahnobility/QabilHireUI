@@ -10,6 +10,10 @@ export class NotificationService {
     this.toastr.success(message, 'Success');
   }
 
+  warning(message: string): void {
+    this.toastr.warning(message, 'Notice');
+  }
+
   error(error: unknown, fallback = 'Something went wrong. Please try again.'): void {
     if (!(error instanceof HttpErrorResponse)) {
       this.toastr.error(fallback, 'Error');

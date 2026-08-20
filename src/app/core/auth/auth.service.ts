@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, finalize, tap } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import { AuthResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest } from './auth.models';
+import { AuthResponse, EmailOperationResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest } from './auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -24,12 +24,12 @@ export class AuthService {
     );
   }
 
-  forgotPassword(request: ForgotPasswordRequest): Observable<{ message: string }> {
-    return this.api.post<{ message: string }, ForgotPasswordRequest>('auth/forgot-password', request);
+  forgotPassword(request: ForgotPasswordRequest): Observable<EmailOperationResponse> {
+    return this.api.post<EmailOperationResponse, ForgotPasswordRequest>('auth/forgot-password', request);
   }
 
-  resetPassword(request: ResetPasswordRequest): Observable<void> {
-    return this.api.post<void, ResetPasswordRequest>('auth/reset-password', request);
+  resetPassword(request: ResetPasswordRequest): Observable<EmailOperationResponse> {
+    return this.api.post<EmailOperationResponse, ResetPasswordRequest>('auth/reset-password', request);
   }
 
   getAccessToken(): string | null {

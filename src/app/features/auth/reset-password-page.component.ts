@@ -49,8 +49,9 @@ export class ResetPasswordPageComponent {
     this.auth.resetPassword({ email, token, newPassword: value.password })
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
-        next: () => {
-          this.notifications.success('Your password has been reset. You can now sign in.');
+        next: response => {
+          if (response.emailEnabled === false) this.notifications.warning(response.message);
+          else this.notifications.success(response.message);
           void this.router.navigateByUrl('/auth/login');
         },
         error: error => this.notifications.error(error, 'Unable to reset your password.')

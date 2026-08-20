@@ -30,7 +30,10 @@ export class ForgotPasswordPageComponent {
 
     this.submitting.set(true);
     this.auth.forgotPassword(this.form.getRawValue()).pipe(finalize(() => this.submitting.set(false))).subscribe({
-      next: response => this.notifications.success(response.message),
+      next: response => {
+        if (response.emailEnabled === false) this.notifications.warning(response.message);
+        else this.notifications.success(response.message);
+      },
       error: error => this.notifications.error(error, 'Unable to request a password-reset link.')
     });
   }
