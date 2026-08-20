@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { finalize, switchMap } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
@@ -9,7 +9,7 @@ import { ResumeResponse } from './resume-api.models';
 @Component({
   standalone: true,
   selector: 'app-resume-upload-page',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, RouterLink],
   templateUrl: './resume-upload-page.component.html',
   styleUrl: './resume-upload-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,6 +22,11 @@ export class ResumeUploadPageComponent {
   readonly uploaded = signal<ResumeResponse | null>(null);
   readonly uploading = signal(false);
   readonly extracting = signal(false);
+  readonly resumes = signal<ResumeResponse[]>([]);
+
+  constructor() {
+    this.loadResumes();
+  }
 
   choose(event: Event): void {
     this.selectedFile.set((event.target as HTMLInputElement).files?.[0] ?? null);
@@ -29,6 +34,17 @@ export class ResumeUploadPageComponent {
 
   fileSize(bytes: number): string {
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  resumeDate(value: string): string {
+    return new Intl.DateTimeFormat('en', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value));
+  }
+
+  private loadResumes(): void {
+    this.api.list().subscribe({
+      next: resumes => this.resumes.set(resumes),
+      error: error => this.notifications.error(error, 'Unable to load your resumes.')
+    });
   }
 
   upload(): void {
