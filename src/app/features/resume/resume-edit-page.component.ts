@@ -8,11 +8,12 @@ import { finalize, switchMap } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeExtractedData, ResumeResponse } from './resume-api.models';
 import { ResumeApiService } from './resume-api.service';
+import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-edit-page',
-  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, ResumeLoadingOverlayComponent],
   templateUrl: './resume-edit-page.component.html',
   styleUrl: './resume-edit-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +28,7 @@ export class ResumeEditPageComponent {
   readonly extracting = signal(false);
   readonly resume = signal<ResumeResponse | null>(null);
   readonly data = signal<ResumeExtractedData>(this.emptyData());
+  readonly activeTab = signal<ReviewTab>('personal');
   readonly issues = computed(() => {
     const data = this.data();
     const issues: string[] = [];
@@ -90,12 +92,19 @@ export class ResumeEditPageComponent {
     this.data.update(data => { const items = [...data[field]]; [items[index], items[target]] = [items[target], items[index]]; return { ...data, [field]: items }; });
   }
 
+  updateCustomSection(index: number, field: 'title' | 'items', value: string): void {
+    this.data.update(data => ({ ...data, customSections: data.customSections.map((section, sectionIndex) => sectionIndex === index ? { ...section, [field]: field === 'items' ? value.split('\n').map(item => item.trim()).filter(Boolean) : value } : section) }));
+  }
+
+  addCustomSection(): void { this.data.update(data => ({ ...data, customSections: [...data.customSections, { title: '', items: [] }] })); }
+  removeCustomSection(index: number): void { this.data.update(data => ({ ...data, customSections: data.customSections.filter((_, sectionIndex) => sectionIndex !== index) })); }
+
   private emptyData(): ResumeExtractedData {
-    return { contact: { name: '', email: '', phone: '', linkedIn: '', website: '' }, summary: '', skills: [], experience: [], education: [], projects: [], certifications: [], languages: [], additional: [] };
+    return { contact: { name: '', email: '', phone: '', linkedIn: '', website: '' }, summary: '', skills: [], experience: [], education: [], projects: [], certifications: [], languages: [], additional: [], customSections: [] };
   }
 
   private normalizeData(value: any): ResumeExtractedData {
-    if (!Array.isArray(value?.sections)) return { ...this.emptyData(), ...value, contact: { ...this.emptyData().contact, ...value?.contact } };
+    if (!Array.isArray(value?.sections)) return { ...this.emptyData(), ...value, contact: { ...this.emptyData().contact, ...value?.contact }, customSections: Array.isArray(value?.customSections) ? value.customSections : [] };
     const data = this.emptyData();
     for (const section of value.sections) {
       const category = section.category as ListField | 'summary';
@@ -108,3 +117,4 @@ export class ResumeEditPageComponent {
 
 type ListField = 'skills' | 'experience' | 'education' | 'projects' | 'certifications' | 'languages' | 'additional';
 type EntryField = 'experience' | 'education' | 'projects' | 'certifications' | 'languages' | 'additional';
+type ReviewTab = 'personal' | 'experience' | 'education' | 'skills' | 'projects' | 'additional';

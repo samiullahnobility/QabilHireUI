@@ -21,8 +21,8 @@
   <section class="workspace">
     <header class="workspace-header">
       <button class="menu-button" type="button" (click)="toggleMenu()" aria-label="Toggle navigation">Menu</button>
-      <div class="page-heading" id="candidate-page-heading"></div>
-      <label class="search"><span class="sr-only">Search</span><input type="search" placeholder="Search..."></label>
+      <div class="page-heading" id="candidate-page-heading">@if(pageData()['title']){<h1>{{ pageData()['title'] }}</h1><p>{{ pageData()['subtitle'] }}</p>}</div>
+      @if(!pageData()['hideSearch']){<label class="search"><span class="sr-only">Search</span><input type="search" placeholder="Search..."></label>}
       <span class="header-avatar" aria-hidden="true"></span>
     </header>
     <main><router-outlet /></main>

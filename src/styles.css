@@ -40,3 +40,6 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.page-heading h1 { margin: 0; font-size: 25px; line-height: 1.15; letter-spacing: -.03em; }
+.page-heading p { margin: 4px 0 0; color: var(--text-secondary); font-size: 13px; }

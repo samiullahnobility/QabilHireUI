@@ -4,11 +4,12 @@ import { finalize } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeApiService } from './resume-api.service';
 import { ResumeResponse } from './resume-api.models';
+import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-management-page',
-  imports: [RouterLink],
+  imports: [RouterLink, ResumeLoadingOverlayComponent],
   templateUrl: './resume-management-page.component.html',
   styleUrl: './resume-management-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -18,6 +19,7 @@ export class ResumeManagementPageComponent {
   private readonly notifications = inject(NotificationService);
   readonly loading = signal(true);
   readonly resumes = signal<ResumeResponse[]>([]);
+  readonly working = signal<string | null>(null);
 
   constructor() {
     this.refresh();
@@ -32,17 +34,20 @@ export class ResumeManagementPageComponent {
   }
 
   delete(id: string): void {
-    this.api.delete(id).subscribe({
+    this.working.set('Deleting resume...');
+    this.api.delete(id).pipe(finalize(() => this.working.set(null))).subscribe({
       next: () => this.resumes.update(items => items.filter(item => item.id !== id)),
       error: error => this.notifications.error(error, 'Unable to delete your resume.')
     });
   }
 
   setActive(id: string): void {
-    this.api.setActive(id).subscribe({ next: () => this.refresh(), error: error => this.notifications.error(error, 'Unable to set the active resume.') });
+    this.working.set('Setting active resume...');
+    this.api.setActive(id).pipe(finalize(() => this.working.set(null))).subscribe({ next: () => this.refresh(), error: error => this.notifications.error(error, 'Unable to set the active resume.') });
   }
 
   toggleArchive(id: string): void {
-    this.api.toggleArchive(id).subscribe({ next: () => this.refresh(), error: error => this.notifications.error(error, 'Unable to update the resume archive.') });
+    this.working.set('Updating resume...');
+    this.api.toggleArchive(id).pipe(finalize(() => this.working.set(null))).subscribe({ next: () => this.refresh(), error: error => this.notifications.error(error, 'Unable to update the resume archive.') });
   }
 }

@@ -1,24 +1,21 @@
-<header class="view-title"><div><h1>Resume score: {{ analysis()?.score ?? resume()?.score ?? 0 }}/100</h1><p>Specific, evidence-based improvements for your resume</p></div></header>
-@if(loading()){
-  <section class="analysis-card">Loading analysis...</section>
-}
+<header class="view-title"><h1>Resume score: {{ analysis()?.score ?? resume()?.score ?? 0 }}/100</h1><p>Specific improvements for your target role</p></header>
+@if(loading()){<app-resume-loading-overlay message="Loading your resume analysis..." />}
+@if(loading()){<section class="analysis-card">Loading analysis...</section>}
 @else if(resume() && analysis()){
   <section class="metrics">
-    <article><span>{{ analysis()!.score }}%</span><small>Overall score</small></article>
-    <article><span>{{ analysis()!.atsCompatibility }}%</span><small>ATS compatibility</small></article>
-    <article><span>{{ analysis()!.keywordStrength }}%</span><small>Keyword strength</small></article>
-    <article><span>{{ analysis()!.impactStatements }}%</span><small>Impact statements</small></article>
+    <article class="overall"><div><i></i><span>{{ analysis()!.score }}%</span></div><small>Overall score</small></article>
+    <article class="ats"><div><i></i><span>{{ analysis()!.atsCompatibility }}%</span></div><small>ATS compatibility</small></article>
+    <article class="keywords"><div><i></i><span>{{ analysis()!.keywordStrength }}%</span></div><small>Keyword strength</small></article>
+    <article class="impact"><div><i></i><span>{{ analysis()!.impactStatements }}%</span></div><small>Impact statements</small></article>
   </section>
+  <nav class="result-tabs" aria-label="Resume result sections">
+    <button [class.active]="activeTab()==='overview'" (click)="activeTab.set('overview')">Overview</button><button [class.active]="activeTab()==='extracted'" (click)="activeTab.set('extracted')">Extracted Info</button><button [class.active]="activeTab()==='strengths'" (click)="activeTab.set('strengths')">Strengths</button><button [class.active]="activeTab()==='missing'" (click)="activeTab.set('missing')">Missing Info</button><button [class.active]="activeTab()==='keywords'" (click)="activeTab.set('keywords')">Keywords</button>
+  </nav>
   <section class="analysis-card">
-    <h2>Highest-impact improvements</h2>
-    @for(suggestion of analysis()!.suggestions; track suggestion){<div class="improvement"><strong>{{ $index + 1 }}. Recommended improvement</strong><p>{{ suggestion }}</p></div>}
+    @if(activeTab()==='overview'){<h2>Highest-impact improvements</h2>@for(suggestion of analysis()!.suggestions; track suggestion){<div class="improvement tone-{{ $index % 3 }}"><strong>{{ $index === 0 ? 'Priority improvement' : $index === 1 ? 'Strengthen the evidence' : 'Add missing detail' }}</strong><p>{{ suggestion }}</p></div>}}
+    @else if(activeTab()==='strengths'){<h2>Resume strengths</h2>@for(strength of analysis()!.strengths; track strength){<div class="improvement tone-1"><strong>What works well</strong><p>{{ strength }}</p></div>}}
+    @else if(activeTab()==='keywords'){<h2>Relevant keywords</h2><div class="improvement tone-2"><p>{{ analysis()!.missingKeywords.length ? analysis()!.missingKeywords.join(', ') : 'No missing target-role keywords were identified.' }}</p></div>}
+    @else if(activeTab()==='extracted'){<h2>Extracted resume information</h2><div class="plain-result">{{ resume()!.originalText || 'No extracted text is available.' }}</div>}
+    @else{<h2>Missing information</h2><div class="improvement tone-0"><p>{{ analysis()!.suggestions.length ? analysis()!.suggestions.join(' ') : 'No important missing information was identified.' }}</p></div>}
   </section>
-  <section class="analysis-card">
-    <h2>Strengths</h2>
-    @for(strength of analysis()!.strengths; track strength){<div class="improvement"><p>{{ strength }}</p></div>}
-  </section>
-  @if(analysis()!.missingKeywords.length){<section class="analysis-card"><h2>Relevant missing keywords</h2><p>{{ analysis()!.missingKeywords.join(', ') }}</p></section>}
-}
-@else{
-  <section class="analysis-card">No analysis is available. Return to review and confirm the resume again.</section>
-}
+}@else{<section class="analysis-card">No analysis is available. Return to review and confirm the resume again.</section>}

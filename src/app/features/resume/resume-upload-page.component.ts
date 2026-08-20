@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { finalize, switchMap } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeApiService } from './resume-api.service';
 import { ResumeResponse } from './resume-api.models';
+import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-upload-page',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, ResumeLoadingOverlayComponent],
   templateUrl: './resume-upload-page.component.html',
   styleUrl: './resume-upload-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,10 +23,13 @@ export class ResumeUploadPageComponent {
   readonly uploaded = signal<ResumeResponse | null>(null);
   readonly uploading = signal(false);
   readonly extracting = signal(false);
-  readonly analyzing = signal(false);
 
   choose(event: Event): void {
     this.selectedFile.set((event.target as HTMLInputElement).files?.[0] ?? null);
+  }
+
+  fileSize(bytes: number): string {
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   }
 
   upload(): void {

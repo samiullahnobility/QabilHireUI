@@ -30,6 +30,7 @@ export interface ResumeExtractedData {
   certifications: string[];
   languages: string[];
   additional: string[];
+  customSections: Array<{ title: string; items: string[] }>;
 }
 
 export interface ResumeAnalysisData {

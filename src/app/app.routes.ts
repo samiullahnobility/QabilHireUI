@@ -54,9 +54,9 @@ export const routes: Routes = [
     path: 'app', component: CandidateLayoutComponent, canActivate: [authGuard], children: [
       { path: 'dashboard', component: DashboardPageComponent },
       { path: 'profile', component: ProfileManagementPageComponent },
-      { path: 'resume', component: ResumeUploadPageComponent },
-      { path: 'resume/:id/analysis', component: ResumeAnalysisPageComponent },
-      { path: 'resume/:id/edit', component: ResumeEditPageComponent },
+      { path: 'resume', component: ResumeUploadPageComponent, data: { title: 'Upload your resume', subtitle: 'Get specific, actionable AI feedback' } },
+      { path: 'resume/:id/analysis', component: ResumeAnalysisPageComponent, data: { title: 'Resume analysis', subtitle: 'Specific improvements for your target role' } },
+      { path: 'resume/:id/edit', component: ResumeEditPageComponent, data: { title: 'Review extracted information', subtitle: 'Confirm or correct what the AI found in your resume', hideSearch: true } },
       { path: 'profile/edit', component: ProfilePageComponent, canDeactivate: [unsavedChangesGuard] },
       { path: 'profile/personal', component: ProfileSectionPageComponent, data: { section: 'personal' }, canDeactivate: [unsavedChangesGuard] },
       { path: 'profile/career', component: ProfileSectionPageComponent, data: { section: 'career' }, canDeactivate: [unsavedChangesGuard] },
