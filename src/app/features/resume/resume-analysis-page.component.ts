@@ -4,12 +4,10 @@ import { finalize } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeApiService } from './resume-api.service';
 import { ResumeAnalysisData, ResumeResponse } from './resume-api.models';
-import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-analysis-page',
-  imports: [ResumeLoadingOverlayComponent],
   templateUrl: './resume-analysis-page.component.html',
   styleUrl: './resume-analysis-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

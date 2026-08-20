@@ -2,4 +2,3 @@
 <section class="drop-card"><h2>Upload your resume</h2><p>PDF or DOCX · Maximum 10 MB</p><input #fileInput class="file-input" type="file" accept=".pdf,.docx" (change)="choose($event)"><button mat-flat-button type="button" (click)="fileInput.click()">Choose file</button></section>
 @if(selectedFile()){<section class="file-card"><div><h3>{{ selectedFile()!.name }}</h3><p>{{ fileSize(selectedFile()!.size) }} · Ready to analyze</p></div><span class="status">Ready</span></section>}
 <footer class="upload-footer"><p>Encrypted and used only for your personal feedback.</p>@if(selectedFile()){<button class="analyze-button" type="button" (click)="upload()" [disabled]="uploading()">{{ uploading() ? (extracting() ? 'Extracting resume...' : 'Uploading...') : 'Analyze resume' }}</button>}</footer>
-@if(uploading()){<app-resume-loading-overlay [message]="extracting() ? 'Extracting your resume with AI...' : 'Uploading your resume...'" />}

@@ -1,5 +1,4 @@
 <header class="view-title"><h1>Resume score: {{ analysis()?.score ?? resume()?.score ?? 0 }}/100</h1><p>Specific improvements for your target role</p></header>
-@if(loading()){<app-resume-loading-overlay message="Loading your resume analysis..." />}
 @if(loading()){<section class="analysis-card">Loading analysis...</section>}
 @else if(resume() && analysis()){
   <section class="metrics">

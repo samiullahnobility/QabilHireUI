@@ -4,12 +4,11 @@ import { finalize } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeApiService } from './resume-api.service';
 import { ResumeResponse } from './resume-api.models';
-import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-management-page',
-  imports: [RouterLink, ResumeLoadingOverlayComponent],
+  imports: [RouterLink],
   templateUrl: './resume-management-page.component.html',
   styleUrl: './resume-management-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -5,12 +5,11 @@ import { finalize, switchMap } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeApiService } from './resume-api.service';
 import { ResumeResponse } from './resume-api.models';
-import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-upload-page',
-  imports: [MatButtonModule, ResumeLoadingOverlayComponent],
+  imports: [MatButtonModule],
   templateUrl: './resume-upload-page.component.html',
   styleUrl: './resume-upload-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

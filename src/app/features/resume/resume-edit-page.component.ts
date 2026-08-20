@@ -8,12 +8,11 @@ import { finalize, switchMap } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { ResumeExtractedData, ResumeResponse } from './resume-api.models';
 import { ResumeApiService } from './resume-api.service';
-import { ResumeLoadingOverlayComponent } from './resume-loading-overlay.component';
 
 @Component({
   standalone: true,
   selector: 'app-resume-edit-page',
-  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, ResumeLoadingOverlayComponent],
+  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './resume-edit-page.component.html',
   styleUrl: './resume-edit-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -2,7 +2,6 @@
   <div><span class="eyebrow">Profile &amp; settings</span><h1>Resume management</h1><p>Manage resumes used for analysis, matching, and interview preparation.</p></div>
   <a class="upload-link" routerLink="/app/resume">Upload resume</a>
 </header>
-@if(loading() || working()){<app-resume-loading-overlay [message]="working() || 'Loading your resumes...'" />}
 @if(loading()){
   <section class="resume-card state">Loading your resumes...</section>
 }

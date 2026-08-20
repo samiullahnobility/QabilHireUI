@@ -29,4 +29,3 @@
     <aside class="source"><h2>Original resume text</h2><p>{{ resume()!.originalText || 'No text extracted yet.' }}</p></aside>
   </section>
 }
-@if(saving() || extracting()){<app-resume-loading-overlay [message]="saving() ? 'Saving corrections and analyzing...' : 'Re-extracting your resume with AI...'" />}
