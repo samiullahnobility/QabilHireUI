@@ -20,10 +20,12 @@ export class ForgotPasswordPageComponent {
   private readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationService);
   readonly submitting = signal(false);
+  readonly submitAttempted = signal(false);
   form = new FormBuilder().nonNullable.group({ email: ['', [Validators.required, Validators.email]] });
 
   submit(): void {
     if (this.form.invalid || this.submitting()) {
+      this.submitAttempted.set(true);
       this.form.markAllAsTouched();
       return;
     }
@@ -33,6 +35,7 @@ export class ForgotPasswordPageComponent {
       next: response => {
         if (response.emailEnabled === false) this.notifications.warning(response.message);
         else this.notifications.success(response.message);
+        this.submitAttempted.set(false);
       },
       error: error => this.notifications.error(error, 'Unable to request a password-reset link.')
     });

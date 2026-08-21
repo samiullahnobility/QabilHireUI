@@ -22,6 +22,7 @@ export class ResetPasswordPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly submitting = signal(false);
+  readonly submitAttempted = signal(false);
   form = new FormBuilder().nonNullable.group({
     password: ['', Validators.required],
     confirmPassword: ['', Validators.required]
@@ -29,6 +30,7 @@ export class ResetPasswordPageComponent {
 
   submit(): void {
     if (this.form.invalid || this.submitting()) {
+      this.submitAttempted.set(true);
       this.form.markAllAsTouched();
       return;
     }
@@ -52,6 +54,7 @@ export class ResetPasswordPageComponent {
         next: response => {
           if (response.emailEnabled === false) this.notifications.warning(response.message);
           else this.notifications.success(response.message);
+          this.submitAttempted.set(false);
           void this.router.navigateByUrl('/auth/login');
         },
         error: error => this.notifications.error(error, 'Unable to reset your password.')

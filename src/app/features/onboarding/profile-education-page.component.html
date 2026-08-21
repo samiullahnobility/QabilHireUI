@@ -1,1 +1,59 @@
-<header class="view-title"><h1>Skills and expertise</h1><p>Select skills the AI should use for analysis and interviews</p></header><div class="progress"><i style="width:60%"></i></div><p class="step-label">Step 3 of 5</p><section class="skills-page"><input class="skill-search" type="search" placeholder="Search skills..." [value]="search()" (input)="search.set($any($event.target).value)"><h2>Selected skills</h2><div class="skill-grid">@for(skill of filteredSkills();track skill){<button type="button" [class.selected]="selected.has(skill)" (click)="toggle(skill)">{{skill}}</button>}</div><h2>Experience level</h2><div class="level-grid">@for(item of levels;track item){<button type="button" [class.selected]="level()===item" (click)="chooseLevel(item)"><strong>{{item}}</strong><small>{{item==='Learning'?'< 1 year':item==='Working knowledge'?'1–2 years':item==='Proficient'?'3–5 years':'5+ years'}}</small></button>}</div><article class="suggested"><h2>Suggested from resume</h2>@for(item of suggested;track item){<button type="button" (click)="toggle(item)">{{item}}</button>}</article><div class="form-actions"><button class="secondary" type="button" (click)="back()">Back</button><button class="primary" type="button" (click)="submit()">Save and continue</button></div></section>
+<header class="view-title"><h1>Skills and expertise</h1><p>Select skills the AI should use for analysis and interviews</p></header>
+<div class="progress"><i style="width:60%"></i></div>
+<p class="step-label">Step 3 of 5</p>
+<section class="skills-page">
+  <article class="skills-card">
+    <h2>Experience level</h2>
+    <div class="level-grid">
+      @for(item of levels;track item){<button type="button" [class.selected]="level()===item" (click)="chooseLevel(item)"><strong>{{item}}</strong><small>{{item==='Learning'?'< 1 year':item==='Working knowledge'?'1-2 years':item==='Proficient'?'3-5 years':'5+ years'}}</small></button>}
+    </div>
+    <article class="suggested">
+      <h2>Suggested from resume</h2>
+      @for(item of suggested;track item){<button type="button" (click)="toggle(item)">{{item}}</button>}
+    </article>
+    <div class="catalog-tools">
+      <label class="skill-search">
+        <span class="sr-only">Search skills</span>
+        <input class="skill-search-input" type="search" placeholder="Search skills..." [value]="search()" (input)="search.set($any($event.target).value)">
+      </label>
+      @if(selected.size){
+        <div class="chips selected-skill-chips">
+          @for(skill of selected;track skill){<button type="button" class="selected">{{skill}}</button>}
+        </div>
+      }
+      <div class="catalog-actions">
+        <button mat-stroked-button color="primary" type="button" (click)="expandAllGroups()">Show all</button>
+        <button mat-stroked-button type="button" (click)="collapseAllGroups()">Hide all</button>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="back()">Back</button>
+      <button mat-flat-button color="primary" type="button" (click)="submit()">Save and continue</button>
+    </div>
+    <p class="step-label">Browse the skill catalog and click any skill to add it.</p>
+    <h2>Skill catalog ({{filteredSkillCount()}})</h2>
+    @if(filteredSkillCount()===0){
+      <article class="suggested"><h2>No skills found</h2><p>Try a broader search term or clear the search box to browse all categories.</p></article>
+    }@else{
+      @for(group of filteredGroups();track group.label){
+        <article class="skill-group">
+          <button class="skill-group-head" type="button" [attr.aria-expanded]="isGroupExpanded(group.label)" (click)="toggleGroup(group.label)">
+            <div>
+              <h3>{{group.label}}</h3>
+              <p>Click to {{isGroupExpanded(group.label)?'collapse':'expand'}} this category.</p>
+            </div>
+            <span>
+              {{group.skills.length}}
+              <i>{{isGroupExpanded(group.label)?'-':'+'}}</i>
+            </span>
+          </button>
+          @if(isGroupExpanded(group.label)){
+            <div class="skill-grid">
+              @for(skill of group.skills;track skill){<button type="button" [class.selected]="selected.has(skill)" (click)="toggle(skill)">{{skill}}</button>}
+            </div>
+          }
+        </article>
+      }
+    }
+  </article>
+</section>

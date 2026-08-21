@@ -18,9 +18,10 @@ h1 { margin: 16px 0 0; font-size: 48px; line-height: 1.45; letter-spacing: -0.03
 .preview mat-card-title { margin-bottom: 20px; font-size: 18px; font-weight: 700; }
 .preview mat-card-content { padding: 0; }
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-bottom: 38px; }
-.stat { height: 128px; padding: 17px; gap: 16px; align-items: flex-start; border: 1px solid var(--border); border-radius: 16px; background: #fff; box-shadow: none; }
+.stat { display:grid; grid-template-columns:42px minmax(0,1fr); height: 128px; padding: 17px; gap: 12px 14px; align-items: start; border: 1px solid var(--border); border-radius: 16px; background: #fff; box-shadow: none; }
+.stat>div:last-child { min-width:0; }
 .stat strong { display: block; padding-top: 2px; font-size: 25px; }
-.stat span { display: block; margin-top: 25px; margin-left: -58px; color: var(--text-secondary); font-size: 13px; white-space: nowrap; }
+.stat span { display: block; margin-top: 8px; color: var(--text-secondary); font-size: 13px; line-height:1.3; white-space: normal; }
 .dot { width: 42px; height: 42px; flex: 0 0 auto; border-radius: 50%; }
 .green { background: var(--primary); }
 .blue { background: #2563eb; }

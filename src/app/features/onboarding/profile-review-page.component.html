@@ -1,1 +1,36 @@
-<header class="view-title"><h1>Review your profile</h1><p>Step 5 of 5 · Confirm your information</p></header><div class="progress"><i style="width:100%"></i></div><section class="profile-card review-card"><article><h2>Basics</h2><dl><div><dt>Headline</dt><dd>{{profile().headline}}</dd></div><div><dt>Current role</dt><dd>{{profile().currentRole}}</dd></div><div><dt>Experience</dt><dd>{{profile().experienceLevel}}</dd></div><div><dt>Skills</dt><dd>{{profile().skills.join(', ')}}</dd></div></dl></article><article><h2>Experience and education</h2><dl><div><dt>Company</dt><dd>{{profile().company}}</dd></div><div><dt>Achievement</dt><dd>{{profile().achievement}}</dd></div><div><dt>Institution</dt><dd>{{profile().institution}}</dd></div><div><dt>Qualification</dt><dd>{{profile().qualification}}</dd></div></dl></article><article class="wide"><h2>Career direction</h2><dl><div><dt>Target role</dt><dd>{{profile().targetRole}}</dd></div><div><dt>Industry</dt><dd>{{profile().industry}}</dd></div><div><dt>Location</dt><dd>{{profile().location}}</dd></div><div><dt>Preferences</dt><dd>{{profile().preferences.join(', ')}}</dd></div><div><dt>Goal</dt><dd>{{profile().careerGoal}}</dd></div></dl></article><div class="form-actions wide"><button class="secondary" type="button" (click)="back()">Back</button><button class="primary" type="button" [disabled]="saving()" (click)="complete()">{{saving()?'Saving...':'Complete setup'}}</button></div></section>
+<header class="view-title"><h1>Review your profile</h1><p>Step 5 of 5 · Confirm your information</p></header>
+<div class="progress"><i style="width:100%"></i></div>
+<section class="profile-card review-card">
+  <article>
+    <h2>Basics</h2>
+    <dl>
+      <div><dt>Headline</dt><dd>{{profile().headline}}</dd></div>
+      <div><dt>Current role</dt><dd>{{profile().currentRole}}</dd></div>
+      <div><dt>Experience</dt><dd>{{profile().experienceLevel}}</dd></div>
+      <div><dt>Skills</dt><dd>{{profile().skills.join(', ')}}</dd></div>
+    </dl>
+  </article>
+  <article>
+    <h2>Experience and education</h2>
+    <dl>
+      <div><dt>Company</dt><dd>{{profile().company}}</dd></div>
+      <div><dt>Achievement</dt><dd>{{profile().achievement}}</dd></div>
+      <div><dt>Institution</dt><dd>{{profile().institution}}</dd></div>
+      <div><dt>Qualification</dt><dd>{{profile().qualification}}</dd></div>
+    </dl>
+  </article>
+  <article class="wide">
+    <h2>Career direction</h2>
+    <dl>
+      <div><dt>Target role</dt><dd>{{profile().targetRole}}</dd></div>
+      <div><dt>Industry</dt><dd>{{profile().industry}}</dd></div>
+      <div><dt>Location</dt><dd>{{profile().location}}</dd></div>
+      <div><dt>Preferences</dt><dd>{{profile().preferences.join(', ')}}</dd></div>
+      <div><dt>Goal</dt><dd>{{profile().careerGoal}}</dd></div>
+    </dl>
+  </article>
+  <div class="form-actions wide">
+    <button mat-stroked-button type="button" (click)="back()">Back</button>
+    <button mat-flat-button color="primary" type="button" [disabled]="saving()" (click)="complete()">{{saving()?'Saving...':'Complete setup'}}</button>
+  </div>
+</section>

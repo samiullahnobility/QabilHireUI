@@ -21,6 +21,7 @@ export class LoginPageComponent {
   private readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
   readonly submitting = signal(false);
+  readonly submitAttempted = signal(false);
   form = new FormBuilder().nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
@@ -28,6 +29,7 @@ export class LoginPageComponent {
 
   submit(): void {
     if (this.form.invalid || this.submitting()) {
+      this.submitAttempted.set(true);
       this.form.markAllAsTouched();
       return;
     }
@@ -36,6 +38,7 @@ export class LoginPageComponent {
     this.auth.login(this.form.getRawValue()).pipe(finalize(() => this.submitting.set(false))).subscribe({
       next: response => {
         this.notifications.success('Welcome back to QabilHire.');
+        this.submitAttempted.set(false);
         void this.router.navigateByUrl(response.user.profileComplete ? '/app/dashboard' : '/onboarding/profile');
       },
       error: error => this.notifications.error(error, 'Unable to sign in.')

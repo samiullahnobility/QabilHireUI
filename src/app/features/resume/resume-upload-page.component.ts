@@ -23,6 +23,8 @@ export class ResumeUploadPageComponent {
   readonly uploading = signal(false);
   readonly extracting = signal(false);
   readonly resumes = signal<ResumeResponse[]>([]);
+  readonly uploadMessage = signal<string | null>(null);
+  readonly sizeOverrides = signal<Record<string, number>>({});
 
   constructor() {
     this.loadResumes();
@@ -33,7 +35,12 @@ export class ResumeUploadPageComponent {
   }
 
   fileSize(bytes: number): string {
+    if (!bytes) return 'Size unavailable';
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  displayedSize(resume: ResumeResponse): string {
+    return this.fileSize(resume.sizeBytes || this.sizeOverrides()[resume.id] || 0);
   }
 
   resumeDate(value: string): string {
@@ -51,9 +58,11 @@ export class ResumeUploadPageComponent {
     const file = this.selectedFile();
     if (!file) return;
     this.uploading.set(true);
+    this.uploadMessage.set(null);
     this.api.upload(file).pipe(
       switchMap(resume => {
         this.uploaded.set(resume);
+        this.sizeOverrides.update(items => ({ ...items, [resume.id]: file.size }));
         this.extracting.set(true);
         return this.api.extract(resume.id);
       }),
@@ -61,10 +70,22 @@ export class ResumeUploadPageComponent {
     ).subscribe({
       next: resume => {
         this.uploaded.set(resume);
-        this.notifications.success('Resume uploaded and extracted. Please review the information.');
-        void this.router.navigate(['/app/resume', resume.id, 'edit']);
+        this.uploadMessage.set('Resume uploaded successfully. Your resume is ready to review.');
+        this.notifications.success('Resume uploaded successfully.');
+        window.setTimeout(() => void this.router.navigate(['/app/resume', resume.id, 'edit']), 900);
       },
       error: error => this.notifications.error(error, 'Unable to upload or extract resume.')
+    });
+  }
+
+  deleteResume(id: string): void {
+    this.api.delete(id).subscribe({
+      next: () => {
+        this.resumes.update(items => items.filter(item => item.id !== id));
+        if (this.uploaded()?.id === id) this.uploaded.set(null);
+        this.notifications.success('Resume removed successfully.');
+      },
+      error: error => this.notifications.error(error, 'Unable to remove your resume.')
     });
   }
 

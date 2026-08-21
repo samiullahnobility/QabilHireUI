@@ -1,1 +1,30 @@
-<header class="view-title"><h1>Define your career direction</h1><p>Step 4 of 5 · Role and interview preferences</p></header><div class="progress"><i style="width:80%"></i></div><form class="profile-card compact" [formGroup]="form" (ngSubmit)="submit()"><label>Target role<input formControlName="targetRole" placeholder="Senior Full-stack Developer"></label><label>Industry<input formControlName="industry" placeholder="SaaS / Business Software"></label><label>Location<input formControlName="location" placeholder="Remote / Islamabad"></label><fieldset class="wide"><legend>Interview preferences</legend><div class="chips">@for(option of options;track option){<button type="button" [class.selected]="selected.has(option)" (click)="toggle(option)">{{option}}</button>}</div></fieldset><label class="wide">Career goal<input formControlName="careerGoal" placeholder="Prepare for senior engineering roles"></label><div class="form-actions wide"><button class="secondary" type="button" (click)="back()">Back</button><button class="primary" type="submit">Review profile</button></div></form>
+<header class="view-title"><h1>Define your career direction</h1><p>Step 4 of 5 - Role and interview preferences</p></header>
+<div class="progress"><i style="width:80%"></i></div>
+<form class="profile-card compact" [formGroup]="form" (ngSubmit)="submit()">
+  @if(submitAttempted && form.invalid){<p class="form-alert wide">Please complete all required fields before continuing.</p>}
+  <mat-form-field appearance="outline">
+    <mat-label>Target role</mat-label>
+    <input matInput required formControlName="targetRole" placeholder="Senior Full-stack Developer">
+    @if((submitAttempted || form.controls.targetRole.touched) && form.controls.targetRole.invalid){<mat-error>Target role is required.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Industry</mat-label>
+    <input matInput required formControlName="industry" placeholder="SaaS / Business Software">
+    @if((submitAttempted || form.controls.industry.touched) && form.controls.industry.invalid){<mat-error>Industry is required.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Location</mat-label>
+    <input matInput required formControlName="location" placeholder="Remote / Islamabad">
+    @if((submitAttempted || form.controls.location.touched) && form.controls.location.invalid){<mat-error>Location is required.</mat-error>}
+  </mat-form-field>
+  <fieldset class="wide"><legend>Interview preferences</legend><div class="chips">@for(option of options;track option){<button type="button" [class.selected]="selected.has(option)" (click)="toggle(option)">{{option}}</button>}</div></fieldset>
+  <mat-form-field appearance="outline" class="wide">
+    <mat-label>Career goal</mat-label>
+    <input matInput required formControlName="careerGoal" placeholder="Prepare for senior engineering roles">
+    @if((submitAttempted || form.controls.careerGoal.touched) && form.controls.careerGoal.invalid){<mat-error>Career goal is required.</mat-error>}
+  </mat-form-field>
+  <div class="form-actions wide">
+    <button mat-stroked-button type="button" (click)="back()">Back</button>
+    <button mat-flat-button color="primary" type="submit">Review profile</button>
+  </div>
+</form>

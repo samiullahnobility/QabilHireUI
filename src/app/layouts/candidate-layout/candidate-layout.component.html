@@ -12,10 +12,7 @@
       }
     </nav>
     <a class="interview-cta" routerLink="/app/interviews/setup" (click)="closeMenu()">Start Mock Interview</a>
-    <div class="user-card">
-      <span class="avatar"></span><div><strong>{{ user()?.fullName || 'Candidate' }}</strong><small>QabilHire Candidate</small></div>
-      <button type="button" (click)="logout()">Sign out</button>
-    </div>
+
   </aside>
   @if (menuOpen()) { <button class="backdrop" type="button" aria-label="Close navigation" (click)="closeMenu()"></button> }
   <section class="workspace">

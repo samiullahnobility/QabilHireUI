@@ -22,6 +22,8 @@ export class RegisterPageComponent {
   private readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
   readonly submitting = signal(false);
+  readonly submitAttempted = signal(false);
+  readonly legalDocument = signal<'terms' | 'privacy' | null>(null);
   form = new FormBuilder().nonNullable.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -30,8 +32,12 @@ export class RegisterPageComponent {
     terms: [false, Validators.requiredTrue]
   });
 
+  openLegal(document: 'terms' | 'privacy'): void { this.legalDocument.set(document); }
+  closeLegal(): void { this.legalDocument.set(null); }
+
   submit(): void {
     if (this.form.invalid || this.submitting()) {
+      this.submitAttempted.set(true);
       this.form.markAllAsTouched();
       return;
     }
@@ -50,6 +56,7 @@ export class RegisterPageComponent {
           const message = response.message ?? 'Your QabilHire account has been created.';
           if (response.emailEnabled === false) this.notifications.warning(message);
           else this.notifications.success(message);
+          this.submitAttempted.set(false);
           void this.router.navigateByUrl('/onboarding/profile');
         },
         error: error => this.notifications.error(error, 'Unable to create your account.')

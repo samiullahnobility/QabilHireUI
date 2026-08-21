@@ -1,9 +1,170 @@
 <header class="view-title"><h1>Profile &amp; Settings</h1><p>Keep your experience and career direction up to date</p></header>
-@if(loading()){<section class="state-card" aria-live="polite">Loading your profile...</section>}@else{
+@if(loading()){
+<section class="state-card" aria-live="polite">Loading your profile...</section>
+} @else {
 <form [formGroup]="form" (ngSubmit)="save()">
- <section class="form-section"><div class="section-heading"><span>01</span><div><h2>Professional basics</h2><p>How QabilHire introduces and understands your background.</p></div></div><div class="fields"><label class="wide">Professional headline<input formControlName="headline"></label><label>Experience level<select formControlName="experienceLevel"><option>Entry-level (0–2 years)</option><option>Mid-level (3–5 years)</option><option>Senior (6+ years)</option></select></label><label>Education<input formControlName="education"></label><label class="wide">Current role<input formControlName="currentRole"></label><label class="wide">Skills <small>Separate with commas</small><input formControlName="skills"></label></div></section>
- <section class="form-section"><div class="section-heading"><span>02</span><div><h2>Experience</h2><p>The evidence used to personalize preparation and feedback.</p></div></div><div class="fields"><label class="wide">Most recent company<input formControlName="company"></label><label class="wide">Key responsibilities<textarea formControlName="responsibilities"></textarea></label><label class="wide">Proudest achievement<textarea formControlName="achievement"></textarea></label></div></section>
- <section class="form-section"><div class="section-heading"><span>03</span><div><h2>Education and links</h2><p>Your qualifications and professional presence.</p></div></div><div class="fields"><label>Institution<input formControlName="institution"></label><label>Qualification<input formControlName="qualification"></label><label>LinkedIn profile<input type="url" formControlName="linkedInUrl"></label><label>Portfolio or GitHub<input type="url" formControlName="portfolioUrl"></label></div></section>
- <section class="form-section"><div class="section-heading"><span>04</span><div><h2>Career direction</h2><p>The roles and interview formats you want to prepare for.</p></div></div><div class="fields"><label>Target role<input formControlName="targetRole"></label><label>Industry<input formControlName="industry"></label><label class="wide">Location<input formControlName="location"></label><fieldset class="wide"><legend>Interview preferences</legend><div class="chips">@for(option of preferences;track option){<button type="button" [class.selected]="selected.has(option)" (click)="toggle(option)">{{option}}</button>}</div></fieldset><label class="wide">Career goal<textarea formControlName="careerGoal"></textarea></label></div></section>
- <div class="save-bar"><p>Your changes will be used across future QabilHire preparation workflows.</p><button type="submit" [disabled]="saving()">{{saving()?'Saving...':'Save profile'}}</button></div>
-</form>}
+ <section class="form-section">
+  <div class="section-heading"><span>01</span><div><h2>Professional basics</h2><p>How QabilHire introduces and understands your background.</p></div></div>
+  <div class="fields">
+   @if(submitAttempted && form.invalid){<p class="form-alert wide">Please complete all required fields before saving your profile.</p>}
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Professional headline</mat-label>
+    <input matInput required formControlName="headline">
+    @if((submitAttempted || form.controls.headline.touched) && form.controls.headline.invalid){<mat-error>Professional headline is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline">
+    <mat-label>Experience level</mat-label>
+    <mat-select required formControlName="experienceLevel">
+      <mat-option value="">Select experience</mat-option>
+      <mat-option [value]="'Entry-level (0-2 years)'">Entry-level (0-2 years)</mat-option>
+      <mat-option [value]="'Mid-level (3-5 years)'">Mid-level (3-5 years)</mat-option>
+      <mat-option [value]="'Senior (6+ years)'">Senior (6+ years)</mat-option>
+    </mat-select>
+    @if((submitAttempted || form.controls.experienceLevel.touched) && form.controls.experienceLevel.invalid){<mat-error>Experience level is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline">
+    <mat-label>Education</mat-label>
+    <input matInput required formControlName="education">
+    @if((submitAttempted || form.controls.education.touched) && form.controls.education.invalid){<mat-error>Education is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Current role</mat-label>
+    <input matInput required formControlName="currentRole">
+    @if((submitAttempted || form.controls.currentRole.touched) && form.controls.currentRole.invalid){<mat-error>Current role is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Skills</mat-label>
+    <input matInput required formControlName="skills">
+    <mat-hint>Separate with commas</mat-hint>
+    @if((submitAttempted || form.controls.skills.touched) && form.controls.skills.invalid){<mat-error>Skills are required.</mat-error>}
+   </mat-form-field>
+ </div>
+ </section>
+
+ <div class="save-bar"><p>Your changes will be used across future QabilHire preparation workflows.</p><button mat-flat-button color="primary" type="submit" [disabled]="saving()">{{saving()?'Saving...':'Save profile'}}</button></div>
+
+ <section class="skills-catalog" style="grid-column:1/-1">
+  <div class="skills-catalog-head">
+   <div>
+    <h2>Skill catalog</h2>
+    <p>Browse broad skill groups and click any skill to add it to your profile.</p>
+   </div>
+   <div class="catalog-tools">
+    <label class="skill-search">
+     <span class="sr-only">Search skills</span>
+     <input type="search" placeholder="Search skills..." [value]="skillSearch()" (input)="skillSearch.set($any($event.target).value)">
+    </label>
+    <div class="catalog-actions">
+     <button mat-stroked-button color="primary" type="button" (click)="expandAllGroups()">Show all</button>
+     <button mat-stroked-button type="button" (click)="collapseAllGroups()">Hide all</button>
+    </div>
+   </div>
+  </div>
+  <p class="catalog-count">{{skillCount()}} skills found</p>
+  @if(skillCount()===0){
+   <p class="form-alert">No skills match your search. Try a broader keyword.</p>
+  } @else {
+   @for(group of filteredSkillGroups();track group.label){
+    <article class="skill-group">
+     <button class="skill-group-head" type="button" [attr.aria-expanded]="isGroupExpanded(group.label)" (click)="toggleGroup(group.label)">
+      <div>
+       <h3>{{group.label}}</h3>
+       <p>Click to {{isGroupExpanded(group.label)?'collapse':'expand'}} this category.</p>
+      </div>
+      <span>{{group.skills.length}} <i>{{isGroupExpanded(group.label)?'-':'+'}}</i></span>
+     </button>
+     @if(isGroupExpanded(group.label)){
+      <div class="skill-grid">
+       @for(skill of group.skills;track skill){
+        <button type="button" [class.selected]="selectedSkills.has(skill)" (click)="toggleSkill(skill)">{{skill}}</button>
+       }
+      </div>
+     }
+    </article>
+   }
+  }
+ </section>
+
+ <section class="form-section">
+  <div class="section-heading"><span>02</span><div><h2>Experience</h2><p>The evidence used to personalize preparation and feedback.</p></div></div>
+  <div class="fields">
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Most recent company</mat-label>
+    <input matInput required formControlName="company">
+    @if((submitAttempted || form.controls.company.touched) && form.controls.company.invalid){<mat-error>Company is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Key responsibilities</mat-label>
+    <textarea matInput required formControlName="responsibilities"></textarea>
+    @if((submitAttempted || form.controls.responsibilities.touched) && form.controls.responsibilities.invalid){<mat-error>Key responsibilities are required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Proudest achievement</mat-label>
+    <textarea matInput required formControlName="achievement"></textarea>
+    @if((submitAttempted || form.controls.achievement.touched) && form.controls.achievement.invalid){<mat-error>Proudest achievement is required.</mat-error>}
+   </mat-form-field>
+  </div>
+ </section>
+
+ <section class="form-section">
+  <div class="section-heading"><span>03</span><div><h2>Education and links</h2><p>Your qualifications and professional presence.</p></div></div>
+  <div class="fields">
+   <mat-form-field appearance="outline">
+    <mat-label>Institution</mat-label>
+    <input matInput required formControlName="institution">
+    @if((submitAttempted || form.controls.institution.touched) && form.controls.institution.invalid){<mat-error>Institution is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline">
+    <mat-label>Qualification</mat-label>
+    <input matInput required formControlName="qualification">
+    @if((submitAttempted || form.controls.qualification.touched) && form.controls.qualification.invalid){<mat-error>Qualification is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline">
+    <mat-label>LinkedIn profile</mat-label>
+    <input matInput formControlName="linkedInUrl">
+    <mat-hint>Optional</mat-hint>
+   </mat-form-field>
+   <mat-form-field appearance="outline">
+    <mat-label>Portfolio or GitHub</mat-label>
+    <input matInput formControlName="portfolioUrl">
+    <mat-hint>Optional</mat-hint>
+   </mat-form-field>
+  </div>
+ </section>
+
+ <section class="form-section">
+  <div class="section-heading"><span>04</span><div><h2>Career direction</h2><p>The roles and interview formats you want to prepare for.</p></div></div>
+  <div class="fields">
+   <mat-form-field appearance="outline">
+    <mat-label>Target role</mat-label>
+    <input matInput required formControlName="targetRole">
+    @if((submitAttempted || form.controls.targetRole.touched) && form.controls.targetRole.invalid){<mat-error>Target role is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline">
+    <mat-label>Industry</mat-label>
+    <input matInput required formControlName="industry">
+    @if((submitAttempted || form.controls.industry.touched) && form.controls.industry.invalid){<mat-error>Industry is required.</mat-error>}
+   </mat-form-field>
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Location</mat-label>
+    <input matInput required formControlName="location">
+    @if((submitAttempted || form.controls.location.touched) && form.controls.location.invalid){<mat-error>Location is required.</mat-error>}
+   </mat-form-field>
+   <fieldset class="wide">
+    <legend>Interview preferences</legend>
+    <div class="chips">
+     @for(option of preferences;track option){
+      <button type="button" [class.selected]="selected.has(option)" (click)="toggle(option)">{{option}}</button>
+     }
+    </div>
+   </fieldset>
+   <mat-form-field appearance="outline" class="wide">
+    <mat-label>Career goal</mat-label>
+    <textarea matInput required formControlName="careerGoal"></textarea>
+    @if((submitAttempted || form.controls.careerGoal.touched) && form.controls.careerGoal.invalid){<mat-error>Career goal is required.</mat-error>}
+   </mat-form-field>
+  </div>
+ </section>
+
+</form>
+}

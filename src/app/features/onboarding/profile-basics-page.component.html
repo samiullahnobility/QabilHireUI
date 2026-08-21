@@ -1,12 +1,49 @@
-<header class="view-title"><h1>Tell us about yourself</h1><p>Step 1 of 5 · Basics and experience</p></header>
+<header class="view-title"><h1>Tell us about yourself</h1><p>Step 1 of 5 - Basics and experience</p></header>
 <div class="progress"><i style="width:33%"></i></div>
 <form class="profile-card" [formGroup]="form" (ngSubmit)="submit()">
-  <label class="wide"><span>Professional headline <b class="required">*</b></span><input required formControlName="headline" placeholder="Full-stack Developer">@if(form.controls.headline.touched && form.controls.headline.invalid){<em class="field-error">Professional headline is required.</em>}</label>
-  <label><span>Experience level <b class="required">*</b></span><select required formControlName="experienceLevel"><option value="">Select experience</option><option>Entry-level (0–2 years)</option><option>Mid-level (3–5 years)</option><option>Senior (6+ years)</option></select>@if(form.controls.experienceLevel.touched && form.controls.experienceLevel.invalid){<em class="field-error">Experience level is required.</em>}</label>
-  <label><span>Education <b class="required">*</b></span><input required formControlName="education" placeholder="Bachelor's degree">@if(form.controls.education.touched && form.controls.education.invalid){<em class="field-error">Education is required.</em>}</label>
-  <label class="wide"><span>Current role <b class="required">*</b></span><input required formControlName="currentRole" placeholder="Software Engineer">@if(form.controls.currentRole.touched && form.controls.currentRole.invalid){<em class="field-error">Current role is required.</em>}</label>
-  <label class="wide"><span>Skills <b class="required">*</b> <small>Separate skills with commas</small></span><input required formControlName="skills" placeholder=".NET, Angular, SQL Server, React">@if(form.controls.skills.touched && form.controls.skills.invalid){<em class="field-error">Add at least one skill.</em>}</label>
-  <label><span>LinkedIn URL <small>Optional</small></span><input type="url" formControlName="linkedInUrl" placeholder="https://www.linkedin.com/in/your-name">@if(form.controls.linkedInUrl.touched && form.controls.linkedInUrl.invalid){<em class="field-error">Enter a complete URL starting with http:// or https://.</em>}</label>
-  <label><span>Portfolio URL <small>Optional</small></span><input type="url" formControlName="portfolioUrl" placeholder="https://yourportfolio.com">@if(form.controls.portfolioUrl.touched && form.controls.portfolioUrl.invalid){<em class="field-error">Enter a complete URL starting with http:// or https://.</em>}</label>
-  <button type="submit">Save and continue</button>
+  @if(submitAttempted && form.invalid){<p class="form-alert wide">Please complete all required fields before continuing.</p>}
+  <mat-form-field appearance="outline" class="wide">
+    <mat-label>Professional headline</mat-label>
+    <input matInput required formControlName="headline" placeholder="Full-stack Developer">
+    @if((submitAttempted || form.controls.headline.touched) && form.controls.headline.invalid){<mat-error>Professional headline is required.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Experience level</mat-label>
+    <mat-select required formControlName="experienceLevel">
+      <mat-option value="">Select experience</mat-option>
+      <mat-option [value]="'Entry-level (0-2 years)'">Entry-level (0-2 years)</mat-option>
+      <mat-option [value]="'Mid-level (3-5 years)'">Mid-level (3-5 years)</mat-option>
+      <mat-option [value]="'Senior (6+ years)'">Senior (6+ years)</mat-option>
+    </mat-select>
+    @if((submitAttempted || form.controls.experienceLevel.touched) && form.controls.experienceLevel.invalid){<mat-error>Experience level is required.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Education</mat-label>
+    <input matInput required formControlName="education" placeholder="Bachelor's degree">
+    @if((submitAttempted || form.controls.education.touched) && form.controls.education.invalid){<mat-error>Education is required.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="wide">
+    <mat-label>Current role</mat-label>
+    <input matInput required formControlName="currentRole" placeholder="Software Engineer">
+    @if((submitAttempted || form.controls.currentRole.touched) && form.controls.currentRole.invalid){<mat-error>Current role is required.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="wide">
+    <mat-label>Skills</mat-label>
+    <input matInput required formControlName="skills" placeholder=".NET, Angular, SQL Server, React">
+    <mat-hint>Separate skills with commas</mat-hint>
+    @if((submitAttempted || form.controls.skills.touched) && form.controls.skills.invalid){<mat-error>Add at least one skill.</mat-error>}
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>LinkedIn URL</mat-label>
+    <input matInput formControlName="linkedInUrl" placeholder="https://www.linkedin.com/in/your-name">
+    <mat-hint>Optional</mat-hint>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Portfolio URL</mat-label>
+    <input matInput formControlName="portfolioUrl" placeholder="https://yourportfolio.com">
+    <mat-hint>Optional</mat-hint>
+  </mat-form-field>
+  <div class="form-actions wide">
+    <button mat-flat-button color="primary" type="submit">Save and continue</button>
+  </div>
 </form>
