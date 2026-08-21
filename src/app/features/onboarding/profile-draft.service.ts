@@ -10,10 +10,12 @@ export class ProfileDraftService {
   private readonly key='qabilhire_profile_draft';
   readonly value=signal<ProfileDraft>(this.restore());
   update(patch:Partial<ProfileDraft>):void{const next={...this.value(),...patch};this.value.set(next);sessionStorage.setItem(this.key,JSON.stringify(next));}
-  load():Observable<CandidateProfileResponse>{return this.api.get<CandidateProfileResponse>('profile').pipe(tap(profile=>this.update({...profile,preferences:profile.interviewPreferences})));}
-  save():Observable<CandidateProfileResponse>{const {preferences,...profile}=this.value();return this.api.put<CandidateProfileResponse,UpsertCandidateProfileRequest>('profile',{...profile,interviewPreferences:preferences}).pipe(tap(saved=>this.update({...saved,preferences:saved.interviewPreferences})));}
+  load():Observable<CandidateProfileResponse>{return this.api.get<CandidateProfileResponse>('profile').pipe(tap(profile=>this.update({...profile,linkedInUrl:profile.linkedInUrl??'',portfolioUrl:profile.portfolioUrl??'',preferences:profile.interviewPreferences})));}
+  save():Observable<CandidateProfileResponse>{const {preferences,...profile}=this.value();return this.api.put<CandidateProfileResponse,UpsertCandidateProfileRequest>('profile',{...profile,linkedInUrl:optionalUrl(profile.linkedInUrl),portfolioUrl:optionalUrl(profile.portfolioUrl),interviewPreferences:preferences}).pipe(tap(saved=>this.update({...saved,linkedInUrl:saved.linkedInUrl??'',portfolioUrl:saved.portfolioUrl??'',preferences:saved.interviewPreferences})));}
   private restore():ProfileDraft{try{return {...initial,...JSON.parse(sessionStorage.getItem(this.key)??'{}') as Partial<ProfileDraft>};}catch{return initial;}}
 }
 
-interface UpsertCandidateProfileRequest extends Omit<ProfileDraft,'preferences'>{interviewPreferences:string[];}
+interface UpsertCandidateProfileRequest extends Omit<ProfileDraft,'preferences'|'linkedInUrl'|'portfolioUrl'>{linkedInUrl:string|null;portfolioUrl:string|null;interviewPreferences:string[];}
 interface CandidateProfileResponse extends UpsertCandidateProfileRequest{id:string;isComplete:boolean;updatedAtUtc:string;}
+
+function optionalUrl(value:string):string|null{return value.trim()||null;}
