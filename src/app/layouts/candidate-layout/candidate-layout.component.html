@@ -23,7 +23,25 @@
       <button class="menu-button" type="button" (click)="toggleMenu()" aria-label="Toggle navigation">Menu</button>
       <div class="page-heading" id="candidate-page-heading">@if(pageData()['title']){<h1>{{ pageData()['title'] }}</h1><p>{{ pageData()['subtitle'] }}</p>}</div>
       @if(!pageData()['hideSearch']){<label class="search"><span class="sr-only">Search</span><input type="search" placeholder="Search..."></label>}
-      <span class="header-avatar" aria-hidden="true"></span>
+      <div class="account-menu" (click)="$event.stopPropagation()">
+        <button class="header-avatar" type="button" aria-label="Open profile and account menu" aria-haspopup="menu" [attr.aria-expanded]="accountMenuOpen()" (click)="toggleAccountMenu($event)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/></svg>
+        </button>
+        @if(accountMenuOpen()){
+          <section class="account-dropdown" role="menu" aria-label="Profile and account">
+            <div class="account-identity">
+              <span class="account-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/></svg></span>
+              <div><strong>{{user()?.fullName || 'Candidate'}}</strong><small>{{user()?.email || 'No email available'}}</small><span class="account-role">{{roleLabel()}}</span></div>
+            </div>
+            <div class="completion"><span>Profile completion</span><strong>{{profileComplete() ? 'Complete' : 'In progress'}}</strong></div>
+            <nav aria-label="Account actions">
+              <a role="menuitem" [routerLink]="profileLink()" (click)="closeAccountMenu()">Profile / Account</a>
+              @if(profileComplete()){<a role="menuitem" routerLink="/app/profile/security" (click)="closeAccountMenu()">Settings</a>}
+              <button role="menuitem" type="button" (click)="logout()">Logout</button>
+            </nav>
+          </section>
+        }
+      </div>
     </header>
     <main><router-outlet /></main>
   </section>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -25,8 +25,11 @@ export class CandidateLayoutComponent {
   private readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
   readonly menuOpen = signal(false);
+  readonly accountMenuOpen = signal(false);
   readonly user = this.auth.currentUser;
   readonly profileComplete = computed(() => !!this.user()?.profileComplete);
+  readonly roleLabel = computed(() => this.user()?.roles?.length ? this.user()!.roles.join(', ') : 'Candidate');
+  readonly profileLink = computed(() => this.profileComplete() ? '/app/profile' : '/onboarding/profile');
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', link: '/app/dashboard', requiresCompleteProfile: true },
     { label: 'Resume Analysis', link: '/app/resume', requiresCompleteProfile: true },
@@ -65,7 +68,17 @@ export class CandidateLayoutComponent {
 
   toggleMenu(): void { this.menuOpen.update(open => !open); }
   closeMenu(): void { this.menuOpen.set(false); }
+  toggleAccountMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.accountMenuOpen.update(open => !open);
+  }
+  closeAccountMenu(): void { this.accountMenuOpen.set(false); }
+  @HostListener('document:click')
+  onDocumentClick(): void { this.closeAccountMenu(); }
+  @HostListener('document:keydown.escape')
+  onEscape(): void { this.closeAccountMenu(); }
   logout(): void {
+    this.closeAccountMenu();
     this.auth.logout().subscribe({ next: () => void this.router.navigateByUrl('/auth/login') });
   }
 }
