@@ -22,6 +22,9 @@ import { ResumeAnalysisPageComponent } from './features/resume/resume-analysis-p
 import { ResumeEditPageComponent } from './features/resume/resume-edit-page.component';
 import { ResumeUploadPageComponent } from './features/resume/resume-upload-page.component';
 import { ResumeManagementPageComponent } from './features/resume/resume-management-page.component';
+import { JobMatchInputPageComponent } from './features/job-match/job-match-input-page.component';
+import { JobMatchResultsPageComponent } from './features/job-match/job-match-results-page.component';
+import { JobMatchHistoryPageComponent } from './features/job-match/job-match-history-page.component';
 import { CandidateLayoutComponent } from './layouts/candidate-layout/candidate-layout.component';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
@@ -55,6 +58,9 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardPageComponent },
       { path: 'profile', component: ProfileManagementPageComponent },
       { path: 'resume', component: ResumeUploadPageComponent, data: { title: 'Upload your resume', subtitle: 'Get specific, actionable AI feedback' } },
+      { path: 'job-match', component: JobMatchInputPageComponent, data: { title: 'Analyze a target opportunity', subtitle: 'Paste a job description to understand your fit' } },
+      { path: 'job-match/history', component: JobMatchHistoryPageComponent, data: { title: 'Job Match history', subtitle: 'Review every opportunity you have analyzed' } },
+      { path: 'job-match/:id', component: JobMatchResultsPageComponent, data: { title: 'Job-match analysis', subtitle: 'Understand your fit and improvement priorities' } },
       { path: 'resume/:id/analysis', component: ResumeAnalysisPageComponent, data: { title: 'Resume analysis', subtitle: 'Specific improvements for your target role' } },
       { path: 'resume/:id/edit', component: ResumeEditPageComponent, data: { title: 'Review extracted information', subtitle: 'Confirm or correct what the AI found in your resume', hideSearch: true } },
       { path: 'profile/edit', component: ProfilePageComponent, canDeactivate: [unsavedChangesGuard] },

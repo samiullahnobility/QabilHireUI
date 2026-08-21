@@ -1,0 +1,11 @@
+<header class="view-title"><div><h1>Analyze a target opportunity</h1><p>Paste a job description to understand your fit</p></div><a mat-stroked-button color="primary" routerLink="/app/job-match/history">View match history</a></header>
+<div class="job-match-input-layout">
+  <form class="job-match-form" [formGroup]="form" (ngSubmit)="submit()">
+    @if(submitted() && form.invalid){<p class="form-alert">Please complete the required fields before analyzing the match.</p>}
+    <mat-form-field appearance="outline"><mat-label>Target job title</mat-label><input matInput formControlName="targetJobTitle" placeholder="Senior .NET Developer" required>@if((submitted() || form.controls.targetJobTitle.touched) && form.controls.targetJobTitle.invalid){<mat-error>Target job title is required.</mat-error>}</mat-form-field>
+    <mat-form-field appearance="outline"><mat-label>Company (optional)</mat-label><input matInput formControlName="company" placeholder="Northstar Labs"></mat-form-field>
+    <mat-form-field appearance="outline" class="description-field"><mat-label>Job description</mat-label><textarea matInput rows="10" formControlName="jobDescription" placeholder="Paste the complete job description here..." required></textarea>@if((submitted() || form.controls.jobDescription.touched) && form.controls.jobDescription.invalid){<mat-error>Paste a job description with at least 40 characters.</mat-error>}</mat-form-field>
+    <div class="job-match-actions"><button mat-flat-button color="primary" type="submit" [disabled]="submitting()">{{submitting()?'Analyzing match...':'Analyze Match'}}</button></div>
+  </form>
+  <aside class="analysis-includes"><h2>Analysis includes</h2><p>✓ Overall fit</p><p>✓ Technical skills</p><p>✓ Experience alignment</p><p>✓ Missing capabilities</p><p>✓ Likely interview topics</p></aside>
+</div>

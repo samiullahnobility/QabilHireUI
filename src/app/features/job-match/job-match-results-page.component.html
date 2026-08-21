@@ -1,0 +1,15 @@
+@if(loading()){<section class="job-match-state">Loading your job match...</section>} @else {
+@if(match(); as item){
+<header class="view-title"><div><h1>{{item.targetJobTitle}}{{item.company ? ' · '+item.company : ''}}</h1><p>Strong fit with focused improvement areas</p></div><a mat-stroked-button color="primary" routerLink="/app/job-match/history">Match history</a></header>
+<section class="match-banner"><div><small>Overall match</small><div class="match-score">{{item.overallScore}}% <strong>{{item.matchLevel}}</strong></div><p>{{item.summary}}</p></div><button mat-flat-button type="button">{{item.overallScore >= 75 ? 'Start Interview for This Job' : 'Build Improvement Plan'}}</button></section>
+<section class="score-grid">@for(score of [{label:'Technical',value:item.technicalScore},{label:'Experience',value:item.experienceScore},{label:'Education',value:item.educationScore},{label:'Tools',value:item.toolsScore},{label:'Soft skills',value:item.softSkillsScore}]; track score.label){<article><h2>{{score.label}} <strong>{{score.value}}%</strong></h2><p>Score breakdown</p></article>}</section>
+<section class="match-detail-grid">
+  <article><h2>Matched skills</h2>@for(value of item.matchedSkills; track value){<span class="match-pill">{{value}}</span>}@empty{<p class="muted">No matched skills were identified.</p>}</article>
+  <article><h2>Matched strengths</h2><ul class="detail-list">@for(value of item.matchedStrengths; track value){<li>{{value}}</li>}@empty{<li class="muted">No matched strengths were identified.</li>}</ul></article>
+  <article><h2>Gaps</h2><ul class="detail-list">@for(value of item.gaps; track value){<li>{{value}}</li>}@empty{<li class="muted">No gaps were identified.</li>}</ul></article>
+  <article><h2>Priorities</h2><ul class="detail-list">@for(value of item.priorities; track value){<li>{{value}}</li>}@empty{<li class="muted">No priorities were identified.</li>}</ul></article>
+  <article><h2>Likely interview questions</h2><ul class="detail-list">@for(value of item.likelyQuestions; track value){<li>{{value}}</li>}@empty{<li class="muted">No likely questions were identified.</li>}</ul></article>
+</section>
+<div class="recommended"><strong>Recommended next step</strong><button mat-flat-button color="primary" type="button">{{item.recommendedNextStep || 'Practice questions for your current skill level'}}</button></div>
+} @else {<section class="job-match-state"><h2>Match not found</h2><p>This job match may have been removed.</p><a mat-flat-button color="primary" routerLink="/app/job-match">Analyze another job</a></section>}
+}

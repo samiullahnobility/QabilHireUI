@@ -53,6 +53,8 @@ export class ApiService {
     if (path.startsWith('resumes') && method === 'GET') return path === 'resumes' ? 'Loading your resumes...' : 'Loading your resume...';
     if (path.startsWith('profile') && method === 'GET') return 'Loading your profile...';
     if (path.startsWith('profile')) return 'Saving your profile...';
+    if (path === 'job-matches' && method === 'POST') return 'Analyzing your job match with AI...';
+    if (path.startsWith('job-matches') && method === 'GET') return 'Loading your job match...';
     return method === 'GET' ? 'Loading your information...' : 'Saving your changes...';
   }
 }
