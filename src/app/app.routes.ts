@@ -25,6 +25,13 @@ import { ResumeManagementPageComponent } from './features/resume/resume-manageme
 import { JobMatchInputPageComponent } from './features/job-match/job-match-input-page.component';
 import { JobMatchResultsPageComponent } from './features/job-match/job-match-results-page.component';
 import { JobMatchHistoryPageComponent } from './features/job-match/job-match-history-page.component';
+import { InterviewSetupPageComponent } from './features/interviews/interview-setup-page.component';
+import { InterviewSessionPageComponent } from './features/interviews/interview-session-page.component';
+import { MicrophoneTestPageComponent } from './features/interviews/microphone-test-page.component';
+import { InterviewRoomPageComponent } from './features/interviews/interview-room-page.component';
+import { InterviewCompletePageComponent } from './features/interviews/interview-complete-page.component';
+import { InterviewResultsPageComponent } from './features/interviews/interview-results-page.component';
+import { InterviewFeedbackPageComponent } from './features/interviews/interview-feedback-page.component';
 import { CandidateLayoutComponent } from './layouts/candidate-layout/candidate-layout.component';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
@@ -61,6 +68,13 @@ export const routes: Routes = [
       { path: 'job-match', component: JobMatchInputPageComponent, data: { title: 'Analyze a target opportunity', subtitle: 'Paste a job description to understand your fit' } },
       { path: 'job-match/history', component: JobMatchHistoryPageComponent, data: { title: 'Job Match history', subtitle: 'Review every opportunity you have analyzed' } },
       { path: 'job-match/:id', component: JobMatchResultsPageComponent, data: { title: 'Job-match analysis', subtitle: 'Understand your fit and improvement priorities' } },
+      { path: 'interviews/setup', component: InterviewSetupPageComponent, data: { title: 'Configure your interview', subtitle: 'Choose practice or realistic simulation' } },
+      { path: 'interviews/session/:id', component: InterviewSessionPageComponent, data: { title: 'Interview ready', subtitle: 'Review your generated question set' } },
+      { path: 'interviews/:id/microphone-test', component: MicrophoneTestPageComponent, data: { title: 'Microphone test', subtitle: 'Check audio before starting your voice interview' } },
+      { path: 'interviews/:id/room', component: InterviewRoomPageComponent, data: { hideSearch: true } },
+      { path: 'interviews/:id/complete', component: InterviewCompletePageComponent, data: { title: 'Interview completed', subtitle: 'Your answers were saved' } },
+      { path: 'interviews/:id/results', component: InterviewResultsPageComponent, data: { hideSearch: true } },
+      { path: 'interviews/:id/feedback', component: InterviewFeedbackPageComponent, data: { hideSearch: true } },
       { path: 'resume/:id/analysis', component: ResumeAnalysisPageComponent, data: { title: 'Resume analysis', subtitle: 'Specific improvements for your target role' } },
       { path: 'resume/:id/edit', component: ResumeEditPageComponent, data: { title: 'Review extracted information', subtitle: 'Confirm or correct what the AI found in your resume', hideSearch: true } },
       { path: 'profile/edit', component: ProfilePageComponent, canDeactivate: [unsavedChangesGuard] },

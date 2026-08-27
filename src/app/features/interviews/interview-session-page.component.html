@@ -1,0 +1,10 @@
+@if(loading()){
+  <section class="interview-state"><h2>Loading your interview…</h2></section>
+}@else if(!session()){
+  <section class="interview-state"><h2>Interview unavailable</h2><p>This interview could not be loaded.</p><a mat-flat-button color="primary" routerLink="/app/interviews/setup">Create another interview</a></section>
+}@else{
+  <header class="interview-title ready-title"><div><h1>Your interview is ready</h1><p>Your personalized question set was generated successfully</p></div><span class="ready-pill">{{session()!.status}}</span></header>
+  <section class="generation-success"><div class="success-mark">✓</div><h2>Questions generated successfully</h2><p>Alibaba Qwen created {{session()!.questionCount}} private questions for your {{session()!.targetRole}} interview. Questions will appear one at a time after the interview starts.</p></section>
+  <section class="ready-banner"><div><small>Interview summary</small><h2>{{session()!.targetRole}}</h2><p>{{session()!.category}} · {{session()!.difficulty}} · {{session()!.mode}} · {{session()!.responseMode}}</p></div><a mat-stroked-button routerLink="/app/interviews/setup">Configure another</a></section>
+  <section class="next-step-card"><small>Next step</small><h2>{{session()!.responseMode==='Voice' ? 'Test your microphone' : 'Enter the interview room'}}</h2><p>{{session()!.responseMode==='Voice' ? 'We will verify microphone permission, input level, and signal quality before revealing question 1.' : 'Question 1 will be revealed when the timed interview session begins.'}}</p><button mat-flat-button color="primary" type="button" [disabled]="starting()" (click)="continue()">{{starting()?'Starting...':(session()!.responseMode==='Voice' ? 'Continue to microphone test' : 'Start interview')}}</button></section>
+}

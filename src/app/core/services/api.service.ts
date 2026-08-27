@@ -55,6 +55,11 @@ export class ApiService {
     if (path.startsWith('profile')) return 'Saving your profile...';
     if (path === 'job-matches' && method === 'POST') return 'Analyzing your job match with AI...';
     if (path.startsWith('job-matches') && method === 'GET') return 'Loading your job match...';
+    if (path === 'interviews' && method === 'POST') return 'Generating your interview questions with AI...';
+    if (path.startsWith('interviews') && method === 'GET') return 'Loading your interview...';
+    if (/interviews\/[^/]+\/start$/.test(path)) return 'Starting your interview...';
+    if (/interviews\/[^/]+\/answers$/.test(path)) return 'Saving your answer...';
+    if (/interviews\/[^/]+\/questions\/[^/]+\/transcribe$/.test(path)) return 'Transcribing your temporary recording...';
     return method === 'GET' ? 'Loading your information...' : 'Saving your changes...';
   }
 }

@@ -1,6 +1,6 @@
 # QabilHire Development Master Plan
 
-Last updated: 2026-08-21
+Last updated: 2026-08-27
 
 ## 1. Purpose
 
@@ -37,9 +37,7 @@ Build and verify the entire candidate journey with deterministic local logic, mo
 
 ### Stage B: integrate AI and speech services
 
-Replace the relevant deterministic implementations behind stable service interfaces with Qwen and Alibaba speech services. The non-AI implementations remain available as demo and failure fallbacks.
-
-No AI integration should begin until the Stage A exit criteria are satisfied.
+Replace the relevant deterministic implementations behind stable service interfaces with Qwen and Alibaba speech services. Qwen resume extraction, resume analysis, and job matching were introduced early by owner decision on 2026-08-27. These workflows now return explicit provider errors and do not use local AI-result fallbacks. Speech and AI interview work remain later phases.
 
 ## 4. Repositories and Technology
 
@@ -50,6 +48,7 @@ No AI integration should begin until the Stage A exit criteria are satisfied.
 | Database | PostgreSQL | Current implementation uses Npgsql and Supabase-compatible PostgreSQL |
 | API deployment | Railway | Docker-based deployment |
 | UI deployment | Vercel | Angular production build |
+| AI provider | Alibaba Cloud Model Studio | Qwen through the Singapore OpenAI-compatible endpoint |
 
 The UI and API are separate Git repositories. This master plan lives at the shared workspace root.
 
@@ -102,11 +101,12 @@ The UI and API are separate Git repositories. This master plan lives at the shar
 - [ ] Automated authentication integration tests are deferred by the project owner; broader MVP tests remain planned for hardening.
 - [x] Public and candidate layouts are separated; a dedicated auth layout remains pending.
 - [ ] Major feature routes are not lazy-loaded.
-- [ ] Candidate profile and all later workflow features are not implemented.
+- [x] Candidate profile, resume management/analysis, and manual job-match workflows are implemented.
+- [ ] Mock interviews, results, improvement plans, progress, and complete settings/privacy workflows are not implemented.
 
 ## 6. Immediate Security Blocker
 
-A database credential and development JWT value are currently present in tracked API configuration. Before further feature development:
+Database, JWT, SMTP, storage-provider, and AI credentials have appeared in tracked configuration or chat. Before production release or repository sharing:
 
 - [ ] Rotate the exposed database password.
 - [ ] Remove the real connection string from tracked `appsettings.json`.
@@ -115,6 +115,7 @@ A database credential and development JWT value are currently present in tracked
 - [ ] Configure production values through Railway environment variables.
 - [ ] Confirm Vercel contains no provider or backend secrets.
 - [ ] Review Git history and remove exposed credentials before publishing or sharing the repository.
+- [ ] Rotate the exposed SMTP, Supabase service-role, Groq, and Alibaba Model Studio credentials.
 - [ ] Record completion in the decision log.
 
 Feature development must not continue using a credential that has already been committed.
@@ -322,7 +323,7 @@ Exit criteria:
 
 ### Phase 3: candidate onboarding and profile
 
-Status: **In progress — onboarding persistence complete; profile management page pending**
+Status: **Implemented; automated tests pending**
 
 Backend tasks:
 
@@ -348,7 +349,7 @@ Exit criteria:
 
 ### Phase 4: dashboard foundation
 
-Status: **Pending**
+Status: **Partially implemented — candidate dashboard UI exists; real summary API and activity data pending**
 
 - [ ] Create dashboard summary API contract.
 - [ ] Build welcome and profile-completion sections.
@@ -362,7 +363,7 @@ Exit criteria:
 
 ### Phase 5: secure resume upload and extraction
 
-Status: **In progress**
+Status: **Implemented with Alibaba Qwen; persistence and validation hardening pending**
 
 Backend tasks:
 
@@ -393,93 +394,100 @@ Exit criteria:
 - A candidate can securely upload, extract, view, and delete PDF/DOCX resumes.
 - Invalid and malicious-looking files are rejected safely.
 
-### Phase 6: extracted resume editor and deterministic analysis
+### Phase 6: extracted resume editor and AI analysis
 
 Status: **In progress**
 
 - [x] Define structured resume schema for contact, summary, skills, experience, education, projects, certifications, languages, and additional information.
-- [x] Parse extracted text into editable sections using deterministic rules, with optional Groq extraction and local fallback.
+- [x] Parse extracted text into editable sections using Alibaba Qwen structured extraction.
 - [x] Build contact, summary, experience, education, project, and skills editors, plus certification, language, and additional-information editors.
 - [x] Save candidate corrections.
 - [x] Implement deterministic checks for missing sections, length, contact information, action language, and measurable achievements.
 - [ ] Persist a versioned `ResumeAnalysis` result.
 - [x] Persist the current score and analysis JSON on the resume record.
 - [x] Build score, strengths, issues, and recommendation UI.
-- [ ] Clearly label deterministic fallback feedback as automated guidance and distinguish it from AI-generated feedback.
+- [x] Return an explicit provider error when Alibaba extraction or analysis fails; no local AI-result fallback is used.
 - [ ] Validate structured AI output beyond JSON parsing and score range checks.
 - [ ] Add editor and analysis API/UI tests.
 
 Exit criteria:
 
-- Resume review and analysis work end-to-end without an AI provider.
-- The service interface is ready for a later Qwen implementation.
+- Resume review and Alibaba Qwen analysis work end-to-end with explicit provider-failure behavior.
+- Stored model output passes strict schema, range, collection, and content validation before persistence.
 
-### Phase 7: job description and deterministic matching
+### Phase 7: manual job description and AI matching
 
-Status: **Pending**
+Status: **Implemented; validation and integration tests pending**
 
-- [ ] Add `JobDescription` and `JobMatchAnalysis` entities.
-- [ ] Add job-description create/read/delete endpoints.
-- [ ] Implement normalized keyword and skill matching.
-- [ ] Calculate a transparent deterministic score.
-- [ ] Return matched skills, missing skills, and recommendations.
-- [ ] Build job-description input form.
-- [ ] Build match result and skill-gap screens.
-- [ ] Add ownership and integration tests.
-
-Exit criteria:
-
-- A candidate can compare a saved resume with a job description without AI.
-- Match scoring is explainable and repeatable.
-
-### Phase 8: interview setup and question bank
-
-Status: **Pending**
-
-- [ ] Add interview session and question entities.
-- [ ] Create a curated local question bank by role/category and difficulty.
-- [ ] Build interview setup page.
-- [ ] Generate exactly five deterministic questions.
-- [ ] Persist question order and session state.
-- [ ] Add session resume/recovery behavior.
+- [x] Add a candidate-owned persisted `JobMatch` entity containing the submitted job details and analysis result.
+- [x] Add job-match create/read/list/delete endpoints.
+- [x] Accept manually entered target job title, company, and job description.
+- [x] Analyze and score the match with Alibaba Qwen.
+- [x] Return matched skills, strengths, gaps, priorities, likely questions, and a recommended next step.
+- [x] Build job-description input, history, result, and skill-gap screens.
+- [x] Enforce candidate ownership on job-match endpoints.
+- [ ] Add strict structured-output validation and API/UI integration tests.
 
 Exit criteria:
 
-- A candidate can configure and start a persistent five-question interview without AI.
+- A candidate can compare their saved profile/resume with a manually entered job description.
+- The submitted job information and complete match result persist and can be reopened or deleted.
+
+### Phase 8: AI interview setup and question generation
+
+Status: **Implemented; provider and end-to-end tests pending**
+
+- [x] Add interview session and question entities.
+- [x] Build the Figma-aligned interview setup page.
+- [x] Generate exactly five questions with Alibaba Qwen using the candidate profile, active resume, target role, interview category, and difficulty.
+- [x] Require structured question JSON with order, question text, category, competency, difficulty, and evaluation criteria.
+- [x] Validate generated questions for count, ordering, uniqueness, requested category/difficulty, field limits, and required content before persistence.
+- [x] Return an explicit provider error when question generation fails; do not substitute local questions.
+- [x] Persist setup choices, question order, and ready session state.
+- [x] Add candidate-owned session list/detail endpoints for resume/recovery.
+- [ ] Add provider-failure, malformed-output, ownership, and setup-to-session integration tests.
+
+Exit criteria:
+
+- A candidate can configure and start a persistent five-question interview generated by Alibaba Qwen.
+- Invalid or unavailable AI output never creates a partial interview session.
 
 ### Phase 9: microphone test and interview room
 
-Status: **Pending**
+Status: **Implemented for persisted typed-answer completion; Alibaba speech transcription pending**
 
-- [ ] Build microphone permission and device test.
-- [ ] Add recording consent notice.
-- [ ] Handle denied, unavailable, and interrupted microphone states.
-- [ ] Build interview timer and question navigation.
-- [ ] Implement audio recording.
-- [ ] Implement typed-answer fallback for every question.
-- [ ] Prevent accidental session loss.
-- [ ] Store answer state securely.
-- [ ] Add browser SpeechSynthesis for reading questions when available.
+- [x] Build the Figma-aligned microphone permission, input-level, and device test.
+- [x] Add an in-context recording/privacy notice.
+- [x] Handle denied and unavailable microphone states with a text-mode fallback.
+- [x] Build the Figma-aligned practice/realistic rooms, fifteen-minute timer, and one-question-at-a-time navigation.
+- [x] Add browser audio capture controls; durable audio upload and Alibaba transcription remain Phase 15 work.
+- [x] Implement typed-answer fallback for every question.
+- [x] Persist every submitted answer and current question so completed progress survives refresh/reconnection.
+- [x] Add Figma-aligned preparation and network-interruption states.
+- [x] Enforce candidate ownership and active-question-only answer submission.
+- [x] Add browser SpeechSynthesis for repeating questions when available.
 
 Exit criteria:
 
 - A candidate can complete all five questions using audio, typed answers, or a mixture.
 - Typed answers always work when audio features fail.
 
-### Phase 10: deterministic evaluation and results
+### Phase 10: AI evaluation and results
 
-Status: **Pending**
+Status: **Implemented; migration application and live Alibaba verification pending**
 
-- [ ] Add answer and evaluation entities.
-- [ ] Implement transparent non-AI scoring rules for answer completeness, length, structure, and job/resume keyword relevance.
-- [ ] Build overall results page.
-- [ ] Build question-level feedback page.
-- [ ] Show score explanations and improvement suggestions.
-- [ ] Support empty, incomplete, processing, failure, and success states.
+- [x] Add persistent answer, per-question evaluation, and session-result entities.
+- [x] Evaluate completed interviews with Alibaba Qwen using strict evidence-based scoring instructions and validated JSON.
+- [x] Store six category scores, overall scores, strengths, improvements, and improved answers.
+- [x] Build the Figma-aligned overall results page.
+- [x] Build the Figma-aligned expandable question-feedback page.
+- [x] Show AI labels, score explanations, improvement suggestions, and a focused four-item roadmap.
+- [x] Support loading, unavailable, retry, processing, provider-failure, and success states without fabricated fallback scores.
+- [x] Make evaluation idempotent so saved results are reused instead of billed twice.
 
 Exit criteria:
 
-- A completed interview produces stable, explainable mock evaluation results without AI.
+- A completed interview produces a stored, evidence-based Alibaba evaluation and can reopen its results without another model call.
 
 ### Phase 11: improvement plan, progress, settings, and privacy
 
@@ -531,26 +539,26 @@ This work starts only after Stage A is complete.
 ### Phase 13: AI provider foundation
 
 - [ ] Define provider-neutral AI interfaces.
-- [ ] Configure Qwen credentials only on the backend.
-- [ ] Add resilient typed HTTP clients, timeouts, and controlled retries.
+- [x] Configure Qwen only from the backend through Alibaba Model Studio's Singapore endpoint.
+- [x] Add typed HTTP clients, five-minute timeouts, SSE streaming, and cancellation handling.
 - [ ] Add versioned prompt templates.
-- [ ] Require structured JSON responses.
+- [x] Require structured JSON responses.
 - [ ] Validate all model output as untrusted input.
 - [ ] Record model, latency, status, and failure category without sensitive prompt content.
-- [ ] Preserve deterministic fallback implementations.
+- [x] Return explicit API errors on provider failure; local AI-result fallback was removed by owner decision.
 
 ### Phase 14: AI resume and job-match services
 
-- [ ] Implement Qwen resume analysis.
-- [ ] Implement Qwen structured resume extraction fallback.
-- [ ] Implement Qwen job matching.
+- [x] Implement Qwen resume analysis.
+- [x] Implement Qwen structured resume extraction.
+- [x] Implement Qwen job matching for manually entered jobs.
 - [ ] Compare AI outputs against deterministic results.
 - [ ] Add safe fallback and retry UI states.
 
 ### Phase 15: AI interview and speech services
 
-- [ ] Generate interview questions with Qwen.
-- [ ] Integrate Alibaba speech-to-text.
+- [ ] Refine and quality-test the Qwen interview-question generation introduced in Phase 8.
+- [x] Integrate Alibaba `qwen3-asr-flash` for short interview-answer transcription using temporary private Supabase storage and immediate cleanup.
 - [ ] Allow transcript review and correction before evaluation.
 - [ ] Evaluate answers with structured rubrics.
 - [ ] Generate overall interview summary.
@@ -681,6 +689,10 @@ Stop the locally running API before rebuilding when its output DLLs are locked.
 | 2026-08-19 | Assign `Candidate` during public registration. | Public registration must never allow privilege selection. |
 | 2026-08-19 | Use this file as the single development tracker. | Keep scope, status, decisions, and verification in one maintained document. |
 | 2026-08-19 | Use one rotating refresh session per candidate for the MVP. | Keeps revocation simple by using Identity's existing user-token store without a new token table. A new login invalidates the previous refresh session. |
+| 2026-08-27 | Replace direct Groq calls with Alibaba Model Studio and `qwen3.8-max`. | Use the selected Alibaba workspace and strongest available Qwen model for structured resume and job-match tasks. |
+| 2026-08-27 | Keep job entry manual for the MVP. | Live job discovery needs a reliable job API or enabled web search; manual descriptions are simpler and verifiable. |
+| 2026-08-27 | Do not use local AI-result fallbacks. | Provider failures must be visible to the user through explicit API errors. |
+| 2026-08-27 | Use temporary interview-audio storage only. | Audio is needed for transcription but permanent retention adds privacy, consent, deletion, and storage risk. Store transcripts and evaluations; delete audio after successful transcription or expiry. |
 
 ## 20. Active Work Queue
 
@@ -688,18 +700,16 @@ Only one item should normally be marked **In progress**.
 
 | Priority | Work item | Status | Verification |
 |---|---|---|---|
-| P0 | Rotate and remove committed database/JWT secrets | Deferred by owner | Repository scan, local API start, deployed health check |
-| P1 | Complete authentication lifecycle and guards | In progress | Manual auth verification and production builds; integration tests deferred by owner |
-| P2 | Build layouts, design system, and candidate shell | In progress | Responsive and accessibility checks, UI build |
-| P3 | Implement candidate onboarding/profile end-to-end | Pending | API tests, UI flow, ownership test |
-| P4 | Implement dashboard foundation | Pending | UI states and API response verification |
-| P5 | Finish resume upload/extraction hardening | In progress | File-signature validation, failed state, storage deletion, ownership and extraction tests |
-| P6 | Finish extracted editor and analysis hardening | Partially implemented | Versioned analysis, provider labeling, output validation, end-to-end resume tests |
-| P7 | Implement deterministic job matching | Pending | Repeatable scoring and ownership tests |
-| P8 | Implement deterministic interview journey | Pending | Five-question typed/audio flow |
-| P9 | Implement results and improvement plan | Pending | Completed session through seven-day plan |
-| P10 | Harden and verify the complete non-AI MVP | Pending | Full automated critical path |
-| P11 | Integrate Qwen and Alibaba speech services | Blocked by Stage A | AI quality and fallback tests |
+| P0 | Rotate and remove all exposed credentials | Deferred by owner | Repository scan, local API start, provider checks, deployed health check |
+| P1 | Implement AI interview setup, persisted session, and five Qwen-generated questions | Implemented | API/UI production builds, migration, schema validation, ownership checks |
+| P2 | Build microphone test and interview room with typed fallback | Implemented | API/UI builds, migration, five-question persisted typed flow |
+| P3 | Implement AI interview evaluation and Figma result screens | **Next** | Completed session through question-level results |
+| P4 | Implement seven-day improvement plan and progress tracking | Pending | Results-to-plan flow and persisted completion state |
+| P5 | Complete dashboard summary API and real recent activity | Pending | New/returning candidate dashboard states |
+| P6 | Finish resume and AI-output hardening | Partially implemented | File signatures, storage deletion, strict output validation, end-to-end tests |
+| P7 | Complete authentication, shell, settings, and privacy gaps | Partially implemented | Manual verification, responsive/accessibility checks, API tests |
+| P8 | Harden and verify the complete MVP | Pending | Full automated critical path and deployment verification |
+| P9 | Integrate Alibaba speech services | Blocked by interview foundation | Speech failure and typed-fallback tests |
 
 ## 21. Progress Update Template
 
@@ -1195,7 +1205,7 @@ Status: Implemented
 
 Completed:
 
-- Added persisted Job Match entity, API contracts, ownership-filtered CRUD endpoints, Groq analysis service, migration, designer, and model snapshot metadata.
+- Added persisted Job Match entity, API contracts, ownership-filtered CRUD endpoints, the original Groq analysis service, migration, designer, and model snapshot metadata. The provider was replaced with Alibaba Qwen on 2026-08-27.
 - Added Job Match input, results, and history screens based on the supplied Figma screens.
 - Added strong/developing/limited match presentation, score breakdowns, matched skills, strengths, gaps, priorities, likely questions, and recommended next step.
 - Added history search, match-level filter, minimum-score filter, clear filters, and detail navigation.
@@ -1204,6 +1214,131 @@ Completed:
 Next manual work:
 
 - Verify the migration applies cleanly in PostgreSQL.
-- Verify Groq success and failure states.
+- Verify Alibaba Qwen success, timeout, malformed-output, and failure states.
 - Walk through creating, reopening, filtering, and deleting persisted job matches.
 - Continue dashboard, interview, results, and improvement-plan features.
+
+### 2026-08-27 — Alibaba Qwen migration and next-feature alignment
+
+Status: Complete for current resume and job-match AI integration
+
+Implemented:
+
+- Replaced the Groq endpoint and model configuration with Alibaba Model Studio's Singapore OpenAI-compatible endpoint and `qwen3.8-max`.
+- Added a shared streamed chat-completion client using SSE, JSON mode, non-thinking execution, cancellation, and a five-minute client timeout.
+- Updated resume extraction, resume analysis, and job matching to use Alibaba Qwen.
+- Strengthened prompts with strict schemas, evidence rules, scoring rubrics, prompt-injection resistance, keyword-gap rules, and hallucination constraints.
+- Removed local AI-result fallback behavior. Resume extraction and analysis now return explicit provider errors when Alibaba fails.
+- Confirmed that manually entered job details and complete AI match results persist in PostgreSQL through the candidate-owned `JobMatch` entity.
+- Kept automatic live job discovery outside the current MVP; it requires a reliable job API or explicitly enabled search capability.
+
+Verified:
+
+- API build completed successfully with zero warnings and zero errors using an alternate output directory while the development API was running.
+
+Next feature in sequence:
+
+1. Implement Phase 8 interview setup and persistence.
+2. Add `InterviewSession` and `InterviewQuestion` entities and migration.
+3. Add Alibaba Qwen structured question generation based on profile, active resume, target role, category, and difficulty.
+4. Build the interview setup screen and persist exactly five validated, ordered questions.
+5. Persist session status and add resume/recovery behavior before microphone or evaluation work begins.
+
+Security requirement:
+
+- Rotate every credential exposed in tracked configuration or chat and move secrets to ignored local configuration or deployment environment variables before production release or repository sharing.
+
+### 2026-08-27 — AI interview setup and persisted question generation
+
+Status: Implemented; runtime provider and end-to-end tests pending
+
+Implemented:
+
+- Reviewed the supplied Figma interview setup, practice room, realistic room, results, question feedback, microphone, preparing, permission-error, network-interruption, and adaptive-follow-up screens.
+- Added candidate-owned `InterviewSession` and `InterviewQuestion` entities, EF configuration, and the `AddInterviewSessions` migration.
+- Added create/list/detail interview API endpoints with profile, active-resume, and ownership requirements.
+- Added Alibaba Qwen question generation using profile, active resume, target role, interview type, and difficulty.
+- Requires exactly five ordered, unique, structured questions and validates every field before the session is saved.
+- Persists interview type, difficulty, practice/realistic mode, voice/text response mode, ready status, and evaluation criteria.
+- Added the Figma-aligned Angular setup page and persisted interview-ready question view.
+- Replaced the pre-interview question preview with generic generation-success information; setup/list/detail responses expose only the question count, not question text or evaluation criteria.
+- Added explicit provider errors with no local question fallback.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors.
+- Angular production build completed successfully.
+- EF Core generated `AddInterviewSessions` and updated the model snapshot.
+
+Next feature in sequence:
+
+- Implement Phase 9 from the supplied microphone-test, permission-error, practice-room, realistic-room, preparing-question, and network-interruption screens.
+
+### 2026-08-27 — Figma interview room and persisted answer flow
+
+Status: Implemented for typed-answer MVP; Alibaba speech transcription pending
+
+Implemented:
+
+- Added `InterviewAnswer` persistence plus session start/current-question/completion state and the `AddInterviewAnswers` migration.
+- Added candidate-owned start, active-question, and answer-submission endpoints.
+- Future questions remain hidden; the API reveals only the currently active question and advances only after the answer is saved.
+- Added the supplied Figma microphone test and blocked-permission experiences with text fallback.
+- Added Figma-aligned Practice and Realistic interview rooms, countdown timer, question progress, preparation transition, network interruption, retry, and completion state.
+- Added browser microphone capture controls and browser question repetition through SpeechSynthesis.
+- Added persistent typed answers for all five questions; completed answers and current position recover after refresh or network interruption.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors.
+- Angular production build completed successfully.
+- EF Core generated `AddInterviewAnswers` and updated the model snapshot.
+
+Remaining:
+
+- Alibaba short-audio speech-to-text is now integrated using a private temporary Supabase bucket, backend-only upload, ownership checks, strict format/size limits, and immediate deletion after transcription attempts. Audio is not retained permanently for the MVP.
+
+### 2026-08-27 — Temporary interview audio and Alibaba transcription
+
+Status: Implemented; private bucket provisioning and live provider verification required
+
+Implemented:
+
+- Added backend-only temporary audio upload to the private Supabase `interview-audio-temp` bucket.
+- Added active-session, active-question, candidate ownership, MIME-type, and 10 MB validation.
+- Added Alibaba `qwen3-asr-flash` transcription through the Singapore OpenAI-compatible endpoint.
+- Recordings are capped below five minutes, uploaded only after recording stops, transcribed, and deleted in a `finally` cleanup path on success or failure.
+- Only the editable transcript and submitted answer are retained; audio paths are not stored in PostgreSQL.
+- Added recording, stop-and-transcribe, transcription progress, retry/text fallback, and explicit temporary-audio messaging in the interview room.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors.
+- Angular production build completed successfully.
+
+Deployment requirement:
+
+- Create a private Supabase Storage bucket named `interview-audio-temp`, or set `Supabase__TemporaryAudioBucket` to another private bucket name before testing voice transcription.
+- Adaptive follow-up generation from the supplied Figma screen remains future AI interview refinement work.
+
+Next feature in sequence:
+
+- Apply the `AddInterviewEvaluations` migration and verify one completed interview against Alibaba Model Studio.
+- Then implement Phase 11 progress tracking, settings, privacy, and deletion controls; the four-item results roadmap is already available as the starting point.
+
+### 2026-08-27 — AI interview evaluation and results
+
+Status: Implemented; database deployment and live provider verification required
+
+Implemented:
+
+- Added Alibaba Qwen evaluation for all five saved answers with validated 0–100 technical, communication, relevance, problem-solving, confidence-evidence, professionalism, and overall scores.
+- Added persistent `InterviewEvaluation` and `InterviewResult` records plus the `AddInterviewEvaluations` EF Core migration.
+- Added idempotent evaluate and read-only results endpoints with candidate ownership and completion checks.
+- Added explicit provider failure handling with no local or invented evaluation fallback.
+- Added Figma-aligned Interview Results and Question Feedback screens, including expandable original/improved answers and retry/loading states.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors.
+- Angular production build completed successfully.
