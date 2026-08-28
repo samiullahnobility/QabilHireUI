@@ -1,2 +1,4 @@
-@import './auth-layout.css';
-.auth{--auth-image:url('/assets/images/how-it-works.png')}
+@import "./auth-layout.css";
+.auth {
+  --auth-image: url("/assets/images/how-it-works.png");
+}

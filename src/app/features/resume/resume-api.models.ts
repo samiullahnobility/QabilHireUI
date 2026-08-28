@@ -21,7 +21,13 @@ export interface ResumeResponse {
 }
 
 export interface ResumeExtractedData {
-  contact: { name: string; email: string; phone: string; linkedIn: string; website: string };
+  contact: {
+    name: string;
+    email: string;
+    phone: string;
+    linkedIn: string;
+    website: string;
+  };
   summary: string;
   skills: string[];
   experience: string[];

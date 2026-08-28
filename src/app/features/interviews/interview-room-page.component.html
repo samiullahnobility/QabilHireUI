@@ -1,9 +1,137 @@
-@if(loading()){<section class="room-state"><h2>Preparing your interview…</h2></section>}
-@else if(!online()){
-  <main class="interview-room dark"><header><h1>{{question()?.category}} Interview</h1><span class="timer-badge warning">Interview paused</span></header><div class="room-grid"><aside class="interviewer-panel"><h2>Your progress is safe</h2><p>Completed answers are saved</p></aside><section class="network-card"><div class="network-mark"></div><h2>Network connection interrupted</h2><p>We paused the interview. Reconnect to continue from question {{question()?.currentQuestion}}.</p><button mat-flat-button color="primary" type="button" (click)="load()">Retry now</button></section></div></main>
-}@else if(preparing()){
-  <main class="interview-room dark"><header><h1>{{question()?.category}} Interview</h1><span class="question-badge">Question {{question()?.currentQuestion}} of {{question()?.totalQuestions}}</span></header><div class="room-grid"><aside class="interviewer-panel"><div class="ai-circle"></div><h2>AI Interviewer</h2></aside><section class="preparing-card"><div class="small-ai-circle"></div><h2>Preparing your next question…</h2><p>Your previous answer was saved successfully.</p><div class="skeleton-line"></div><div class="skeleton-line short"></div></section></div></main>
-}@else if(question()){
+@if (loading()) {
+  <section class="room-state"><h2>Preparing your interview…</h2></section>
+} @else if (!online()) {
+  <main class="interview-room dark">
+    <header>
+      <h1>{{ question()?.category }} Interview</h1>
+      <span class="timer-badge warning">Interview paused</span>
+    </header>
+    <div class="room-grid">
+      <aside class="interviewer-panel">
+        <h2>Your progress is safe</h2>
+        <p>Completed answers are saved</p>
+      </aside>
+      <section class="network-card">
+        <div class="network-mark"></div>
+        <h2>Network connection interrupted</h2>
+        <p>
+          We paused the interview. Reconnect to continue from question
+          {{ question()?.currentQuestion }}.
+        </p>
+        <button mat-flat-button color="primary" type="button" (click)="load()">
+          Retry now
+        </button>
+      </section>
+    </div>
+  </main>
+} @else if (preparing()) {
+  <main class="interview-room dark">
+    <header>
+      <h1>{{ question()?.category }} Interview</h1>
+      <span class="question-badge"
+        >Question {{ question()?.currentQuestion }} of
+        {{ question()?.totalQuestions }}</span
+      >
+    </header>
+    <div class="room-grid">
+      <aside class="interviewer-panel">
+        <div class="ai-circle"></div>
+        <h2>AI Interviewer</h2>
+      </aside>
+      <section class="preparing-card">
+        <div class="small-ai-circle"></div>
+        <h2>Preparing your next question…</h2>
+        <p>Your previous answer was saved successfully.</p>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+      </section>
+    </div>
+  </main>
+} @else if (question()) {
   @let q = question()!;
-  <main class="interview-room" [class.dark]="q.mode==='Realistic'"><header><h1>{{q.mode}} Interview</h1><div><span class="question-badge">Question {{q.currentQuestion}} of {{q.totalQuestions}}</span><span class="timer-badge">{{timeLabel}}</span></div></header><div class="room-grid"><aside class="interviewer-panel"><div class="ai-circle"></div><h2>AI Interviewer</h2><p>{{recording()?'Listening…':(transcribing()?'Transcribing…':'Ready')}}</p></aside><section class="answer-panel"><article class="question-card"><h2>{{q.question}}</h2></article><article class="transcript-card"><label for="answer">{{q.responseMode==='Voice'?'Transcript / answer':'Your answer'}}</label><textarea id="answer" [(ngModel)]="answer" rows="8" [disabled]="transcribing()" placeholder="Record your response or type an answer."></textarea></article>@if(q.responseMode==='Voice'){<button class="record-bar" type="button" [disabled]="transcribing()" (click)="toggleRecording()"><i></i>{{recording()?'Stop and transcribe':(transcribing()?'Transcribing temporary audio…':'Start recording')}}</button>}<div class="room-actions"><button mat-stroked-button type="button" (click)="repeat()">Repeat question</button><button mat-flat-button color="primary" type="button" [disabled]="!answer.trim()||submitting()||transcribing()||recording()" (click)="submit()">{{submitting()?'Saving answer…':'Submit answer'}}</button></div><small class="mode-note">{{q.responseMode==='Voice'?'Audio is deleted after transcription. ':''}}{{q.mode==='Practice'?'Practice mode · Feedback will be added after each answer':'Realistic mode · Feedback remains hidden until completion'}}</small></section></div></main>
+  <main class="interview-room" [class.dark]="q.mode === 'Realistic'">
+    <header>
+      <h1>{{ q.mode }} Interview</h1>
+      <div>
+        <span class="question-badge"
+          >Question {{ q.currentQuestion }} of {{ q.totalQuestions }}</span
+        ><span class="timer-badge">{{ timeLabel }}</span>
+      </div>
+    </header>
+    <div class="room-grid">
+      <aside class="interviewer-panel">
+        <div class="ai-circle"></div>
+        <h2>AI Interviewer</h2>
+        <p>
+          {{
+            recording()
+              ? "Listening…"
+              : transcribing()
+                ? "Transcribing…"
+                : "Ready"
+          }}
+        </p>
+      </aside>
+      <section class="answer-panel">
+        <article class="question-card">
+          <h2>{{ q.question }}</h2>
+        </article>
+        <article class="transcript-card">
+          <label for="answer">{{
+            q.responseMode === "Voice" ? "Transcript / answer" : "Your answer"
+          }}</label
+          ><textarea
+            id="answer"
+            [(ngModel)]="answer"
+            rows="8"
+            [disabled]="transcribing()"
+            placeholder="Record your response or type an answer."
+          ></textarea>
+        </article>
+        @if (q.responseMode === "Voice") {
+          <button
+            class="record-bar"
+            type="button"
+            [disabled]="transcribing()"
+            (click)="toggleRecording()"
+          >
+            <i></i
+            >{{
+              recording()
+                ? "Stop and transcribe"
+                : transcribing()
+                  ? "Transcribing temporary audio…"
+                  : "Start recording"
+            }}
+          </button>
+        }
+        <div class="room-actions">
+          <button mat-stroked-button type="button" (click)="repeat()">
+            Repeat question</button
+          ><button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="
+              !answer.trim() || submitting() || transcribing() || recording()
+            "
+            (click)="submit()"
+          >
+            {{ submitting() ? "Saving answer…" : "Submit answer" }}
+          </button>
+        </div>
+        <small class="mode-note"
+          >{{
+            q.responseMode === "Voice"
+              ? "Audio is deleted after transcription. "
+              : ""
+          }}{{
+            q.mode === "Practice"
+              ? "Practice mode · Feedback will be added after each answer"
+              : "Realistic mode · Feedback remains hidden until completion"
+          }}</small
+        >
+      </section>
+    </div>
+  </main>
 }

@@ -84,22 +84,22 @@ Do not attempt to generate all Figma screens in one task. Implement and verify o
 
 Use the restored QabilHire teal and emerald visual identity.
 
-| Token | Value |
-|---|---|
-| Primary | `#059669` |
+| Token                | Value     |
+| -------------------- | --------- |
+| Primary              | `#059669` |
 | Primary dark/sidebar | `#064E3B` |
-| Primary hover | `#047857` |
-| Primary soft | `#ECFDF7` |
-| Sidebar text | `#D1FAE5` |
-| Accent | `#F59E0B` |
-| Page background | `#F8FAFC` |
-| Surface | `#FFFFFF` |
-| Main text | `#0F172A` |
-| Secondary text | `#64748B` |
-| Border | `#E2E8F0` |
-| Success | `#16A34A` |
-| Warning | `#D97706` |
-| Danger | `#DC2626` |
+| Primary hover        | `#047857` |
+| Primary soft         | `#ECFDF7` |
+| Sidebar text         | `#D1FAE5` |
+| Accent               | `#F59E0B` |
+| Page background      | `#F8FAFC` |
+| Surface              | `#FFFFFF` |
+| Main text            | `#0F172A` |
+| Secondary text       | `#64748B` |
+| Border               | `#E2E8F0` |
+| Success              | `#16A34A` |
+| Warning              | `#D97706` |
+| Danger               | `#DC2626` |
 
 Define these colours once through CSS custom properties and the Angular Material theme. Do not scatter raw colour values throughout components. Follow the Figma typography where available; otherwise use Plus Jakarta Sans with sensible fallbacks. Preserve accessible contrast and visible keyboard focus states.
 
@@ -457,15 +457,15 @@ Use typed answers and deterministic mock AI responses as a backup demo mode if a
 
 ## 18. Seven-Day Delivery Plan
 
-| Day | Target |
-|---|---|
-| 1 | Inspect template, create Git baseline, configure theme, layouts, routes, authentication shell, and shared states |
-| 2 | Candidate profile, resume upload, local PDF/DOCX extraction, and resume-analysis API |
-| 3 | Resume-analysis UI, extracted-data editor, job-description input, and job-match API/UI |
-| 4 | Interview setup, question generation, microphone test, recording UI, and typed fallback |
-| 5 | Speech-to-text, answer evaluation, transcript display, question-level feedback, and overall scoring |
-| 6 | Improvement plan, dashboard integration, responsive fixes, privacy controls, and demo data |
-| 7 | End-to-end QA, bug fixing, deployment, presentation rehearsal, seed account, and backup recording |
+| Day | Target                                                                                                           |
+| --- | ---------------------------------------------------------------------------------------------------------------- |
+| 1   | Inspect template, create Git baseline, configure theme, layouts, routes, authentication shell, and shared states |
+| 2   | Candidate profile, resume upload, local PDF/DOCX extraction, and resume-analysis API                             |
+| 3   | Resume-analysis UI, extracted-data editor, job-description input, and job-match API/UI                           |
+| 4   | Interview setup, question generation, microphone test, recording UI, and typed fallback                          |
+| 5   | Speech-to-text, answer evaluation, transcript display, question-level feedback, and overall scoring              |
+| 6   | Improvement plan, dashboard integration, responsive fixes, privacy controls, and demo data                       |
+| 7   | End-to-end QA, bug fixing, deployment, presentation rehearsal, seed account, and backup recording                |
 
 ## 19. Git and Change-Control Rules
 

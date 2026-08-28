@@ -4,11 +4,11 @@ Last updated: 2026-08-21
 
 ## Repository layout
 
-| Area | Location | Repository | Purpose |
-|---|---|---|---|
-| Shared project documents | `/` | Not tracked yet | Product context and cross-project planning |
-| Angular frontend | `/QabilHireUI` | `QabilHireUI` | Candidate-facing web application |
-| ASP.NET Core backend | `/QabilHireAPI` | `QabilHireAPI` | API, persistence, authentication, and integrations |
+| Area                     | Location        | Repository      | Purpose                                            |
+| ------------------------ | --------------- | --------------- | -------------------------------------------------- |
+| Shared project documents | `/`             | Not tracked yet | Product context and cross-project planning         |
+| Angular frontend         | `/QabilHireUI`  | `QabilHireUI`   | Candidate-facing web application                   |
+| ASP.NET Core backend     | `/QabilHireAPI` | `QabilHireAPI`  | API, persistence, authentication, and integrations |
 
 Git identity for both application repositories:
 
@@ -84,11 +84,11 @@ validation before integrating Qwen or speech services.
 
 ## Decision log
 
-| Date | Decision | Reason |
-|---|---|---|
-| 2026-08-18 | Maintain separate UI and API repositories. | Allows independent history, deployment, and access control. |
-| 2026-08-18 | Keep shared documents at the parent workspace level. | Gives both projects one common source of product and planning context. |
-| 2026-08-18 | Develop non-AI pages and workflows first. | Delivers a testable product shell before external service integration. |
+| Date       | Decision                                                              | Reason                                                                                |
+| ---------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 2026-08-18 | Maintain separate UI and API repositories.                            | Allows independent history, deployment, and access control.                           |
+| 2026-08-18 | Keep shared documents at the parent workspace level.                  | Gives both projects one common source of product and planning context.                |
+| 2026-08-18 | Develop non-AI pages and workflows first.                             | Delivers a testable product shell before external service integration.                |
 | 2026-08-18 | Preserve only the reusable Angular shell from the Modernize template. | Keeps proven layout infrastructure without carrying demo product code into QabilHire. |
 
 ## Update rules

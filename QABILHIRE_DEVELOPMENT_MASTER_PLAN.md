@@ -41,14 +41,14 @@ Replace the relevant deterministic implementations behind stable service interfa
 
 ## 4. Repositories and Technology
 
-| Area | Location | Technology |
-|---|---|---|
-| Frontend | `/QabilHireUI` | Angular 20, TypeScript 5.8, Angular Material, Signals, RxJS |
-| Backend | `/QabilHireAPI` | ASP.NET Core 10, C#, Identity, JWT, Entity Framework Core |
-| Database | PostgreSQL | Current implementation uses Npgsql and Supabase-compatible PostgreSQL |
-| API deployment | Railway | Docker-based deployment |
-| UI deployment | Vercel | Angular production build |
-| AI provider | Alibaba Cloud Model Studio | Qwen through the Singapore OpenAI-compatible endpoint |
+| Area           | Location                   | Technology                                                            |
+| -------------- | -------------------------- | --------------------------------------------------------------------- |
+| Frontend       | `/QabilHireUI`             | Angular 20, TypeScript 5.8, Angular Material, Signals, RxJS           |
+| Backend        | `/QabilHireAPI`            | ASP.NET Core 10, C#, Identity, JWT, Entity Framework Core             |
+| Database       | PostgreSQL                 | Current implementation uses Npgsql and Supabase-compatible PostgreSQL |
+| API deployment | Railway                    | Docker-based deployment                                               |
+| UI deployment  | Vercel                     | Angular production build                                              |
+| AI provider    | Alibaba Cloud Model Studio | Qwen through the Singapore OpenAI-compatible endpoint                 |
 
 The UI and API are separate Git repositories. This master plan lives at the shared workspace root.
 
@@ -215,20 +215,20 @@ Controllers must remain thin. Business workflows belong in application services.
 
 ## 9. Core Data Model
 
-| Entity | Purpose |
-|---|---|
-| `ApplicationUser` | Identity account and authentication details |
-| `CandidateProfile` | Candidate headline, contact details, location, experience, education summary, and onboarding state |
-| `Resume` | Uploaded file metadata, safe storage reference, extracted text, and processing state |
-| `ResumeAnalysis` | Structured resume feedback and scoring |
-| `JobDescription` | Candidate-owned target job information and description |
-| `JobMatchAnalysis` | Match score, matched skills, missing skills, strengths, and recommendations |
-| `InterviewSession` | Configuration, status, timing, and overall result |
-| `InterviewQuestion` | Ordered interview question and optional competency |
-| `InterviewAnswer` | Typed answer, audio reference, transcript, and submission state |
-| `InterviewEvaluation` | Per-question scores and feedback |
-| `ImprovementPlan` | Candidate improvement plan linked to an interview |
-| `ImprovementPlanItem` | Daily task, completion state, and learning objective |
+| Entity                | Purpose                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| `ApplicationUser`     | Identity account and authentication details                                                        |
+| `CandidateProfile`    | Candidate headline, contact details, location, experience, education summary, and onboarding state |
+| `Resume`              | Uploaded file metadata, safe storage reference, extracted text, and processing state               |
+| `ResumeAnalysis`      | Structured resume feedback and scoring                                                             |
+| `JobDescription`      | Candidate-owned target job information and description                                             |
+| `JobMatchAnalysis`    | Match score, matched skills, missing skills, strengths, and recommendations                        |
+| `InterviewSession`    | Configuration, status, timing, and overall result                                                  |
+| `InterviewQuestion`   | Ordered interview question and optional competency                                                 |
+| `InterviewAnswer`     | Typed answer, audio reference, transcript, and submission state                                    |
+| `InterviewEvaluation` | Per-question scores and feedback                                                                   |
+| `ImprovementPlan`     | Candidate improvement plan linked to an interview                                                  |
+| `ImprovementPlanItem` | Daily task, completion state, and learning objective                                               |
 
 All candidate-owned entities must include a user ownership relationship, creation timestamp, and appropriate update timestamp.
 
@@ -668,48 +668,48 @@ Stop the locally running API before rebuilding when its output DLLs are locked.
 
 ## 18. Risks and Mitigations
 
-| Risk | Mitigation |
-|---|---|
-| External AI or speech provider fails during demo | Maintain deterministic and typed-answer fallbacks |
-| Sensitive resume/audio data leaks | Private storage, ownership checks, deletion controls, and safe logging |
-| Scope becomes too broad | Candidate-only MVP and phase exit criteria |
-| UI is built before API contracts stabilize | Use typed feature data services and stable mock/real interfaces |
-| Model returns invalid or unsafe output | Structured schemas, validation, safety rules, and deterministic fallback |
-| Running API locks build outputs | Stop the local API before build verification |
-| Tracker becomes outdated | Update this document in the same task that changes implementation status |
+| Risk                                             | Mitigation                                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------------ |
+| External AI or speech provider fails during demo | Maintain deterministic and typed-answer fallbacks                        |
+| Sensitive resume/audio data leaks                | Private storage, ownership checks, deletion controls, and safe logging   |
+| Scope becomes too broad                          | Candidate-only MVP and phase exit criteria                               |
+| UI is built before API contracts stabilize       | Use typed feature data services and stable mock/real interfaces          |
+| Model returns invalid or unsafe output           | Structured schemas, validation, safety rules, and deterministic fallback |
+| Running API locks build outputs                  | Stop the local API before build verification                             |
+| Tracker becomes outdated                         | Update this document in the same task that changes implementation status |
 
 ## 19. Decision Log
 
-| Date | Decision | Reason |
-|---|---|---|
-| 2026-08-18 | Maintain separate UI and API repositories. | Independent deployment and history. |
-| 2026-08-18 | Preserve only useful Modernize template infrastructure. | Avoid carrying unrelated demo product code. |
-| 2026-08-18 | Build non-AI workflows before integrations. | Produce a stable, testable candidate journey first. |
-| 2026-08-19 | Use PostgreSQL for the current MVP implementation. | The API is already implemented with EF Core Npgsql and deployed against PostgreSQL. |
-| 2026-08-19 | Assign `Candidate` during public registration. | Public registration must never allow privilege selection. |
-| 2026-08-19 | Use this file as the single development tracker. | Keep scope, status, decisions, and verification in one maintained document. |
-| 2026-08-19 | Use one rotating refresh session per candidate for the MVP. | Keeps revocation simple by using Identity's existing user-token store without a new token table. A new login invalidates the previous refresh session. |
-| 2026-08-27 | Replace direct Groq calls with Alibaba Model Studio and `qwen3.8-max`. | Use the selected Alibaba workspace and strongest available Qwen model for structured resume and job-match tasks. |
-| 2026-08-27 | Keep job entry manual for the MVP. | Live job discovery needs a reliable job API or enabled web search; manual descriptions are simpler and verifiable. |
-| 2026-08-27 | Do not use local AI-result fallbacks. | Provider failures must be visible to the user through explicit API errors. |
-| 2026-08-27 | Use temporary interview-audio storage only. | Audio is needed for transcription but permanent retention adds privacy, consent, deletion, and storage risk. Store transcripts and evaluations; delete audio after successful transcription or expiry. |
+| Date       | Decision                                                               | Reason                                                                                                                                                                                                 |
+| ---------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-08-18 | Maintain separate UI and API repositories.                             | Independent deployment and history.                                                                                                                                                                    |
+| 2026-08-18 | Preserve only useful Modernize template infrastructure.                | Avoid carrying unrelated demo product code.                                                                                                                                                            |
+| 2026-08-18 | Build non-AI workflows before integrations.                            | Produce a stable, testable candidate journey first.                                                                                                                                                    |
+| 2026-08-19 | Use PostgreSQL for the current MVP implementation.                     | The API is already implemented with EF Core Npgsql and deployed against PostgreSQL.                                                                                                                    |
+| 2026-08-19 | Assign `Candidate` during public registration.                         | Public registration must never allow privilege selection.                                                                                                                                              |
+| 2026-08-19 | Use this file as the single development tracker.                       | Keep scope, status, decisions, and verification in one maintained document.                                                                                                                            |
+| 2026-08-19 | Use one rotating refresh session per candidate for the MVP.            | Keeps revocation simple by using Identity's existing user-token store without a new token table. A new login invalidates the previous refresh session.                                                 |
+| 2026-08-27 | Replace direct Groq calls with Alibaba Model Studio and `qwen3.8-max`. | Use the selected Alibaba workspace and strongest available Qwen model for structured resume and job-match tasks.                                                                                       |
+| 2026-08-27 | Keep job entry manual for the MVP.                                     | Live job discovery needs a reliable job API or enabled web search; manual descriptions are simpler and verifiable.                                                                                     |
+| 2026-08-27 | Do not use local AI-result fallbacks.                                  | Provider failures must be visible to the user through explicit API errors.                                                                                                                             |
+| 2026-08-27 | Use temporary interview-audio storage only.                            | Audio is needed for transcription but permanent retention adds privacy, consent, deletion, and storage risk. Store transcripts and evaluations; delete audio after successful transcription or expiry. |
 
 ## 20. Active Work Queue
 
 Only one item should normally be marked **In progress**.
 
-| Priority | Work item | Status | Verification |
-|---|---|---|---|
-| P0 | Rotate and remove all exposed credentials | Deferred by owner | Repository scan, local API start, provider checks, deployed health check |
-| P1 | Implement AI interview setup, persisted session, and five Qwen-generated questions | Implemented | API/UI production builds, migration, schema validation, ownership checks |
-| P2 | Build microphone test and interview room with typed fallback | Implemented | API/UI builds, migration, five-question persisted typed flow |
-| P3 | Implement AI interview evaluation and Figma result screens | **Next** | Completed session through question-level results |
-| P4 | Implement seven-day improvement plan and progress tracking | Pending | Results-to-plan flow and persisted completion state |
-| P5 | Complete dashboard summary API and real recent activity | Pending | New/returning candidate dashboard states |
-| P6 | Finish resume and AI-output hardening | Partially implemented | File signatures, storage deletion, strict output validation, end-to-end tests |
-| P7 | Complete authentication, shell, settings, and privacy gaps | Partially implemented | Manual verification, responsive/accessibility checks, API tests |
-| P8 | Harden and verify the complete MVP | Pending | Full automated critical path and deployment verification |
-| P9 | Integrate Alibaba speech services | Blocked by interview foundation | Speech failure and typed-fallback tests |
+| Priority | Work item                                                                          | Status                          | Verification                                                                  |
+| -------- | ---------------------------------------------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------- |
+| P0       | Rotate and remove all exposed credentials                                          | Deferred by owner               | Repository scan, local API start, provider checks, deployed health check      |
+| P1       | Implement AI interview setup, persisted session, and five Qwen-generated questions | Implemented                     | API/UI production builds, migration, schema validation, ownership checks      |
+| P2       | Build microphone test and interview room with typed fallback                       | Implemented                     | API/UI builds, migration, five-question persisted typed flow                  |
+| P3       | Implement AI interview evaluation and Figma result screens                         | **Next**                        | Completed session through question-level results                              |
+| P4       | Implement seven-day improvement plan and progress tracking                         | Pending                         | Results-to-plan flow and persisted completion state                           |
+| P5       | Complete dashboard summary API and real recent activity                            | Pending                         | New/returning candidate dashboard states                                      |
+| P6       | Finish resume and AI-output hardening                                              | Partially implemented           | File signatures, storage deletion, strict output validation, end-to-end tests |
+| P7       | Complete authentication, shell, settings, and privacy gaps                         | Partially implemented           | Manual verification, responsive/accessibility checks, API tests               |
+| P8       | Harden and verify the complete MVP                                                 | Pending                         | Full automated critical path and deployment verification                      |
+| P9       | Integrate Alibaba speech services                                                  | Blocked by interview foundation | Speech failure and typed-fallback tests                                       |
 
 ## 21. Progress Update Template
 
@@ -1167,6 +1167,7 @@ Implemented:
 Verified:
 
 - Angular production build completed successfully.
+
 ## 2026-08-21 â€” UX feedback, form rules, and upload flow hardening
 
 Status: In progress
@@ -1199,6 +1200,7 @@ Next plan:
 2. Verify desktop/mobile layouts for headers, catalogs, validation spacing, and Material dialogs.
 3. Confirm resume size persistence and profile value round-tripping through the running application.
 4. Continue dashboard, interview, results, and improvement-plan implementation.
+
 ## 2026-08-21 - Job Match implementation update
 
 Status: Implemented

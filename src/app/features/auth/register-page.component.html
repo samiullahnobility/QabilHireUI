@@ -1,54 +1,187 @@
 <main class="auth">
-  <aside class="visual"><div class="visual-content"><h2>Practice smarter.<br>Improve faster.<br>Interview with confidence.</h2><p>AI-guided resume analysis, job matching, adaptive interviews, and personalized improvement.</p></div></aside>
-  <section class="form-side"><div class="panel"><h1>Create your account</h1><p class="intro">Start building confidence for your next interview.</p>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field appearance="outline">
-        <mat-label>Full name</mat-label>
-        <input matInput formControlName="name" placeholder="Enter your full name" required>
-        @if((submitAttempted() || form.controls.name.touched) && form.controls.name.hasError('required')){<mat-error>Full name is required.</mat-error>}
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" placeholder="Enter your email" required>
-        @if((submitAttempted() || form.controls.email.touched) && form.controls.email.hasError('required')){<mat-error>Email is required.</mat-error>}
-        @if((submitAttempted() || form.controls.email.touched) && form.controls.email.hasError('email')){<mat-error>Enter a valid email address.</mat-error>}
-      </mat-form-field>
-      <div class="field-row">
+  <aside class="visual">
+    <div class="visual-content">
+      <h2>
+        Practice smarter.<br />Improve faster.<br />Interview with confidence.
+      </h2>
+      <p>
+        AI-guided resume analysis, job matching, adaptive interviews, and
+        personalized improvement.
+      </p>
+    </div>
+  </aside>
+  <section class="form-side">
+    <div class="panel">
+      <h1>Create your account</h1>
+      <p class="intro">Start building confidence for your next interview.</p>
+      <form [formGroup]="form" (ngSubmit)="submit()">
         <mat-form-field appearance="outline">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" placeholder="Create password" required>
-          @if((submitAttempted() || form.controls.password.touched) && form.controls.password.hasError('required')){<mat-error>Password is required.</mat-error>}
+          <mat-label>Full name</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Enter your full name"
+            required
+          />
+          @if (
+            (submitAttempted() || form.controls.name.touched) &&
+            form.controls.name.hasError("required")
+          ) {
+            <mat-error>Full name is required.</mat-error>
+          }
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Confirm password</mat-label>
-          <input matInput type="password" formControlName="confirmPassword" placeholder="Repeat password" required>
-          @if((submitAttempted() || form.controls.confirmPassword.touched) && form.controls.confirmPassword.hasError('required')){<mat-error>Confirm password is required.</mat-error>}
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            required
+          />
+          @if (
+            (submitAttempted() || form.controls.email.touched) &&
+            form.controls.email.hasError("required")
+          ) {
+            <mat-error>Email is required.</mat-error>
+          }
+          @if (
+            (submitAttempted() || form.controls.email.touched) &&
+            form.controls.email.hasError("email")
+          ) {
+            <mat-error>Enter a valid email address.</mat-error>
+          }
         </mat-form-field>
-      </div>
-      <div class="consent-row">
-        <mat-checkbox formControlName="terms" aria-label="Accept Terms and Privacy Policy"></mat-checkbox>
-        <span class="consent-text">I accept the <button type="button" class="legal-link" (click)="openLegal('terms')">Terms of Use</button> and <button type="button" class="legal-link" (click)="openLegal('privacy')">Privacy Policy</button>.</span>
-      </div>
-      @if((submitAttempted() || form.controls.terms.touched) && form.controls.terms.hasError('requiredTrue')){<p class="field-error">You must accept the Terms and Privacy Policy.</p>}
-      <button class="submit" mat-flat-button type="submit" [disabled]="submitting()">{{ submitting() ? 'Creating account...' : 'Create account' }}</button>
-    </form>
-    <p class="switch">Already have an account? <a routerLink="/auth/login">Sign in</a></p>
-  </div></section>
+        <div class="field-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="password"
+              placeholder="Create password"
+              required
+            />
+            @if (
+              (submitAttempted() || form.controls.password.touched) &&
+              form.controls.password.hasError("required")
+            ) {
+              <mat-error>Password is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm password</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Repeat password"
+              required
+            />
+            @if (
+              (submitAttempted() || form.controls.confirmPassword.touched) &&
+              form.controls.confirmPassword.hasError("required")
+            ) {
+              <mat-error>Confirm password is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="consent-row">
+          <mat-checkbox
+            formControlName="terms"
+            aria-label="Accept Terms and Privacy Policy"
+          ></mat-checkbox>
+          <span class="consent-text"
+            >I accept the
+            <button
+              type="button"
+              class="legal-link"
+              (click)="openLegal('terms')"
+            >
+              Terms of Use
+            </button>
+            and
+            <button
+              type="button"
+              class="legal-link"
+              (click)="openLegal('privacy')"
+            >
+              Privacy Policy</button
+            >.</span
+          >
+        </div>
+        @if (
+          (submitAttempted() || form.controls.terms.touched) &&
+          form.controls.terms.hasError("requiredTrue")
+        ) {
+          <p class="field-error">
+            You must accept the Terms and Privacy Policy.
+          </p>
+        }
+        <button
+          class="submit"
+          mat-flat-button
+          type="submit"
+          [disabled]="submitting()"
+        >
+          {{ submitting() ? "Creating account..." : "Create account" }}
+        </button>
+      </form>
+      <p class="switch">
+        Already have an account? <a routerLink="/auth/login">Sign in</a>
+      </p>
+    </div>
+  </section>
 </main>
-@if(legalDocument(); as document){
+@if (legalDocument(); as document) {
   <div class="legal-backdrop" role="presentation" (click)="closeLegal()">
-    <section class="legal-dialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="document + '-title'" (click)="$event.stopPropagation()">
-      <button type="button" class="legal-close" aria-label="Close" (click)="closeLegal()">×</button>
-      @if(document === 'terms'){
+    <section
+      class="legal-dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="document + '-title'"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        type="button"
+        class="legal-close"
+        aria-label="Close"
+        (click)="closeLegal()"
+      >
+        ×
+      </button>
+      @if (document === "terms") {
         <h2 id="terms-title">Terms of Use</h2>
-        <p>QabilHire provides AI-assisted interview preparation and career coaching. You are responsible for the accuracy of the information you provide and for reviewing AI-generated suggestions before using them.</p>
-        <p>Use the service lawfully and do not submit content that you do not have permission to share. We may update these terms as the service evolves.</p>
+        <p>
+          QabilHire provides AI-assisted interview preparation and career
+          coaching. You are responsible for the accuracy of the information you
+          provide and for reviewing AI-generated suggestions before using them.
+        </p>
+        <p>
+          Use the service lawfully and do not submit content that you do not
+          have permission to share. We may update these terms as the service
+          evolves.
+        </p>
       } @else {
         <h2 id="privacy-title">Privacy Policy</h2>
-        <p>We use your account, profile, and resume information to provide resume analysis, job matching, interview practice, and personalized feedback.</p>
-        <p>Your information is used to operate and improve your QabilHire experience. We do not make hiring decisions on your behalf, and you may request help with your account data through support.</p>
+        <p>
+          We use your account, profile, and resume information to provide resume
+          analysis, job matching, interview practice, and personalized feedback.
+        </p>
+        <p>
+          Your information is used to operate and improve your QabilHire
+          experience. We do not make hiring decisions on your behalf, and you
+          may request help with your account data through support.
+        </p>
       }
-      <button mat-flat-button color="primary" type="button" (click)="closeLegal()">Close</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="closeLegal()"
+      >
+        Close
+      </button>
     </section>
   </div>
 }

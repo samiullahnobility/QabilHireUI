@@ -1,47 +1,130 @@
-<header class="view-title"><h1>Education &amp; experience</h1><p>Build context for personalized interview questions</p></header>
-<div class="progress"><i style="width:40%"></i></div>
+<header class="view-title">
+  <h1>Education &amp; experience</h1>
+  <p>Build context for personalized interview questions</p>
+</header>
+<div class="progress"><i style="width: 40%"></i></div>
 <p class="step-label">Step 2 of 5</p>
-<form class="profile-card education-card" [formGroup]="form" (ngSubmit)="submit()">
-  @if(submitAttempted && form.invalid){<p class="form-alert wide">Please complete all required fields before continuing.</p>}
+<form
+  class="profile-card education-card"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+  @if (submitAttempted && form.invalid) {
+    <p class="form-alert wide">
+      Please complete all required fields before continuing.
+    </p>
+  }
   <h2 class="wide">Education</h2>
   <mat-form-field appearance="outline">
     <mat-label>Degree</mat-label>
-    <input matInput required formControlName="qualification" placeholder="BS Computer Science">
-    @if((submitAttempted || form.controls.qualification.touched) && form.controls.qualification.invalid){<mat-error>Degree is required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="qualification"
+      placeholder="BS Computer Science"
+    />
+    @if (
+      (submitAttempted || form.controls.qualification.touched) &&
+      form.controls.qualification.invalid
+    ) {
+      <mat-error>Degree is required.</mat-error>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Institution</mat-label>
-    <input matInput required formControlName="institution" placeholder="University name">
-    @if((submitAttempted || form.controls.institution.touched) && form.controls.institution.invalid){<mat-error>Institution is required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="institution"
+      placeholder="University name"
+    />
+    @if (
+      (submitAttempted || form.controls.institution.touched) &&
+      form.controls.institution.invalid
+    ) {
+      <mat-error>Institution is required.</mat-error>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Graduation year</mat-label>
-    <input matInput required formControlName="graduationYear" placeholder="2022">
-    @if((submitAttempted || form.controls.graduationYear.touched) && form.controls.graduationYear.invalid){<mat-error>Graduation year is required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="graduationYear"
+      placeholder="2022"
+    />
+    @if (
+      (submitAttempted || form.controls.graduationYear.touched) &&
+      form.controls.graduationYear.invalid
+    ) {
+      <mat-error>Graduation year is required.</mat-error>
+    }
   </mat-form-field>
   <h2 class="wide">Work experience</h2>
   <mat-form-field appearance="outline">
     <mat-label>Company</mat-label>
-    <input matInput required formControlName="company" placeholder="Insignia Software">
-    @if((submitAttempted || form.controls.company.touched) && form.controls.company.invalid){<mat-error>Company is required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="company"
+      placeholder="Insignia Software"
+    />
+    @if (
+      (submitAttempted || form.controls.company.touched) &&
+      form.controls.company.invalid
+    ) {
+      <mat-error>Company is required.</mat-error>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Role</mat-label>
-    <input matInput required formControlName="currentRole" placeholder="Software Engineer">
-    @if((submitAttempted || form.controls.currentRole.touched) && form.controls.currentRole.invalid){<mat-error>Role is required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="currentRole"
+      placeholder="Software Engineer"
+    />
+    @if (
+      (submitAttempted || form.controls.currentRole.touched) &&
+      form.controls.currentRole.invalid
+    ) {
+      <mat-error>Role is required.</mat-error>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Duration</mat-label>
-    <input matInput required formControlName="experienceDuration" placeholder="3 years">
-    @if((submitAttempted || form.controls.experienceDuration.touched) && form.controls.experienceDuration.invalid){<mat-error>Duration is required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="experienceDuration"
+      placeholder="3 years"
+    />
+    @if (
+      (submitAttempted || form.controls.experienceDuration.touched) &&
+      form.controls.experienceDuration.invalid
+    ) {
+      <mat-error>Duration is required.</mat-error>
+    }
   </mat-form-field>
   <mat-form-field appearance="outline" class="wide">
     <mat-label>Key achievements</mat-label>
-    <input matInput required formControlName="achievement" placeholder="Built APIs and data-intensive workflows">
-    @if((submitAttempted || form.controls.achievement.touched) && form.controls.achievement.invalid){<mat-error>Key achievements are required.</mat-error>}
+    <input
+      matInput
+      required
+      formControlName="achievement"
+      placeholder="Built APIs and data-intensive workflows"
+    />
+    @if (
+      (submitAttempted || form.controls.achievement.touched) &&
+      form.controls.achievement.invalid
+    ) {
+      <mat-error>Key achievements are required.</mat-error>
+    }
   </mat-form-field>
   <div class="form-actions wide">
     <button mat-stroked-button type="button" (click)="back()">Back</button>
-    <button mat-flat-button color="primary" type="submit">Save and continue</button>
+    <button mat-flat-button color="primary" type="submit">
+      Save and continue
+    </button>
   </div>
 </form>

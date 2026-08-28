@@ -1,4 +1,49 @@
-<header class="view-title"><h1>Good morning, {{ firstName }}</h1><p>Your next best preparation actions</p></header>
-<section class="readiness"><div><small>Job-readiness score</small><strong>82%</strong></div><p>Focus next on system-design communication and quantified resume achievements.</p><a routerLink="/app/interviews/setup">Start Mock Interview</a></section>
-<section class="metrics" aria-label="Candidate metrics"><article><i class="blue"></i><strong>76%</strong><span>Resume score</span></article><article><i class="mint"></i><strong>84%</strong><span>Current job match</span></article><article><i class="green"></i><strong>12</strong><span>Interviews completed</span></article><article><i class="orange"></i><strong>78%</strong><span>Average interview score</span></article></section>
-<section class="dashboard-grid"><article class="trend"><h2>Performance trend</h2>@for(week of weeks;track week.label){<div class="week"><span>{{week.label}}</span><div><i [style.width.%]="week.score" [class.good]="week.score >= 70"></i></div><strong>{{week.score}}%</strong></div>}</article><article class="recommendation"><h2>Recommended next action</h2><p>Practice a 10-question technical interview focused on APIs, SQL optimization, and architecture.</p><a routerLink="/app/interviews/setup">Start recommended practice</a></article></section>
+<header class="view-title">
+  <h1>Good morning, {{ firstName }}</h1>
+  <p>Your next best preparation actions</p>
+</header>
+<section class="readiness">
+  <div><small>Job-readiness score</small><strong>82%</strong></div>
+  <p>
+    Focus next on system-design communication and quantified resume
+    achievements.
+  </p>
+  <a routerLink="/app/interviews/setup">Start Mock Interview</a>
+</section>
+<section class="metrics" aria-label="Candidate metrics">
+  <article>
+    <i class="blue"></i><strong>76%</strong><span>Resume score</span>
+  </article>
+  <article>
+    <i class="mint"></i><strong>84%</strong><span>Current job match</span>
+  </article>
+  <article>
+    <i class="green"></i><strong>12</strong><span>Interviews completed</span>
+  </article>
+  <article>
+    <i class="orange"></i><strong>78%</strong
+    ><span>Average interview score</span>
+  </article>
+</section>
+<section class="dashboard-grid">
+  <article class="trend">
+    <h2>Performance trend</h2>
+    @for (week of weeks; track week.label) {
+      <div class="week">
+        <span>{{ week.label }}</span>
+        <div>
+          <i [style.width.%]="week.score" [class.good]="week.score >= 70"></i>
+        </div>
+        <strong>{{ week.score }}%</strong>
+      </div>
+    }
+  </article>
+  <article class="recommendation">
+    <h2>Recommended next action</h2>
+    <p>
+      Practice a 10-question technical interview focused on APIs, SQL
+      optimization, and architecture.
+    </p>
+    <a routerLink="/app/interviews/setup">Start recommended practice</a>
+  </article>
+</section>

@@ -1,198 +1,403 @@
-<header class="view-title"><div><a routerLink="/app/profile"><span class="back-arrow" aria-hidden="true">←</span><span>Profile &amp; settings</span></a><h1>{{title}}</h1><p>{{subtitle}}</p></div></header>
-@if(loading()){
-<section class="panel state" aria-live="polite">Loading your profile...</section>
-} @else if(isEditable){
-<form [formGroup]="form" (ngSubmit)="save()">
- <section class="panel">
-  @if(submitAttempted && form.invalid){<p class="form-alert">Please complete all required fields before saving your changes.</p>}
-  @if(section==='personal'){
-   <div class="fields">
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Professional headline</mat-label>
-     <input matInput required formControlName="headline">
-     @if((submitAttempted || form.controls.headline.touched) && form.controls.headline.invalid){<mat-error>Professional headline is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Experience level</mat-label>
-     <mat-select required formControlName="experienceLevel">
-      <mat-option value="">Select experience</mat-option>
-      <mat-option [value]="'Entry-level (0-2 years)'">Entry-level (0-2 years)</mat-option>
-      <mat-option [value]="'Mid-level (3-5 years)'">Mid-level (3-5 years)</mat-option>
-      <mat-option [value]="'Senior (6+ years)'">Senior (6+ years)</mat-option>
-     </mat-select>
-     @if((submitAttempted || form.controls.experienceLevel.touched) && form.controls.experienceLevel.invalid){<mat-error>Experience level is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Current role</mat-label>
-     <input matInput required formControlName="currentRole">
-     @if((submitAttempted || form.controls.currentRole.touched) && form.controls.currentRole.invalid){<mat-error>Current role is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Education summary</mat-label>
-     <input matInput required formControlName="education">
-     @if((submitAttempted || form.controls.education.touched) && form.controls.education.invalid){<mat-error>Education summary is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>LinkedIn profile</mat-label>
-     <input matInput formControlName="linkedInUrl">
-     <mat-hint>Optional</mat-hint>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Portfolio or GitHub</mat-label>
-     <input matInput formControlName="portfolioUrl">
-     <mat-hint>Optional</mat-hint>
-   </mat-form-field>
-   </div>
-   <div class="save-bar"><a routerLink="/app/profile">Cancel</a><button mat-flat-button color="primary" type="submit" [disabled]="saving()">{{saving()?'Saving...':'Save changes'}}</button></div>
-  }
-  @if(section==='career'){
-   <div class="fields">
-    <mat-form-field appearance="outline">
-     <mat-label>Target role</mat-label>
-     <input matInput required formControlName="targetRole">
-     @if((submitAttempted || form.controls.targetRole.touched) && form.controls.targetRole.invalid){<mat-error>Target role is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Industry</mat-label>
-     <input matInput required formControlName="industry">
-     @if((submitAttempted || form.controls.industry.touched) && form.controls.industry.invalid){<mat-error>Industry is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Preferred location</mat-label>
-     <input matInput required formControlName="location">
-     @if((submitAttempted || form.controls.location.touched) && form.controls.location.invalid){<mat-error>Preferred location is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Career goal</mat-label>
-     <textarea matInput required formControlName="careerGoal"></textarea>
-     @if((submitAttempted || form.controls.careerGoal.touched) && form.controls.careerGoal.invalid){<mat-error>Career goal is required.</mat-error>}
-   </mat-form-field>
-   </div>
-   <div class="save-bar"><a routerLink="/app/profile">Cancel</a><button mat-flat-button color="primary" type="submit" [disabled]="saving()">{{saving()?'Saving...':'Save changes'}}</button></div>
-  }
-  @if(section==='skills'){
-   <div class="fields">
-    <h2 class="wide">Education</h2>
-    <mat-form-field appearance="outline">
-     <mat-label>Degree / qualification</mat-label>
-     <input matInput required formControlName="qualification">
-     @if((submitAttempted || form.controls.qualification.touched) && form.controls.qualification.invalid){<mat-error>Qualification is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Institution</mat-label>
-     <input matInput required formControlName="institution">
-     @if((submitAttempted || form.controls.institution.touched) && form.controls.institution.invalid){<mat-error>Institution is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Graduation year</mat-label>
-     <input matInput formControlName="graduationYear">
-     <mat-hint>Optional</mat-hint>
-    </mat-form-field>
-    <h2 class="wide divider">Work experience</h2>
-    <mat-form-field appearance="outline">
-     <mat-label>Company</mat-label>
-     <input matInput required formControlName="company">
-     @if((submitAttempted || form.controls.company.touched) && form.controls.company.invalid){<mat-error>Company is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Role</mat-label>
-     <input matInput required formControlName="currentRole">
-     @if((submitAttempted || form.controls.currentRole.touched) && form.controls.currentRole.invalid){<mat-error>Role is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Duration</mat-label>
-     <input matInput formControlName="experienceDuration">
-     <mat-hint>Optional</mat-hint>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-     <mat-label>Skill level</mat-label>
-     <mat-select formControlName="skillLevel">
-      <mat-option [value]="''">Select level</mat-option>
-      <mat-option [value]="'Learning'">Learning</mat-option>
-      <mat-option [value]="'Working knowledge'">Working knowledge</mat-option>
-      <mat-option [value]="'Proficient'">Proficient</mat-option>
-      <mat-option [value]="'Expert'">Expert</mat-option>
-     </mat-select>
-     <mat-hint>Optional</mat-hint>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Key responsibilities</mat-label>
-     <textarea matInput required formControlName="responsibilities"></textarea>
-     @if((submitAttempted || form.controls.responsibilities.touched) && form.controls.responsibilities.invalid){<mat-error>Key responsibilities are required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Key achievement</mat-label>
-     <textarea matInput required formControlName="achievement"></textarea>
-     @if((submitAttempted || form.controls.achievement.touched) && form.controls.achievement.invalid){<mat-error>Key achievement is required.</mat-error>}
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="wide">
-     <mat-label>Skills</mat-label>
-     <input matInput required formControlName="skills">
-     <mat-hint>Separate with commas</mat-hint>
-     @if((submitAttempted || form.controls.skills.touched) && form.controls.skills.invalid){<mat-error>Skills are required.</mat-error>}
-   </mat-form-field>
-   </div>
-   <div class="save-bar " style="margin-bottom: 10px;"><a routerLink="/app/profile">Cancel</a><button mat-flat-button color="primary" type="submit" [disabled]="saving()">{{saving()?'Saving...':'Save changes'}}</button></div>
-   <section class="skills-catalog" style="grid-column:1/-1">
-    <div class="skills-catalog-head">
-     <div>
-      <h2>Skill catalog</h2>
-      <p>Browse broad skill groups and click any skill to add it to your profile.</p>
-     </div>
-     <div class="catalog-tools">
-      <label class="skill-search">
-       <span class="sr-only">Search skills</span>
-       <input type="search" placeholder="Search skills..." [value]="skillSearch()" (input)="skillSearch.set($any($event.target).value)">
-      </label>
-      <div class="catalog-actions">
-       <button mat-stroked-button color="primary" type="button" (click)="expandAllGroups()">Show all</button>
-       <button mat-stroked-button type="button" (click)="collapseAllGroups()">Hide all</button>
-      </div>
-     </div>
-    </div>
-    <p class="catalog-count">{{skillCount()}} skills found</p>
-    @if(skillCount()===0){
-     <p class="form-alert">No skills match your search. Try a broader keyword.</p>
-    }@else{
-     @for(group of filteredSkillGroups();track group.label){
-      <article class="skill-group">
-       <button class="skill-group-head" type="button" [attr.aria-expanded]="isGroupExpanded(group.label)" (click)="toggleGroup(group.label)">
-        <div>
-         <h3>{{group.label}}</h3>
-         <p>Click to {{isGroupExpanded(group.label)?'collapse':'expand'}} this category.</p>
+<header class="view-title">
+  <div>
+    <a routerLink="/app/profile"
+      ><span class="back-arrow" aria-hidden="true">←</span
+      ><span>Profile &amp; settings</span></a
+    >
+    <h1>{{ title }}</h1>
+    <p>{{ subtitle }}</p>
+  </div>
+</header>
+@if (loading()) {
+  <section class="panel state" aria-live="polite">
+    Loading your profile...
+  </section>
+} @else if (isEditable) {
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <section class="panel">
+      @if (submitAttempted && form.invalid) {
+        <p class="form-alert">
+          Please complete all required fields before saving your changes.
+        </p>
+      }
+      @if (section === "personal") {
+        <div class="fields">
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Professional headline</mat-label>
+            <input matInput required formControlName="headline" />
+            @if (
+              (submitAttempted || form.controls.headline.touched) &&
+              form.controls.headline.invalid
+            ) {
+              <mat-error>Professional headline is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Experience level</mat-label>
+            <mat-select required formControlName="experienceLevel">
+              <mat-option value="">Select experience</mat-option>
+              <mat-option [value]="'Entry-level (0-2 years)'"
+                >Entry-level (0-2 years)</mat-option
+              >
+              <mat-option [value]="'Mid-level (3-5 years)'"
+                >Mid-level (3-5 years)</mat-option
+              >
+              <mat-option [value]="'Senior (6+ years)'"
+                >Senior (6+ years)</mat-option
+              >
+            </mat-select>
+            @if (
+              (submitAttempted || form.controls.experienceLevel.touched) &&
+              form.controls.experienceLevel.invalid
+            ) {
+              <mat-error>Experience level is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Current role</mat-label>
+            <input matInput required formControlName="currentRole" />
+            @if (
+              (submitAttempted || form.controls.currentRole.touched) &&
+              form.controls.currentRole.invalid
+            ) {
+              <mat-error>Current role is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Education summary</mat-label>
+            <input matInput required formControlName="education" />
+            @if (
+              (submitAttempted || form.controls.education.touched) &&
+              form.controls.education.invalid
+            ) {
+              <mat-error>Education summary is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>LinkedIn profile</mat-label>
+            <input matInput formControlName="linkedInUrl" />
+            <mat-hint>Optional</mat-hint>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Portfolio or GitHub</mat-label>
+            <input matInput formControlName="portfolioUrl" />
+            <mat-hint>Optional</mat-hint>
+          </mat-form-field>
         </div>
-        <span>{{group.skills.length}} <i>{{isGroupExpanded(group.label)?'-':'+'}}</i></span>
-       </button>
-       @if(isGroupExpanded(group.label)){
-        <div class="skill-grid">
-         @for(skill of group.skills;track skill){<button type="button" [class.selected]="selectedSkills.has(skill)" (click)="toggleSkill(skill)">{{skill}}</button>}
+        <div class="save-bar">
+          <a routerLink="/app/profile">Cancel</a
+          ><button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="saving()"
+          >
+            {{ saving() ? "Saving..." : "Save changes" }}
+          </button>
         </div>
-       }
-      </article>
-     }
-    }
-   </section>
-  }
-  @if(section==='interview'){
-   <fieldset class="wide">
-    <legend>Preferred interview formats</legend>
-    <p>Select every format you want QabilHire to use for preparation.</p>
-    <div class="choices">
-     @for(option of preferenceOptions;track option){
-      <button type="button" [class.selected]="selected.has(option)" (click)="toggle(option)">
-       <span>{{selected.has(option)?'Selected':'Add'}}</span>{{option}}
-      </button>
-     }
-    </div>
-   </fieldset>
-  }
- </section>
-</form>
+      }
+      @if (section === "career") {
+        <div class="fields">
+          <mat-form-field appearance="outline">
+            <mat-label>Target role</mat-label>
+            <input matInput required formControlName="targetRole" />
+            @if (
+              (submitAttempted || form.controls.targetRole.touched) &&
+              form.controls.targetRole.invalid
+            ) {
+              <mat-error>Target role is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Industry</mat-label>
+            <input matInput required formControlName="industry" />
+            @if (
+              (submitAttempted || form.controls.industry.touched) &&
+              form.controls.industry.invalid
+            ) {
+              <mat-error>Industry is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Preferred location</mat-label>
+            <input matInput required formControlName="location" />
+            @if (
+              (submitAttempted || form.controls.location.touched) &&
+              form.controls.location.invalid
+            ) {
+              <mat-error>Preferred location is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Career goal</mat-label>
+            <textarea matInput required formControlName="careerGoal"></textarea>
+            @if (
+              (submitAttempted || form.controls.careerGoal.touched) &&
+              form.controls.careerGoal.invalid
+            ) {
+              <mat-error>Career goal is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="save-bar">
+          <a routerLink="/app/profile">Cancel</a
+          ><button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="saving()"
+          >
+            {{ saving() ? "Saving..." : "Save changes" }}
+          </button>
+        </div>
+      }
+      @if (section === "skills") {
+        <div class="fields">
+          <h2 class="wide">Education</h2>
+          <mat-form-field appearance="outline">
+            <mat-label>Degree / qualification</mat-label>
+            <input matInput required formControlName="qualification" />
+            @if (
+              (submitAttempted || form.controls.qualification.touched) &&
+              form.controls.qualification.invalid
+            ) {
+              <mat-error>Qualification is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Institution</mat-label>
+            <input matInput required formControlName="institution" />
+            @if (
+              (submitAttempted || form.controls.institution.touched) &&
+              form.controls.institution.invalid
+            ) {
+              <mat-error>Institution is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Graduation year</mat-label>
+            <input matInput formControlName="graduationYear" />
+            <mat-hint>Optional</mat-hint>
+          </mat-form-field>
+          <h2 class="wide divider">Work experience</h2>
+          <mat-form-field appearance="outline">
+            <mat-label>Company</mat-label>
+            <input matInput required formControlName="company" />
+            @if (
+              (submitAttempted || form.controls.company.touched) &&
+              form.controls.company.invalid
+            ) {
+              <mat-error>Company is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Role</mat-label>
+            <input matInput required formControlName="currentRole" />
+            @if (
+              (submitAttempted || form.controls.currentRole.touched) &&
+              form.controls.currentRole.invalid
+            ) {
+              <mat-error>Role is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Duration</mat-label>
+            <input matInput formControlName="experienceDuration" />
+            <mat-hint>Optional</mat-hint>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Skill level</mat-label>
+            <mat-select formControlName="skillLevel">
+              <mat-option [value]="''">Select level</mat-option>
+              <mat-option [value]="'Learning'">Learning</mat-option>
+              <mat-option [value]="'Working knowledge'"
+                >Working knowledge</mat-option
+              >
+              <mat-option [value]="'Proficient'">Proficient</mat-option>
+              <mat-option [value]="'Expert'">Expert</mat-option>
+            </mat-select>
+            <mat-hint>Optional</mat-hint>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Key responsibilities</mat-label>
+            <textarea
+              matInput
+              required
+              formControlName="responsibilities"
+            ></textarea>
+            @if (
+              (submitAttempted || form.controls.responsibilities.touched) &&
+              form.controls.responsibilities.invalid
+            ) {
+              <mat-error>Key responsibilities are required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Key achievement</mat-label>
+            <textarea
+              matInput
+              required
+              formControlName="achievement"
+            ></textarea>
+            @if (
+              (submitAttempted || form.controls.achievement.touched) &&
+              form.controls.achievement.invalid
+            ) {
+              <mat-error>Key achievement is required.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>Skills</mat-label>
+            <input matInput required formControlName="skills" />
+            <mat-hint>Separate with commas</mat-hint>
+            @if (
+              (submitAttempted || form.controls.skills.touched) &&
+              form.controls.skills.invalid
+            ) {
+              <mat-error>Skills are required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="save-bar" style="margin-bottom: 10px">
+          <a routerLink="/app/profile">Cancel</a
+          ><button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="saving()"
+          >
+            {{ saving() ? "Saving..." : "Save changes" }}
+          </button>
+        </div>
+        <section class="skills-catalog" style="grid-column: 1/-1">
+          <div class="skills-catalog-head">
+            <div>
+              <h2>Skill catalog</h2>
+              <p>
+                Browse broad skill groups and click any skill to add it to your
+                profile.
+              </p>
+            </div>
+            <div class="catalog-tools">
+              <label class="skill-search">
+                <span class="sr-only">Search skills</span>
+                <input
+                  type="search"
+                  placeholder="Search skills..."
+                  [value]="skillSearch()"
+                  (input)="skillSearch.set($any($event.target).value)"
+                />
+              </label>
+              <div class="catalog-actions">
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  type="button"
+                  (click)="expandAllGroups()"
+                >
+                  Show all
+                </button>
+                <button
+                  mat-stroked-button
+                  type="button"
+                  (click)="collapseAllGroups()"
+                >
+                  Hide all
+                </button>
+              </div>
+            </div>
+          </div>
+          <p class="catalog-count">{{ skillCount() }} skills found</p>
+          @if (skillCount() === 0) {
+            <p class="form-alert">
+              No skills match your search. Try a broader keyword.
+            </p>
+          } @else {
+            @for (group of filteredSkillGroups(); track group.label) {
+              <article class="skill-group">
+                <button
+                  class="skill-group-head"
+                  type="button"
+                  [attr.aria-expanded]="isGroupExpanded(group.label)"
+                  (click)="toggleGroup(group.label)"
+                >
+                  <div>
+                    <h3>{{ group.label }}</h3>
+                    <p>
+                      Click to
+                      {{
+                        isGroupExpanded(group.label) ? "collapse" : "expand"
+                      }}
+                      this category.
+                    </p>
+                  </div>
+                  <span
+                    >{{ group.skills.length }}
+                    <i>{{ isGroupExpanded(group.label) ? "-" : "+" }}</i></span
+                  >
+                </button>
+                @if (isGroupExpanded(group.label)) {
+                  <div class="skill-grid">
+                    @for (skill of group.skills; track skill) {
+                      <button
+                        type="button"
+                        [class.selected]="selectedSkills.has(skill)"
+                        (click)="toggleSkill(skill)"
+                      >
+                        {{ skill }}
+                      </button>
+                    }
+                  </div>
+                }
+              </article>
+            }
+          }
+        </section>
+      }
+      @if (section === "interview") {
+        <fieldset class="wide">
+          <legend>Preferred interview formats</legend>
+          <p>Select every format you want QabilHire to use for preparation.</p>
+          <div class="choices">
+            @for (option of preferenceOptions; track option) {
+              <button
+                type="button"
+                [class.selected]="selected.has(option)"
+                (click)="toggle(option)"
+              >
+                <span>{{ selected.has(option) ? "Selected" : "Add" }}</span
+                >{{ option }}
+              </button>
+            }
+          </div>
+        </fieldset>
+      }
+    </section>
+  </form>
 } @else {
-<section class="panel unavailable"><span class="status">Planned</span>
- @if(section==='resume'){<h2>Resume management</h2><p>Use this page to manage the saved resume used for analysis and matching.</p><a routerLink="/app/profile/resume">Open resume management</a>}
- @if(section==='security'){<h2>Account security tools are coming next</h2><p>This screen will support authenticated password changes, session history, and signing out other devices.</p>}
- @if(section==='privacy'){<h2>Privacy controls are coming next</h2><p>This screen will support a personal-data export and a protected account-deletion workflow.</p>}
- <a routerLink="/app/profile">Back to profile &amp; settings</a>
-</section>
+  <section class="panel unavailable">
+    <span class="status">Planned</span>
+    @if (section === "resume") {
+      <h2>Resume management</h2>
+      <p>
+        Use this page to manage the saved resume used for analysis and matching.
+      </p>
+      <a routerLink="/app/profile/resume">Open resume management</a>
+    }
+    @if (section === "security") {
+      <h2>Account security tools are coming next</h2>
+      <p>
+        This screen will support authenticated password changes, session
+        history, and signing out other devices.
+      </p>
+    }
+    @if (section === "privacy") {
+      <h2>Privacy controls are coming next</h2>
+      <p>
+        This screen will support a personal-data export and a protected
+        account-deletion workflow.
+      </p>
+    }
+    <a routerLink="/app/profile">Back to profile &amp; settings</a>
+  </section>
 }

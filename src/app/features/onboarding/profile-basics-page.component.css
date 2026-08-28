@@ -1,1 +1,21 @@
-.required{color:#dc2626;font-size:14px}.field-error{color:#dc2626;font-size:12px;font-style:normal;font-weight:600}.profile-card input.ng-invalid.ng-touched,.profile-card select.ng-invalid.ng-touched{border-color:#dc2626;background:#fffafa;box-shadow:0 0 0 3px rgba(220,38,38,.08)}.profile-card input.ng-invalid.ng-touched:focus,.profile-card select.ng-invalid.ng-touched:focus{outline:2px solid rgba(220,38,38,.25);outline-offset:1px}
+.required {
+  color: #dc2626;
+  font-size: 14px;
+}
+.field-error {
+  color: #dc2626;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+}
+.profile-card input.ng-invalid.ng-touched,
+.profile-card select.ng-invalid.ng-touched {
+  border-color: #dc2626;
+  background: #fffafa;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+.profile-card input.ng-invalid.ng-touched:focus,
+.profile-card select.ng-invalid.ng-touched:focus {
+  outline: 2px solid rgba(220, 38, 38, 0.25);
+  outline-offset: 1px;
+}

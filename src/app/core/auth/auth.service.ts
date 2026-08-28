@@ -1,35 +1,54 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { Observable, finalize, tap } from 'rxjs';
-import { ApiService } from '../services/api.service';
-import { AuthResponse, EmailOperationResponse, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest } from './auth.models';
+import { inject, Injectable, signal } from "@angular/core";
+import { Observable, finalize, tap } from "rxjs";
+import { ApiService } from "../services/api.service";
+import {
+  AuthResponse,
+  EmailOperationResponse,
+  ForgotPasswordRequest,
+  LoginRequest,
+  RegisterRequest,
+  ResetPasswordRequest,
+} from "./auth.models";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthService {
   private readonly api = inject(ApiService);
-  private readonly tokenKey = 'qabilhire_access_token';
-  private readonly expiresKey = 'qabilhire_access_token_expires_at';
-  private readonly userKey = 'qabilhire_user';
-  readonly currentUser = signal<AuthResponse['user'] | null>(this.restoreUser());
+  private readonly tokenKey = "qabilhire_access_token";
+  private readonly expiresKey = "qabilhire_access_token_expires_at";
+  private readonly userKey = "qabilhire_user";
+  readonly currentUser = signal<AuthResponse["user"] | null>(
+    this.restoreUser(),
+  );
   readonly isAuthenticated = signal(this.hasValidSession());
 
   register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.api.post<AuthResponse, RegisterRequest>('auth/register', request).pipe(
-      tap(response => this.saveSession(response))
-    );
+    return this.api
+      .post<AuthResponse, RegisterRequest>("auth/register", request)
+      .pipe(tap((response) => this.saveSession(response)));
   }
 
   login(request: LoginRequest): Observable<AuthResponse> {
-    return this.api.post<AuthResponse, LoginRequest>('auth/login', request).pipe(
-      tap(response => this.saveSession(response))
+    return this.api
+      .post<AuthResponse, LoginRequest>("auth/login", request)
+      .pipe(tap((response) => this.saveSession(response)));
+  }
+
+  forgotPassword(
+    request: ForgotPasswordRequest,
+  ): Observable<EmailOperationResponse> {
+    return this.api.post<EmailOperationResponse, ForgotPasswordRequest>(
+      "auth/forgot-password",
+      request,
     );
   }
 
-  forgotPassword(request: ForgotPasswordRequest): Observable<EmailOperationResponse> {
-    return this.api.post<EmailOperationResponse, ForgotPasswordRequest>('auth/forgot-password', request);
-  }
-
-  resetPassword(request: ResetPasswordRequest): Observable<EmailOperationResponse> {
-    return this.api.post<EmailOperationResponse, ResetPasswordRequest>('auth/reset-password', request);
+  resetPassword(
+    request: ResetPasswordRequest,
+  ): Observable<EmailOperationResponse> {
+    return this.api.post<EmailOperationResponse, ResetPasswordRequest>(
+      "auth/reset-password",
+      request,
+    );
   }
 
   getAccessToken(): string | null {
@@ -41,26 +60,26 @@ export class AuthService {
     return sessionStorage.getItem(this.tokenKey);
   }
 
-  loadCurrentUser(): Observable<AuthResponse['user']> {
-    return this.api.get<AuthResponse['user']>('auth/me').pipe(
-      tap(user => {
+  loadCurrentUser(): Observable<AuthResponse["user"]> {
+    return this.api.get<AuthResponse["user"]>("auth/me").pipe(
+      tap((user) => {
         sessionStorage.setItem(this.userKey, JSON.stringify(user));
         this.currentUser.set(user);
         this.isAuthenticated.set(true);
-      })
+      }),
     );
   }
 
   refresh(): Observable<AuthResponse> {
-    return this.api.post<AuthResponse, Record<string, never>>('auth/refresh', {}).pipe(
-      tap(response => this.saveSession(response))
-    );
+    return this.api
+      .post<AuthResponse, Record<string, never>>("auth/refresh", {})
+      .pipe(tap((response) => this.saveSession(response)));
   }
 
   logout(): Observable<void> {
-    return this.api.post<void, Record<string, never>>('auth/logout', {}).pipe(
-      finalize(() => this.clearSession())
-    );
+    return this.api
+      .post<void, Record<string, never>>("auth/logout", {})
+      .pipe(finalize(() => this.clearSession()));
   }
 
   clearLocalSession(): void {
@@ -83,7 +102,7 @@ export class AuthService {
     this.isAuthenticated.set(true);
   }
 
-  private restoreUser(): AuthResponse['user'] | null {
+  private restoreUser(): AuthResponse["user"] | null {
     if (!this.hasValidSession()) {
       this.clearStoredSession();
       return null;
@@ -95,7 +114,7 @@ export class AuthService {
     }
 
     try {
-      return JSON.parse(storedUser) as AuthResponse['user'];
+      return JSON.parse(storedUser) as AuthResponse["user"];
     } catch {
       this.clearStoredSession();
       return null;

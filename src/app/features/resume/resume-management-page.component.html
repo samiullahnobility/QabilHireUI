@@ -1,28 +1,56 @@
 <header class="resume-head">
-  <div><span class="eyebrow">Profile &amp; settings</span><h1>Resume management</h1><p>Manage resumes used for analysis, matching, and interview preparation.</p></div>
+  <div>
+    <span class="eyebrow">Profile &amp; settings</span>
+    <h1>Resume management</h1>
+    <p>
+      Manage resumes used for analysis, matching, and interview preparation.
+    </p>
+  </div>
   <a class="upload-link" routerLink="/app/resume">Upload resume</a>
 </header>
-@if(loading()){
+@if (loading()) {
   <section class="resume-card state">Loading your resumes...</section>
-}
-@else if(resumes().length){
-  @for(resume of resumes(); track resume.id){
+} @else if (resumes().length) {
+  @for (resume of resumes(); track resume.id) {
     <section class="resume-card">
       <div class="resume-row">
-        <div><h2>{{ resume.displayName }}</h2><p>{{ resume.fileName }} - {{ resume.status }} @if(resume.targetRole){ - {{ resume.targetRole }} }</p></div>
-        <span class="badge">{{ resume.score ?? 'N/A' }}</span>
+        <div>
+          <h2>{{ resume.displayName }}</h2>
+          <p>
+            {{ resume.fileName }} - {{ resume.status }}
+            @if (resume.targetRole) {
+              - {{ resume.targetRole }}
+            }
+          </p>
+        </div>
+        <span class="badge">{{ resume.score ?? "N/A" }}</span>
       </div>
       <div class="resume-actions">
-        <a [routerLink]="['/app/resume', resume.id, 'analysis']">Open analysis</a>
-        <a [routerLink]="['/app/resume', resume.id, 'edit']">Edit extracted info</a>
-        @if(!resume.isActive && !resume.isArchived){<button type="button" (click)="setActive(resume.id)">Set active</button>}
-        @if(resume.isActive){<span class="active-badge">Active resume</span>}
-        <button type="button" (click)="toggleArchive(resume.id)">{{ resume.isArchived ? 'Restore' : 'Archive' }}</button>
+        <a [routerLink]="['/app/resume', resume.id, 'analysis']"
+          >Open analysis</a
+        >
+        <a [routerLink]="['/app/resume', resume.id, 'edit']"
+          >Edit extracted info</a
+        >
+        @if (!resume.isActive && !resume.isArchived) {
+          <button type="button" (click)="setActive(resume.id)">
+            Set active
+          </button>
+        }
+        @if (resume.isActive) {
+          <span class="active-badge">Active resume</span>
+        }
+        <button type="button" (click)="toggleArchive(resume.id)">
+          {{ resume.isArchived ? "Restore" : "Archive" }}
+        </button>
         <button type="button" (click)="delete(resume.id)">Delete resume</button>
       </div>
     </section>
   }
-}
-@else{
-  <section class="resume-card empty"><h2>No resume uploaded yet</h2><p>Upload a PDF or DOCX resume to start parsing and analysis.</p><a routerLink="/app/resume">Go to upload screen</a></section>
+} @else {
+  <section class="resume-card empty">
+    <h2>No resume uploaded yet</h2>
+    <p>Upload a PDF or DOCX resume to start parsing and analysis.</p>
+    <a routerLink="/app/resume">Go to upload screen</a>
+  </section>
 }

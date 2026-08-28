@@ -1,1 +1,73 @@
-@if(loading()){<section class="state"><span class="spinner"></span><h2>Loading your results…</h2></section>}@else if(failed()||!result()){<section class="state"><h2>Results are not available</h2><p>We could not load your saved evaluation.</p><button mat-flat-button color="primary" (click)="load()">Try again</button></section>}@else {@let r=result()!;<section class="results-page"><header><h1>Interview Results</h1><p>{{r.category}} interview · completed {{r.completedAtUtc|date:'mediumDate'}}</p></header><div class="score-hero"><div><span>Overall score</span><strong>{{r.scores.overall}}%</strong><em>{{r.scores.overall>=80?'Interview ready':r.scores.overall>=60?'Developing':'Needs practice'}}</em></div><div><b>Strongest: {{r.strongestArea}}</b><b>Priority: {{r.priorityArea}}</b></div><a mat-flat-button routerLink="/app/interviews/setup" [queryParams]="{role:r.targetRole}">Retake Interview</a></div><div class="metric-grid">@for(metric of metrics;track metric[0]){<article><h3>{{metric[1]}} <b>{{r.scores[metric[0]]}}%</b></h3><p>AI category score</p><div><i [style.width.%]="r.scores[metric[0]]"></i></div></article>}</div><section class="summary"><h2>Evaluation summary</h2><p>{{r.summary}}</p><a mat-stroked-button [routerLink]="['/app/interviews',r.sessionId,'feedback']">View question feedback</a></section><section class="roadmap"><h2>Focused improvement roadmap</h2><ol>@for(item of r.roadmap;track item){<li>{{item}}</li>}</ol></section></section>}
+@if (loading()) {
+  <section class="state">
+    <span class="spinner"></span>
+    <h2>Loading your results…</h2>
+  </section>
+} @else if (failed() || !result()) {
+  <section class="state">
+    <h2>Results are not available</h2>
+    <p>We could not load your saved evaluation.</p>
+    <button mat-flat-button color="primary" (click)="load()">Try again</button>
+  </section>
+} @else {
+  @let r = result()!;
+  <section class="results-page">
+    <header>
+      <h1>Interview Results</h1>
+      <p>
+        {{ r.category }} interview · completed
+        {{ r.completedAtUtc | date: "mediumDate" }}
+      </p>
+    </header>
+    <div class="score-hero">
+      <div>
+        <span>Overall score</span><strong>{{ r.scores.overall }}%</strong
+        ><em>{{
+          r.scores.overall >= 80
+            ? "Interview ready"
+            : r.scores.overall >= 60
+              ? "Developing"
+              : "Needs practice"
+        }}</em>
+      </div>
+      <div>
+        <b>Strongest: {{ r.strongestArea }}</b
+        ><b>Priority: {{ r.priorityArea }}</b>
+      </div>
+      <a
+        mat-flat-button
+        routerLink="/app/interviews/setup"
+        [queryParams]="{ role: r.targetRole }"
+        >Retake Interview</a
+      >
+    </div>
+    <div class="metric-grid">
+      @for (metric of metrics; track metric[0]) {
+        <article>
+          <h3>
+            {{ metric[1] }} <b>{{ r.scores[metric[0]] }}%</b>
+          </h3>
+          <p>AI category score</p>
+          <div><i [style.width.%]="r.scores[metric[0]]"></i></div>
+        </article>
+      }
+    </div>
+    <section class="summary">
+      <h2>Evaluation summary</h2>
+      <p>{{ r.summary }}</p>
+      <a
+        mat-stroked-button
+        [routerLink]="['/app/interviews', r.sessionId, 'feedback']"
+        >View question feedback</a
+      >
+    </section>
+    <section class="roadmap">
+      <h2>Focused improvement roadmap</h2>
+      <ol>
+        @for (item of r.roadmap; track item) {
+          <li>{{ item }}</li>
+        }
+      </ol>
+    </section>
+  </section>
+}

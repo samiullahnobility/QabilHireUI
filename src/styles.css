@@ -1,5 +1,5 @@
-@import '@angular/material/prebuilt-themes/azure-blue.css';
-@import 'ngx-toastr/toastr';
+@import "@angular/material/prebuilt-themes/azure-blue.css";
+@import "ngx-toastr/toastr";
 
 :root {
   --mat-sys-primary: #059669;
@@ -23,7 +23,8 @@
   --border: #e2e8f0;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   min-height: 100%;
   background: var(--page-bg);
@@ -41,5 +42,14 @@ a {
   box-sizing: border-box;
 }
 
-.page-heading h1 { margin: 0; font-size: 25px; line-height: 1.15; letter-spacing: -.03em; }
-.page-heading p { margin: 4px 0 0; color: var(--text-secondary); font-size: 13px; }
+.page-heading h1 {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.page-heading p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}

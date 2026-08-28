@@ -1,6 +1,113 @@
-<header class="upload-head"><div><h1>Upload your resume</h1><p>Get specific, actionable AI feedback</p></div></header>
-@if(uploadMessage()){<p class="upload-success" role="status">{{ uploadMessage() }}</p>}
-<section class="drop-card"><h2>Upload your resume</h2><p>PDF or DOCX · Maximum 10 MB</p><input #fileInput class="file-input" type="file" accept=".pdf,.docx" (change)="choose($event)"><button mat-flat-button type="button" (click)="fileInput.click()">Choose file</button></section>
-@if(selectedFile()){<section class="file-card"><div><h3>{{ selectedFile()!.name }}</h3><p>{{ fileSize(selectedFile()!.size) }} · Ready to analyze</p></div><span class="status">Ready</span></section>}
-<footer class="upload-footer"><p>Encrypted and used only for your personal feedback.</p>@if(selectedFile()){<button class="analyze-button" type="button" (click)="upload()" [disabled]="uploading()">{{ uploading() ? (extracting() ? 'Extracting resume...' : 'Uploading...') : 'Analyze resume' }}</button>}</footer>
-<section class="resume-library"><div class="library-head"><div><h2>Your resumes</h2><p>Continue reviewing or open a previous analysis.</p></div><span>{{ resumes().length }} total</span></div>@if(resumes().length){<div class="resume-list">@for(resume of resumes(); track resume.id){<article class="resume-item"><div class="resume-icon">PDF</div><div class="resume-copy"><div class="resume-name"><h3>{{ resume.displayName || resume.fileName }}</h3>@if(resume.isActive){<span>Active</span>}@if(resume.isArchived){<span class="archived">Archived</span>}</div><p>{{ resume.fileName }} · {{ displayedSize(resume) }} · {{ resumeDate(resume.createdAtUtc) }}</p></div><div class="resume-score">@if(resume.score !== null){<strong>{{ resume.score }}</strong><small>Score</small>}@else{<strong>—</strong><small>Not analyzed</small>}</div><div class="resume-links"><a [routerLink]="['/app/resume', resume.id, 'edit']">Review</a>@if(resume.analysisJson){<a class="primary-link" [routerLink]="['/app/resume', resume.id, 'analysis']">View analysis</a>}<button type="button" class="delete-link" (click)="deleteResume(resume.id)">Remove</button></div></article>}</div>}@else{<div class="empty-library"><strong>No resumes yet</strong><p>Your uploaded resumes will appear here.</p></div>}</section>
+<header class="upload-head">
+  <div>
+    <h1>Upload your resume</h1>
+    <p>Get specific, actionable AI feedback</p>
+  </div>
+</header>
+@if (uploadMessage()) {
+  <p class="upload-success" role="status">{{ uploadMessage() }}</p>
+}
+<section class="drop-card">
+  <h2>Upload your resume</h2>
+  <p>PDF or DOCX · Maximum 10 MB</p>
+  <input
+    #fileInput
+    class="file-input"
+    type="file"
+    accept=".pdf,.docx"
+    (change)="choose($event)"
+  /><button mat-flat-button type="button" (click)="fileInput.click()">
+    Choose file
+  </button>
+</section>
+@if (selectedFile()) {
+  <section class="file-card">
+    <div>
+      <h3>{{ selectedFile()!.name }}</h3>
+      <p>{{ fileSize(selectedFile()!.size) }} · Ready to analyze</p>
+    </div>
+    <span class="status">Ready</span>
+  </section>
+}
+<footer class="upload-footer">
+  <p>Encrypted and used only for your personal feedback.</p>
+  @if (selectedFile()) {
+    <button
+      class="analyze-button"
+      type="button"
+      (click)="upload()"
+      [disabled]="uploading()"
+    >
+      {{
+        uploading()
+          ? extracting()
+            ? "Extracting resume..."
+            : "Uploading..."
+          : "Analyze resume"
+      }}
+    </button>
+  }
+</footer>
+<section class="resume-library">
+  <div class="library-head">
+    <div>
+      <h2>Your resumes</h2>
+      <p>Continue reviewing or open a previous analysis.</p>
+    </div>
+    <span>{{ resumes().length }} total</span>
+  </div>
+  @if (resumes().length) {
+    <div class="resume-list">
+      @for (resume of resumes(); track resume.id) {
+        <article class="resume-item">
+          <div class="resume-icon">PDF</div>
+          <div class="resume-copy">
+            <div class="resume-name">
+              <h3>{{ resume.displayName || resume.fileName }}</h3>
+              @if (resume.isActive) {
+                <span>Active</span>
+              }
+              @if (resume.isArchived) {
+                <span class="archived">Archived</span>
+              }
+            </div>
+            <p>
+              {{ resume.fileName }} · {{ displayedSize(resume) }} ·
+              {{ resumeDate(resume.createdAtUtc) }}
+            </p>
+          </div>
+          <div class="resume-score">
+            @if (resume.score !== null) {
+              <strong>{{ resume.score }}</strong
+              ><small>Score</small>
+            } @else {
+              <strong>—</strong><small>Not analyzed</small>
+            }
+          </div>
+          <div class="resume-links">
+            <a [routerLink]="['/app/resume', resume.id, 'edit']">Review</a>
+            @if (resume.analysisJson) {
+              <a
+                class="primary-link"
+                [routerLink]="['/app/resume', resume.id, 'analysis']"
+                >View analysis</a
+              >
+            }
+            <button
+              type="button"
+              class="delete-link"
+              (click)="deleteResume(resume.id)"
+            >
+              Remove
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="empty-library">
+      <strong>No resumes yet</strong>
+      <p>Your uploaded resumes will appear here.</p>
+    </div>
+  }
+</section>

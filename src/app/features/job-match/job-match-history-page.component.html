@@ -1,13 +1,103 @@
-<header class="view-title"><div><a routerLink="/app/job-match">← Analyze another opportunity</a><h1>Job Match history</h1><p>Review every opportunity you have analyzed.</p></div><a mat-flat-button color="primary" routerLink="/app/job-match">New job match</a></header>
+<header class="view-title">
+  <div>
+    <a routerLink="/app/job-match">← Analyze another opportunity</a>
+    <h1>Job Match history</h1>
+    <p>Review every opportunity you have analyzed.</p>
+  </div>
+  <a mat-flat-button color="primary" routerLink="/app/job-match"
+    >New job match</a
+  >
+</header>
 <section class="history-card">
   <div class="history-filters">
-    <mat-form-field appearance="outline"><mat-label>Search jobs</mat-label><input matInput type="search" placeholder="Title or company" [value]="search()" (input)="search.set($any($event.target).value)"></mat-form-field>
-    <mat-form-field appearance="outline"><mat-label>Match level</mat-label><mat-select [value]="level()" (selectionChange)="level.set($event.value)"><mat-option value="all">All levels</mat-option><mat-option value="Strong Match">Strong Match</mat-option><mat-option value="Developing Match">Developing Match</mat-option><mat-option value="Limited Match">Limited Match</mat-option></mat-select></mat-form-field>
-    <mat-form-field appearance="outline"><mat-label>Minimum score</mat-label><mat-select [value]="minimumScore()" (selectionChange)="minimumScore.set($event.value)"><mat-option value="all">Any score</mat-option><mat-option value="75">75% and above</mat-option><mat-option value="50">50% and above</mat-option></mat-select></mat-form-field>
-    <button mat-stroked-button type="button" (click)="clearFilters()">Clear filters</button>
+    <mat-form-field appearance="outline"
+      ><mat-label>Search jobs</mat-label
+      ><input
+        matInput
+        type="search"
+        placeholder="Title or company"
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>Match level</mat-label
+      ><mat-select [value]="level()" (selectionChange)="level.set($event.value)"
+        ><mat-option value="all">All levels</mat-option
+        ><mat-option value="Strong Match">Strong Match</mat-option
+        ><mat-option value="Developing Match">Developing Match</mat-option
+        ><mat-option value="Limited Match"
+          >Limited Match</mat-option
+        ></mat-select
+      ></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Minimum score</mat-label
+      ><mat-select
+        [value]="minimumScore()"
+        (selectionChange)="minimumScore.set($event.value)"
+        ><mat-option value="all">Any score</mat-option
+        ><mat-option value="75">75% and above</mat-option
+        ><mat-option value="50">50% and above</mat-option></mat-select
+      ></mat-form-field
+    >
+    <button mat-stroked-button type="button" (click)="clearFilters()">
+      Clear filters
+    </button>
   </div>
-  @if(loading()){<p class="history-state">Loading your job matches...</p>}
-  @else if(filteredMatches().length){
-    <div class="table-wrap"><table><thead><tr><th>Target role</th><th>Company</th><th>Match</th><th>Level</th><th>Analyzed</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>@for(item of filteredMatches(); track item.id){<tr><td><strong>{{item.targetJobTitle}}</strong></td><td>{{item.company || '—'}}</td><td><strong>{{item.overallScore}}%</strong></td><td><span class="level-badge" [class.developing]="item.matchLevel==='Developing Match'" [class.limited]="item.matchLevel==='Limited Match'">{{item.matchLevel}}</span></td><td>{{formatDate(item.createdAtUtc)}}</td><td><a mat-stroked-button color="primary" [routerLink]="['/app/job-match', item.id]">View details</a></td></tr>}</tbody></table></div>
-  } @else {<div class="history-state"><h2>No job matches found</h2><p>Analyze a job description to see your match history here.</p><a mat-flat-button color="primary" routerLink="/app/job-match">Analyze a job</a></div>}
+  @if (loading()) {
+    <p class="history-state">Loading your job matches...</p>
+  } @else if (filteredMatches().length) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Target role</th>
+            <th>Company</th>
+            <th>Match</th>
+            <th>Level</th>
+            <th>Analyzed</th>
+            <th><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredMatches(); track item.id) {
+            <tr>
+              <td>
+                <strong>{{ item.targetJobTitle }}</strong>
+              </td>
+              <td>{{ item.company || "—" }}</td>
+              <td>
+                <strong>{{ item.overallScore }}%</strong>
+              </td>
+              <td>
+                <span
+                  class="level-badge"
+                  [class.developing]="item.matchLevel === 'Developing Match'"
+                  [class.limited]="item.matchLevel === 'Limited Match'"
+                  >{{ item.matchLevel }}</span
+                >
+              </td>
+              <td>{{ formatDate(item.createdAtUtc) }}</td>
+              <td>
+                <a
+                  mat-stroked-button
+                  color="primary"
+                  [routerLink]="['/app/job-match', item.id]"
+                  >View details</a
+                >
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="history-state">
+      <h2>No job matches found</h2>
+      <p>Analyze a job description to see your match history here.</p>
+      <a mat-flat-button color="primary" routerLink="/app/job-match"
+        >Analyze a job</a
+      >
+    </div>
+  }
 </section>

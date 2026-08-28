@@ -1,10 +1,69 @@
-@import './auth-layout.css';
-.auth{--auth-image:url('/assets/images/interview-coaching.png')}
-.consent-row{display:flex;align-items:center;gap:4px;margin-top:4px}
-.consent-text{color:var(--text-secondary);font-size:13px;line-height:1.45}
-.legal-link{padding:0;border:0;background:none;color:var(--primary);font:inherit;font-weight:700;cursor:pointer}
-.legal-link:hover{text-decoration:underline}
-.legal-backdrop{position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:24px;background:rgba(15,23,42,.48)}
-.legal-dialog{position:relative;width:min(560px,100%);padding:32px;border:1px solid var(--border);border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.24)}
-.legal-dialog h2{margin:0 0 16px;font-size:24px}.legal-dialog p{margin:0 0 14px;color:var(--text-secondary);font-size:14px;line-height:1.6}.legal-dialog .mat-mdc-button-base{margin-top:8px}
-.legal-close{position:absolute;top:12px;right:14px;border:0;background:none;color:var(--text-secondary);font-size:28px;line-height:1;cursor:pointer}
+@import "./auth-layout.css";
+.auth {
+  --auth-image: url("/assets/images/interview-coaching.png");
+}
+.consent-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.consent-text {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.legal-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.legal-link:hover {
+  text-decoration: underline;
+}
+.legal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.48);
+}
+.legal-dialog {
+  position: relative;
+  width: min(560px, 100%);
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
+}
+.legal-dialog h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+}
+.legal-dialog p {
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.legal-dialog .mat-mdc-button-base {
+  margin-top: 8px;
+}
+.legal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}

@@ -1,1 +1,50 @@
-<section class="feedback-page"><header><div><h1>Question Feedback</h1><p>Question-level strengths, gaps, and improved answers</p></div><a mat-stroked-button [routerLink]="['/app/interviews',id,'results']">Back to results</a></header>@if(failed()){<div class="state"><h2>Feedback is unavailable</h2><p>Please return to results and try again.</p></div>}@else if(!result()){<div class="state"><p>Loading feedback…</p></div>}@else {@for(item of result()!.questions;track item.questionId){<article><div class="title"><h2>{{item.order}} · {{item.question}}</h2><b>{{item.score}}%</b></div><div class="columns"><div><label>Done well</label><p>{{item.doneWell}}</p></div><div><label class="improve">Improve</label><p>{{item.improvement}}</p></div></div><button class="expand" (click)="toggle(item.questionId)">Improved answer available · {{expanded()===item.questionId?'Collapse':'Expand'}}</button>@if(expanded()===item.questionId){<div class="answer"><h3>Your answer</h3><p>{{item.answer}}</p><h3>Improved answer</h3><p>{{item.improvedAnswer}}</p></div>}</article>}}</section>
+<section class="feedback-page">
+  <header>
+    <div>
+      <h1>Question Feedback</h1>
+      <p>Question-level strengths, gaps, and improved answers</p>
+    </div>
+    <a mat-stroked-button [routerLink]="['/app/interviews', id, 'results']"
+      >Back to results</a
+    >
+  </header>
+  @if (failed()) {
+    <div class="state">
+      <h2>Feedback is unavailable</h2>
+      <p>Please return to results and try again.</p>
+    </div>
+  } @else if (!result()) {
+    <div class="state"><p>Loading feedback…</p></div>
+  } @else {
+    @for (item of result()!.questions; track item.questionId) {
+      <article>
+        <div class="title">
+          <h2>{{ item.order }} · {{ item.question }}</h2>
+          <b>{{ item.score }}%</b>
+        </div>
+        <div class="columns">
+          <div>
+            <label>Done well</label>
+            <p>{{ item.doneWell }}</p>
+          </div>
+          <div>
+            <label class="improve">Improve</label>
+            <p>{{ item.improvement }}</p>
+          </div>
+        </div>
+        <button class="expand" (click)="toggle(item.questionId)">
+          Improved answer available ·
+          {{ expanded() === item.questionId ? "Collapse" : "Expand" }}
+        </button>
+        @if (expanded() === item.questionId) {
+          <div class="answer">
+            <h3>Your answer</h3>
+            <p>{{ item.answer }}</p>
+            <h3>Improved answer</h3>
+            <p>{{ item.improvedAnswer }}</p>
+          </div>
+        }
+      </article>
+    }
+  }
+</section>
