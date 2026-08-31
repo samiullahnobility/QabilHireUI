@@ -1,0 +1,116 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>Your Job Postings</h2>
+      <p>Create roles, control visibility, and manage applicants.</p>
+    </div>
+    <a mat-flat-button color="primary" routerLink="/app/recruiter/jobs/new">
+      <mat-icon>add</mat-icon> New Job Posting
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p class="state-note">Loading your job postings…</p>
+  } @else if (postings().length === 0) {
+    <section class="card">
+      <p class="empty-state">
+        <strong>No job postings yet</strong>
+        Create your first posting and it will be visible to candidates immediately.
+      </p>
+    </section>
+  } @else {
+    <section class="card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Work type</th>
+            <th>Status</th>
+            <th>Applicants</th>
+            <th>Posted</th>
+            <th class="cell-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (posting of postings(); track posting.id) {
+            <tr>
+              <td>
+                <strong>{{ posting.title }}</strong>
+              </td>
+              <td>{{ posting.company }}</td>
+              <td>{{ posting.workType }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class]="posting.isActive ? 'badge-active' : 'badge-closed'"
+                  >{{ posting.isActive ? "Active" : "Closed" }}</span
+                >
+              </td>
+              <td>
+                <a
+                  [routerLink]="['/app/recruiter/applicants']"
+                  [queryParams]="{ jobId: posting.id }"
+                  >{{ posting.applicationCount }}</a
+                >
+              </td>
+              <td>{{ formatDate(posting.postedAtUtc) }}</td>
+              <td class="cell-actions">
+                <a
+                  mat-button
+                  [routerLink]="['/app/recruiter/jobs', posting.id, 'edit']"
+                  >Edit</a
+                >
+                @if (confirmingCloseId() === posting.id) {
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    [disabled]="togglingId() === posting.id"
+                    (click)="applyActive(posting, false)"
+                  >
+                    Confirm close
+                  </button>
+                  <button mat-button type="button" (click)="cancelClose()">
+                    Cancel
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="togglingId() === posting.id"
+                    (click)="toggleActive(posting)"
+                  >
+                    {{ posting.isActive ? "Close" : "Publish" }}
+                  </button>
+                }
+                @if (deletingId() === posting.id) {
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="delete(posting.id)"
+                  >
+                    Confirm delete
+                  </button>
+                  <button mat-button type="button" (click)="cancelDelete()">
+                    Cancel
+                  </button>
+                } @else {
+                  <button
+                    mat-button
+                    color="warn"
+                    type="button"
+                    (click)="requestDelete(posting.id)"
+                  >
+                    Delete
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  }
+</div>

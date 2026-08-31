@@ -15,6 +15,15 @@ export class ApiService {
     );
   }
 
+  getBlob(path: string): Observable<Blob> {
+    return this.track(path, "GET", () =>
+      this.http.get(`${API_BASE_URL}/${path}`, {
+        withCredentials: true,
+        responseType: "blob",
+      }),
+    );
+  }
+
   post<TResponse, TRequest>(
     path: string,
     body: TRequest,
@@ -131,6 +140,32 @@ export class ApiService {
       return "Saving your answer...";
     if (/interviews\/[^/]+\/questions\/[^/]+\/transcribe$/.test(path))
       return "Transcribing your temporary recording...";
+    if (path.startsWith("recruiter/dashboard"))
+      return "Loading your recruiter dashboard...";
+    if (path === "recruiter/jobs" && method === "POST")
+      return "Publishing your job posting...";
+    if (/recruiter\/jobs\/[^/]+\/applications$/.test(path))
+      return "Loading applicants...";
+    if (path.startsWith("recruiter/jobs") && method === "DELETE")
+      return "Deleting your job posting...";
+    if (path.startsWith("recruiter/jobs") && method === "PUT")
+      return "Updating your job posting...";
+    if (path.startsWith("recruiter/jobs") && method === "GET")
+      return "Loading your job postings...";
+    if (/recruiter\/applications\/[^/]+\/resume$/.test(path))
+      return "Downloading the candidate's resume...";
+    if (/recruiter\/applications\/[^/]+\/status$/.test(path))
+      return "Updating the application stage...";
+    if (path.startsWith("recruiter/applications") && method === "GET")
+      return "Loading applicants...";
+    if (path === "recruiter/interviews" && method === "POST")
+      return "Scheduling the interview...";
+    if (path.startsWith("recruiter/interviews"))
+      return "Updating the interview...";
+    if (path.startsWith("recruiter/profile") && method === "GET")
+      return "Loading your profile...";
+    if (path.startsWith("recruiter/profile"))
+      return "Saving your profile...";
     return method === "GET"
       ? "Loading your information..."
       : "Saving your changes...";

@@ -1,26 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { ApiService } from "../../core/services/api.service";
-import {
-  Applicant,
-  JobApplication,
-  JobPosting,
-  RecruiterJobPosting,
-  SavedJob,
-} from "./jobs.models";
-
-export interface CreateJobPostingRequest {
-  title: string;
-  company: string;
-  location: string | null;
-  workType: "Remote" | "Hybrid" | "Onsite";
-  salaryRange: string | null;
-  description: string;
-  requiredSkills: string[];
-}
-
-export interface UpdateJobPostingRequest extends CreateJobPostingRequest {
-  isActive: boolean;
-}
+import { JobApplication, JobPosting, SavedJob } from "./jobs.models";
 
 @Injectable({ providedIn: "root" })
 export class JobsApiService {
@@ -60,31 +40,5 @@ export class JobsApiService {
 
   savedJobs() {
     return this.api.get<SavedJob[]>("saved-jobs");
-  }
-
-  recruiterJobs() {
-    return this.api.get<RecruiterJobPosting[]>("recruiter/jobs");
-  }
-
-  recruiterCreate(request: CreateJobPostingRequest) {
-    return this.api.post<RecruiterJobPosting, CreateJobPostingRequest>(
-      "recruiter/jobs",
-      request,
-    );
-  }
-
-  recruiterUpdate(id: string, request: UpdateJobPostingRequest) {
-    return this.api.put<RecruiterJobPosting, UpdateJobPostingRequest>(
-      `recruiter/jobs/${id}`,
-      request,
-    );
-  }
-
-  recruiterDelete(id: string) {
-    return this.api.delete<void>(`recruiter/jobs/${id}`);
-  }
-
-  applicants(id: string) {
-    return this.api.get<Applicant[]>(`recruiter/jobs/${id}/applications`);
   }
 }

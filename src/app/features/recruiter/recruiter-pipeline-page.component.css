@@ -1,0 +1,98 @@
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(230px, 1fr));
+  gap: 14px;
+  align-items: start;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.kanban-column {
+  min-width: 230px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+}
+
+.kanban-column-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.kanban-column-head h3 {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.kanban-cards {
+  display: grid;
+  gap: 10px;
+  min-height: 60px;
+}
+
+.kanban-empty {
+  margin: 0;
+  padding: 14px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.kanban-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+}
+
+.kanban-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kanban-card header a {
+  display: inline-flex;
+  color: var(--text-secondary);
+}
+
+.kanban-card header a:hover {
+  color: var(--primary);
+}
+
+.kanban-job {
+  margin: 4px 0 0;
+  color: var(--primary-dark);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.kanban-date {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.kanban-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
+}
+
+@media (max-width: 900px) {
+  .kanban-board {
+    grid-template-columns: repeat(5, minmax(230px, 1fr));
+  }
+}

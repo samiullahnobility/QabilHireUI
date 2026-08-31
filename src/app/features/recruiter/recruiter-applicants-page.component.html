@@ -1,0 +1,116 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>Applicants</h2>
+      <p>Search and filter candidates across all of your job postings.</p>
+    </div>
+  </div>
+
+  <div class="filters-row">
+    <mat-form-field appearance="outline" class="grow">
+      <mat-label>Search candidates</mat-label>
+      <input
+        matInput
+        [(ngModel)]="search"
+        placeholder="Name or email"
+        (keyup.enter)="load()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Job posting</mat-label>
+      <mat-select [(ngModel)]="jobId">
+        <mat-option value="">All postings</mat-option>
+        @for (job of jobs(); track job.id) {
+          <mat-option [value]="job.id">{{ job.title }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Stage</mat-label>
+      <mat-select [(ngModel)]="status">
+        <mat-option value="">All stages</mat-option>
+        @for (stage of stages; track stage) {
+          <mat-option [value]="stage">{{ stage }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <button mat-flat-button color="primary" type="button" (click)="load()">
+      <mat-icon>search</mat-icon> Search
+    </button>
+  </div>
+
+  <section class="card">
+    @if (loading()) {
+      <p class="state-note">Loading applicants…</p>
+    } @else {
+      @if (result(); as data) {
+      @if (data.items.length === 0) {
+        <p class="empty-state">
+          <strong>No applicants found</strong>
+          Try adjusting your search or filters.
+        </p>
+      } @else {
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Role</th>
+              <th>Stage</th>
+              <th>Applied</th>
+              <th class="cell-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (applicant of data.items; track applicant.applicationId) {
+              <tr>
+                <td>
+                  <strong>{{ applicant.fullName }}</strong><br />
+                  <span class="muted">{{ applicant.email }}</span>
+                </td>
+                <td>{{ applicant.jobTitle }}</td>
+                <td>
+                  <span class="badge" [class]="stageClass(applicant.status)">{{
+                    applicant.status
+                  }}</span>
+                </td>
+                <td>{{ formatDate(applicant.appliedAtUtc) }}</td>
+                <td class="cell-actions">
+                  <a
+                    mat-button
+                    [routerLink]="['/app/recruiter/applicants', applicant.applicationId]"
+                    >View Details</a
+                  >
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <div class="pagination-row">
+          <span>
+            Page {{ data.page }} of {{ data.totalPages }} ·
+            {{ data.totalCount }} applicant{{ data.totalCount === 1 ? "" : "s" }}
+          </span>
+          <span>
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="data.page <= 1"
+              (click)="changePage(data.page - 1)"
+            >
+              Previous
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="data.page >= data.totalPages"
+              (click)="changePage(data.page + 1)"
+            >
+              Next
+            </button>
+          </span>
+        </div>
+        }
+      }
+    }
+  </section>
+</div>

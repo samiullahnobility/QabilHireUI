@@ -3,9 +3,14 @@
     <a class="brand" [routerLink]="homeLink()" (click)="closeMenu()"
       ><span>Q</span><strong>QabilHire</strong></a
     >
-    <p class="section-label">AI CAREER PREPARATION</p>
-    <nav aria-label="Candidate navigation">
-      @for (item of visibleNavItems(); track item.link) {
+    <nav aria-label="Main navigation">
+      @for (item of visibleNavItems(); track item.link; let i = $index) {
+        @if (
+          item.section &&
+          (i === 0 || visibleNavItems()[i - 1].section !== item.section)
+        ) {
+          <p class="section-label">{{ item.section }}</p>
+        }
         <a
           [routerLink]="item.link"
           routerLinkActive="active"
@@ -112,6 +117,14 @@
                   routerLink="/app/profile/security"
                   (click)="closeAccountMenu()"
                   >Settings</a
+                >
+              }
+              @if (isRecruiter()) {
+                <a
+                  role="menuitem"
+                  routerLink="/app/recruiter/settings"
+                  (click)="closeAccountMenu()"
+                  >Recruiter Settings</a
                 >
               }
               <button role="menuitem" type="button" (click)="logout()">

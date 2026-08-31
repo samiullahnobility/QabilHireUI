@@ -1,0 +1,157 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>Profile &amp; Settings</h2>
+      <p>Manage your recruiter profile, notifications, and account security.</p>
+    </div>
+  </div>
+
+  <div class="section-stack">
+    <section class="card">
+      <div class="card-head">
+        <h3>Profile</h3>
+      </div>
+      @if (loading()) {
+        <p class="state-note">Loading your profile…</p>
+      } @else {
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Full name</mat-label>
+              <input matInput formControlName="fullName" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Organization</mat-label>
+              <input matInput formControlName="organization" placeholder="e.g. Acme Corp" />
+            </mat-form-field>
+          </div>
+          <div class="form-actions">
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="savingProfile()"
+            >
+              Save changes
+            </button>
+          </div>
+        </form>
+      }
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Notifications</h3>
+      </div>
+      <form [formGroup]="notificationsForm" (ngSubmit)="saveNotifications()">
+        <div class="toggle-list">
+          <label class="toggle-row">
+            <mat-checkbox formControlName="emailNotifications"></mat-checkbox>
+            <span class="toggle-copy"
+              ><strong>Email notifications</strong
+              ><span>General updates about your recruiting activity.</span></span
+            >
+          </label>
+          <label class="toggle-row">
+            <mat-checkbox formControlName="pipelineUpdateNotifications"></mat-checkbox>
+            <span class="toggle-copy"
+              ><strong>Pipeline updates</strong
+              ><span>Notify me when an application moves to a new stage.</span></span
+            >
+          </label>
+          <label class="toggle-row">
+            <mat-checkbox formControlName="interviewReminderNotifications"></mat-checkbox>
+            <span class="toggle-copy"
+              ><strong>Interview reminders</strong
+              ><span>Remind me before scheduled interviews.</span></span
+            >
+          </label>
+        </div>
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="savingNotifications()"
+          >
+            Save preferences
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Change password</h3>
+      </div>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Current password</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="currentPassword"
+              autocomplete="current-password"
+            />
+          </mat-form-field>
+          <span></span>
+          <mat-form-field appearance="outline">
+            <mat-label>New password</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="newPassword"
+              autocomplete="new-password"
+            />
+            @if (passwordForm.get("newPassword")?.hasError("minlength")) {
+              <mat-error>At least 8 characters.</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm new password</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+            />
+          </mat-form-field>
+        </div>
+        @if (passwordForm.hasError("mismatch")) {
+          <p class="field-error">Passwords do not match.</p>
+        }
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="changingPassword()"
+          >
+            Change password
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Account security</h3>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span>Email</span>
+          <strong>{{ user()?.email || "—" }}</strong>
+        </div>
+        <div class="detail-item">
+          <span>Role</span>
+          <strong>{{ user()?.roles?.join(", ") || "Recruiter" }}</strong>
+        </div>
+      </div>
+      <p class="state-note">
+        Role changes are managed by QabilHire administrators. Contact support if
+        your access level is incorrect.
+      </p>
+    </section>
+  </div>
+</div>

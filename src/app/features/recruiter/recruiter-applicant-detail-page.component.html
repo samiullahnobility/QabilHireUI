@@ -1,0 +1,288 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>Applicant Details</h2>
+      <p>Review the candidate profile, resume, and readiness insights.</p>
+    </div>
+    <a mat-stroked-button routerLink="/app/recruiter/applicants">
+      <mat-icon>arrow_back</mat-icon> Back to applicants
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p class="state-note">Loading the applicant…</p>
+  } @else {
+    @if (detail(); as data) {
+    <div class="section-stack">
+      <section class="card" aria-label="Candidate overview">
+        <div class="card-head">
+          <div>
+            <h2>{{ data.candidate.fullName }}</h2>
+            <p class="muted">
+              {{ data.candidate.email }} · Applied for
+              <strong>{{ data.jobTitle }}</strong>
+            </p>
+          </div>
+          <div class="cell-actions">
+            <a
+              mat-stroked-button
+              [routerLink]="['/app/recruiter/interviews']"
+              [queryParams]="{ applicationId: data.applicationId }"
+            >
+              <mat-icon>event</mat-icon> Schedule Interview
+            </a>
+          </div>
+        </div>
+
+        <h3>Application Stage</h3>
+        <div class="stage-panel">
+          <div class="stage-track" aria-label="Application stage">
+            @for (stage of stages; track stage; let i = $index) {
+              <span
+                class="stage-dot"
+                [class.done]="stages.indexOf(data.status) >= i"
+                [class.current]="stage === data.status"
+                >{{ stage }}</span
+              >
+            }
+          </div>
+          <div class="cell-actions">
+            @if (nextStages().length === 0) {
+              <span class="muted">No further stage changes available.</span>
+            } @else {
+              @for (stage of nextStages(); track stage) {
+                <button
+                  mat-flat-button
+                  [color]="stage === 'Rejected' ? 'warn' : 'primary'"
+                  type="button"
+                  [disabled]="savingStage()"
+                  (click)="moveTo(stage)"
+                >
+                  Move to {{ stage }}
+                </button>
+              }
+            }
+          </div>
+        </div>
+      </section>
+
+      <div class="two-col">
+        <div class="section-stack">
+          <section class="card" aria-label="Candidate profile">
+            <div class="card-head"><h2>Candidate Profile</h2></div>
+            @if (!data.candidate.headline && data.candidate.skills.length === 0) {
+              <p class="empty-state">
+                <strong>Profile not completed</strong>
+                This candidate has not completed their QabilHire profile yet.
+              </p>
+            } @else {
+              <div class="detail-grid">
+                @if (data.candidate.headline) {
+                  <div class="detail-item">
+                    <span>Headline</span>
+                    <strong>{{ data.candidate.headline }}</strong>
+                  </div>
+                }
+                @if (data.candidate.currentRole) {
+                  <div class="detail-item">
+                    <span>Current role</span>
+                    <strong>{{ data.candidate.currentRole }}</strong>
+                  </div>
+                }
+                @if (data.candidate.experienceLevel) {
+                  <div class="detail-item">
+                    <span>Experience level</span>
+                    <strong>{{ data.candidate.experienceLevel }}</strong>
+                  </div>
+                }
+                @if (data.candidate.education) {
+                  <div class="detail-item">
+                    <span>Education</span>
+                    <strong>{{ data.candidate.education }}</strong>
+                  </div>
+                }
+                @if (data.candidate.location) {
+                  <div class="detail-item">
+                    <span>Location</span>
+                    <strong>{{ data.candidate.location }}</strong>
+                  </div>
+                }
+                @if (data.candidate.targetRole) {
+                  <div class="detail-item">
+                    <span>Target role</span>
+                    <strong>{{ data.candidate.targetRole }}</strong>
+                  </div>
+                }
+              </div>
+              @if (data.candidate.skills.length > 0) {
+                <h3>Skills</h3>
+                <div class="chips">
+                  @for (skill of data.candidate.skills; track skill) {
+                    <span class="chip">{{ skill }}</span>
+                  }
+                </div>
+              }
+              @if (data.candidate.linkedInUrl || data.candidate.portfolioUrl) {
+                <div class="form-actions">
+                  @if (data.candidate.linkedInUrl) {
+                    <a
+                      mat-stroked-button
+                      [href]="data.candidate.linkedInUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >LinkedIn</a
+                    >
+                  }
+                  @if (data.candidate.portfolioUrl) {
+                    <a
+                      mat-stroked-button
+                      [href]="data.candidate.portfolioUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >Portfolio</a
+                    >
+                  }
+                </div>
+              }
+            }
+          </section>
+
+          <section class="card" aria-label="Resume">
+            <div class="card-head">
+              <h2>Resume</h2>
+              @if (data.resume) {
+                <button
+                  mat-stroked-button
+                  type="button"
+                  [disabled]="downloading()"
+                  (click)="downloadResume()"
+                >
+                  <mat-icon>download</mat-icon> Download
+                </button>
+              }
+            </div>
+            @if (!data.resume) {
+              <p class="empty-state">
+                <strong>No resume uploaded</strong>
+                This candidate has no active resume on file.
+              </p>
+            } @else {
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span>File</span>
+                  <strong>{{ data.resume.displayName || data.resume.fileName }}</strong>
+                </div>
+                <div class="detail-item">
+                  <span>Status</span>
+                  <strong>{{ data.resume.status }}</strong>
+                </div>
+                <div class="detail-item">
+                  <span>Resume score</span>
+                  <strong>
+                    {{
+                      data.resume.score === null || data.resume.score === undefined
+                        ? "Not analyzed"
+                        : data.resume.score + "/100"
+                    }}
+                  </strong>
+                </div>
+                <div class="detail-item">
+                  <span>Uploaded</span>
+                  <strong>{{ formatDate(data.resume.createdAtUtc) }}</strong>
+                </div>
+              </div>
+            }
+          </section>
+        </div>
+
+        <div class="section-stack">
+          <section class="card" aria-label="Readiness insights">
+            <div class="card-head"><h2>Readiness Insights</h2></div>
+            @if (!data.readiness) {
+              <p class="empty-state">
+                <strong>No readiness data yet</strong>
+                This candidate has not completed a job-match analysis or mock
+                interview on QabilHire.
+              </p>
+            } @else {
+              @if (data.readiness.jobMatch; as match) {
+                <h3>Job Match</h3>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span>Match score</span>
+                    <strong>{{ match.overallScore }}%</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Match level</span>
+                    <strong>{{ match.matchLevel }}</strong>
+                  </div>
+                </div>
+                <p class="muted">
+                  Last analyzed {{ formatDate(match.createdAtUtc) }}
+                </p>
+              }
+              @if (data.readiness.interview; as interview) {
+                <h3>AI Mock Interview</h3>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span>Overall</span>
+                    <strong>{{ interview.overallScore }}%</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Technical</span>
+                    <strong>{{ interview.technicalScore }}%</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Communication</span>
+                    <strong>{{ interview.communicationScore }}%</strong>
+                  </div>
+                  <div class="detail-item">
+                    <span>Completed</span>
+                    <strong>{{ formatDate(interview.completedAtUtc) }}</strong>
+                  </div>
+                  @if (interview.strongestArea) {
+                    <div class="detail-item">
+                      <span>Strongest area</span>
+                      <strong>{{ interview.strongestArea }}</strong>
+                    </div>
+                  }
+                  @if (interview.priorityArea) {
+                    <div class="detail-item">
+                      <span>Priority area</span>
+                      <strong>{{ interview.priorityArea }}</strong>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </section>
+
+          <section class="card" aria-label="Application details">
+            <div class="card-head"><h2>Application</h2></div>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span>Job</span>
+                <strong>{{ data.jobTitle }}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Stage</span>
+                <span class="badge" [class]="stageClass(data.status)">{{
+                  data.status
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <span>Applied</span>
+                <strong>{{ formatDateTime(data.appliedAtUtc) }}</strong>
+              </div>
+              <div class="detail-item">
+                <span>Last stage change</span>
+                <strong>{{ formatDateTime(data.statusUpdatedAtUtc) }}</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    }
+  }
+</div>

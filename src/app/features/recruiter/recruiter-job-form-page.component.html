@@ -1,0 +1,85 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>{{ editingId() ? "Edit Job Posting" : "New Job Posting" }}</h2>
+      <p>
+        {{
+          editingId()
+            ? "Update this role; visibility is managed from the postings list."
+            : "Published postings are immediately visible to candidates."
+        }}
+      </p>
+    </div>
+    <a mat-stroked-button routerLink="/app/recruiter/jobs">Back to postings</a>
+  </div>
+
+  @if (loading()) {
+    <p class="state-note">Loading the posting…</p>
+  } @else {
+    <form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Job title</mat-label>
+          <input matInput formControlName="title" placeholder="e.g. Senior Backend Engineer" />
+          @if (submitted && form.controls.title.invalid) {
+            <mat-error>Title is required (max 160 characters).</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Company</mat-label>
+          <input matInput formControlName="company" placeholder="e.g. Qabil Technologies" />
+          @if (submitted && form.controls.company.invalid) {
+            <mat-error>Company is required (max 160 characters).</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Location</mat-label>
+          <input matInput formControlName="location" placeholder="e.g. Lahore (optional)" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Work type</mat-label>
+          <mat-select formControlName="workType">
+            @for (workType of workTypes; track workType) {
+              <mat-option [value]="workType">{{ workType }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Salary range</mat-label>
+          <input matInput formControlName="salaryRange" placeholder="e.g. PKR 250k – 400k (optional)" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            rows="8"
+            placeholder="Describe the role, responsibilities, and requirements (at least 40 characters)…"
+          ></textarea>
+          @if (submitted && form.controls.description.invalid) {
+            <mat-error>Description must be between 40 and 12,000 characters.</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Required skills</mat-label>
+          <input
+            matInput
+            formControlName="requiredSkills"
+            placeholder="Comma-separated, e.g. Angular, .NET, PostgreSQL"
+          />
+        </mat-form-field>
+      </div>
+      <div class="form-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="saving()"
+        >
+          {{ editingId() ? "Save changes" : "Publish posting" }}
+        </button>
+        <a mat-stroked-button routerLink="/app/recruiter/jobs">Cancel</a>
+      </div>
+    </form>
+  }
+</div>

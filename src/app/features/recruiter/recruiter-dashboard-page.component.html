@@ -1,0 +1,139 @@
+<div class="recruiter-surface">
+  @if (loading()) {
+    <p class="state-note">Loading your dashboard…</p>
+  } @else {
+    @if (dashboard(); as data) {
+    <section class="kpi-grid" aria-label="Recruiting statistics">
+      <article class="kpi">
+        <div class="kpi-top">
+          <span class="kpi-icon jobs"><mat-icon>work</mat-icon></span>
+          <span class="kpi-label">Active jobs</span>
+        </div>
+        <strong class="kpi-value">{{ data.activeJobs }}</strong>
+      </article>
+      <article class="kpi">
+        <div class="kpi-top">
+          <span class="kpi-icon applicants"><mat-icon>groups</mat-icon></span>
+          <span class="kpi-label">Total applicants</span>
+        </div>
+        <strong class="kpi-value">{{ data.totalApplicants }}</strong>
+      </article>
+      <article class="kpi">
+        <div class="kpi-top">
+          <span class="kpi-icon interviews"><mat-icon>event</mat-icon></span>
+          <span class="kpi-label">Interviews scheduled</span>
+        </div>
+        <strong class="kpi-value">{{ data.interviewsScheduled }}</strong>
+      </article>
+      <article class="kpi">
+        <div class="kpi-top">
+          <span class="kpi-icon offers"><mat-icon>verified</mat-icon></span>
+          <span class="kpi-label">Offers made</span>
+        </div>
+        <strong class="kpi-value">{{ data.offersMade }}</strong>
+      </article>
+    </section>
+
+    <section class="quick-actions" aria-label="Quick actions">
+      <a mat-flat-button color="primary" routerLink="/app/recruiter/jobs/new">
+        <mat-icon>add</mat-icon> New Job Posting
+      </a>
+      <a mat-stroked-button routerLink="/app/recruiter/applicants">
+        <mat-icon>groups</mat-icon> View Applicants
+      </a>
+      <a mat-stroked-button routerLink="/app/recruiter/pipeline">
+        <mat-icon>view_kanban</mat-icon> Open Pipeline
+      </a>
+      <a mat-stroked-button routerLink="/app/recruiter/interviews">
+        <mat-icon>event</mat-icon> Schedule Interview
+      </a>
+    </section>
+
+    <div class="section-stack">
+      <section class="card" aria-label="Recent applications">
+        <div class="card-head">
+          <h2>Recent Applications</h2>
+          <a mat-button routerLink="/app/recruiter/applicants">View all</a>
+        </div>
+        @if (data.recentApplications.length === 0) {
+          <p class="empty-state">
+            <strong>No applications yet</strong>
+            Candidates who apply to your roles will appear here.
+          </p>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Role</th>
+                <th>Stage</th>
+                <th>Applied</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (application of data.recentApplications; track application.applicationId) {
+                <tr>
+                  <td>{{ application.applicantName }}</td>
+                  <td>{{ application.jobTitle }}</td>
+                  <td>
+                    <span class="badge" [class]="stageClass(application.status)">{{
+                      application.status
+                    }}</span>
+                  </td>
+                  <td>{{ formatDate(application.appliedAtUtc) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
+      <section class="card" aria-label="Your job postings">
+        <div class="card-head">
+          <h2>Your Job Postings</h2>
+          <a mat-button routerLink="/app/recruiter/jobs">Manage postings</a>
+        </div>
+        @if (data.jobs.length === 0) {
+          <p class="empty-state">
+            <strong>No job postings yet</strong>
+            Create your first posting to start receiving applicants.
+          </p>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Applicants</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (job of data.jobs; track job.jobPostingId) {
+                <tr>
+                  <td>{{ job.title }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [class]="job.isActive ? 'badge-active' : 'badge-closed'"
+                      >{{ job.isActive ? "Active" : "Closed" }}</span
+                    >
+                  </td>
+                  <td>{{ job.applicationCount }}</td>
+                  <td class="cell-actions">
+                    <a
+                      mat-button
+                      [routerLink]="['/app/recruiter/jobs', job.jobPostingId, 'edit']"
+                      >Edit</a
+                    >
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+    </div>
+    }
+  }
+</div>

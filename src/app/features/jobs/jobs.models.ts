@@ -14,20 +14,6 @@ export interface JobPosting {
   isSaved: boolean;
 }
 
-export interface RecruiterJobPosting {
-  id: string;
-  title: string;
-  company: string;
-  location: string | null;
-  workType: "Remote" | "Hybrid" | "Onsite";
-  salaryRange: string | null;
-  description: string;
-  requiredSkills: string[];
-  isActive: boolean;
-  applicationCount: number;
-  postedAtUtc: string;
-}
-
 export interface JobApplication {
   id: string;
   jobPostingId: string;
@@ -49,14 +35,6 @@ export interface SavedJob {
   workType: string;
   salaryRange: string | null;
   postedAtUtc: string;
-}
-
-export interface Applicant {
-  userId: string;
-  fullName: string;
-  email: string;
-  status: string;
-  appliedAtUtc: string;
 }
 
 export interface AdminUser {

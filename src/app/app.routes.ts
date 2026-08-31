@@ -378,12 +378,108 @@ export const routes: Routes = [
         path: "recruiter",
         canActivate: [withRoles("Recruiter")],
         data: {
-          title: "Recruiter dashboard",
+          title: "Recruiter Dashboard",
           subtitle: "Post roles and review applicants",
         },
         loadComponent: () =>
-          import("./features/jobs/recruiter-dashboard-page.component").then(
+          import("./features/recruiter/recruiter-dashboard-page.component").then(
             (m) => m.RecruiterDashboardPageComponent,
+          ),
+      },
+      {
+        path: "recruiter/jobs",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Job Postings",
+          subtitle: "Create, publish, close, and delete roles",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-jobs-page.component").then(
+            (m) => m.RecruiterJobsPageComponent,
+          ),
+      },
+      {
+        path: "recruiter/jobs/new",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "New Job Posting",
+          subtitle: "Publish a role candidates can apply to",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-job-form-page.component").then(
+            (m) => m.RecruiterJobFormPageComponent,
+          ),
+      },
+      {
+        path: "recruiter/jobs/:id/edit",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Edit Job Posting",
+          subtitle: "Update the details of this role",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-job-form-page.component").then(
+            (m) => m.RecruiterJobFormPageComponent,
+          ),
+      },
+      {
+        path: "recruiter/applicants",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Applicants",
+          subtitle: "Search and filter candidates across all roles",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-applicants-page.component").then(
+            (m) => m.RecruiterApplicantsPageComponent,
+          ),
+      },
+      {
+        path: "recruiter/applicants/:id",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Applicant Details",
+          subtitle: "Profile, resume, readiness, and application stage",
+        },
+        loadComponent: () =>
+          import(
+            "./features/recruiter/recruiter-applicant-detail-page.component"
+          ).then((m) => m.RecruiterApplicantDetailPageComponent),
+      },
+      {
+        path: "recruiter/pipeline",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Application Pipeline",
+          subtitle: "Move applicants through your hiring stages",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-pipeline-page.component").then(
+            (m) => m.RecruiterPipelinePageComponent,
+          ),
+      },
+      {
+        path: "recruiter/interviews",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Interviews",
+          subtitle: "Schedule interviews and record feedback",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-interviews-page.component").then(
+            (m) => m.RecruiterInterviewsPageComponent,
+          ),
+      },
+      {
+        path: "recruiter/settings",
+        canActivate: [withRoles("Recruiter")],
+        data: {
+          title: "Profile & Settings",
+          subtitle: "Organization, notifications, and account security",
+        },
+        loadComponent: () =>
+          import("./features/recruiter/recruiter-settings-page.component").then(
+            (m) => m.RecruiterSettingsPageComponent,
           ),
       },
       {

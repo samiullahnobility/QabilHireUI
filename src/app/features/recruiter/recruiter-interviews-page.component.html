@@ -1,0 +1,297 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>Interviews</h2>
+      <p>Schedule, reschedule, and review candidate interviews.</p>
+    </div>
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="openSchedule()"
+    >
+      <mat-icon>event</mat-icon> Schedule Interview
+    </button>
+  </div>
+
+  @if (scheduleOpen()) {
+    <section class="card schedule-panel">
+      <div class="card-head">
+        <h3>Schedule an interview</h3>
+        <button mat-button type="button" (click)="closeSchedule()">Cancel</button>
+      </div>
+      <form [formGroup]="scheduleForm" (ngSubmit)="submitSchedule()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Applicant</mat-label>
+            <mat-select formControlName="jobApplicationId">
+              @for (application of scheduleCandidates(); track application.applicationId) {
+                <mat-option [value]="application.applicationId">
+                  {{ application.fullName }} — {{ application.jobTitle }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Date and time</mat-label>
+            <input matInput type="datetime-local" formControlName="scheduledAtLocal" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Duration</mat-label>
+            <mat-select formControlName="durationMinutes">
+              <mat-option [value]="15">15 minutes</mat-option>
+              <mat-option [value]="30">30 minutes</mat-option>
+              <mat-option [value]="45">45 minutes</mat-option>
+              <mat-option [value]="60">60 minutes</mat-option>
+              <mat-option [value]="90">90 minutes</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Mode</mat-label>
+            <mat-select formControlName="mode">
+              @for (mode of modes; track mode) {
+                <mat-option [value]="mode">{{ mode }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Location or link</mat-label>
+            <input matInput formControlName="locationOrLink" placeholder="e.g. meet.google.com/…" />
+          </mat-form-field>
+        </div>
+        <p class="state-note">
+          Scheduling the interview moves the application to the Interview stage.
+        </p>
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="savingSchedule()"
+          >
+            Schedule
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+
+  <div class="filters-row">
+    <mat-form-field appearance="outline">
+      <mat-label>View</mat-label>
+      <mat-select [(ngModel)]="filter">
+        <mat-option value="upcoming">Upcoming</mat-option>
+        <mat-option value="past">Past</mat-option>
+        <mat-option value="all">All</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <section class="card">
+    @if (loading()) {
+      <p class="state-note">Loading interviews…</p>
+    } @else if (filtered().length === 0) {
+      <p class="empty-state">
+        <strong>No interviews here</strong>
+        {{
+          filter() === "upcoming"
+            ? "Schedule an interview to get started."
+            : "Interviews you complete or cancel will appear here."
+        }}
+      </p>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Candidate</th>
+            <th>Role</th>
+            <th>When</th>
+            <th>Mode</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th class="cell-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (interview of filtered(); track interview.id) {
+            <tr>
+              <td>
+                <strong>{{ interview.candidateName }}</strong>
+              </td>
+              <td>{{ interview.jobTitle }}</td>
+              <td>{{ formatDateTime(interview.scheduledAtUtc) }}</td>
+              <td>{{ interview.mode }}</td>
+              <td>{{ interview.durationMinutes }} min</td>
+              <td>
+                <span class="badge" [class]="badgeClass(interview.status)">{{
+                  interview.status
+                }}</span>
+              </td>
+              <td class="cell-actions">
+                <a
+                  mat-button
+                  [routerLink]="['/app/recruiter/applicants', interview.jobApplicationId]"
+                  >Readiness</a
+                >
+                @if (interview.status === "Scheduled") {
+                  <button
+                    mat-button
+                    type="button"
+                    (click)="openReschedule(interview)"
+                  >
+                    Reschedule
+                  </button>
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="cancellingId() === interview.id"
+                    (click)="cancelInterview(interview)"
+                  >
+                    {{
+                      confirmingCancelId() === interview.id
+                        ? "Confirm cancel"
+                        : "Cancel"
+                    }}
+                  </button>
+                  <button
+                    mat-button
+                    type="button"
+                    [disabled]="completingId() === interview.id"
+                    (click)="completeInterview(interview)"
+                  >
+                    {{
+                      confirmingCompleteId() === interview.id
+                        ? "Confirm complete"
+                        : "Complete"
+                    }}
+                  </button>
+                }
+                @if (interview.status === "Completed") {
+                  <button
+                    mat-button
+                    type="button"
+                    (click)="openFeedback(interview)"
+                  >
+                    {{
+                      interview.feedbackSubmittedAtUtc
+                        ? "Edit Feedback"
+                        : "Add Feedback"
+                    }}
+                  </button>
+                }
+              </td>
+            </tr>
+            @if (rescheduleId() === interview.id) {
+              <tr>
+                <td colspan="7" class="inline-form">
+                  <form [formGroup]="rescheduleForm" (ngSubmit)="submitReschedule()">
+                    <div class="form-grid">
+                      <mat-form-field appearance="outline">
+                        <mat-label>New date and time</mat-label>
+                        <input matInput type="datetime-local" formControlName="scheduledAtLocal" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Duration</mat-label>
+                        <mat-select formControlName="durationMinutes">
+                          <mat-option [value]="15">15 minutes</mat-option>
+                          <mat-option [value]="30">30 minutes</mat-option>
+                          <mat-option [value]="45">45 minutes</mat-option>
+                          <mat-option [value]="60">60 minutes</mat-option>
+                          <mat-option [value]="90">90 minutes</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Mode</mat-label>
+                        <mat-select formControlName="mode">
+                          @for (mode of modes; track mode) {
+                            <mat-option [value]="mode">{{ mode }}</mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Location or link</mat-label>
+                        <input matInput formControlName="locationOrLink" />
+                      </mat-form-field>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="savingReschedule()"
+                      >
+                        Save changes
+                      </button>
+                      <button
+                        mat-button
+                        type="button"
+                        (click)="closeReschedule()"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            }
+            @if (feedbackId() === interview.id) {
+              <tr>
+                <td colspan="7" class="inline-form">
+                  <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()">
+                    <div class="form-grid">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Rating</mat-label>
+                        <mat-select formControlName="rating">
+                          <mat-option [value]="1">1 — Poor</mat-option>
+                          <mat-option [value]="2">2 — Below average</mat-option>
+                          <mat-option [value]="3">3 — Average</mat-option>
+                          <mat-option [value]="4">4 — Good</mat-option>
+                          <mat-option [value]="5">5 — Excellent</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline">
+                        <mat-label>Recommendation</mat-label>
+                        <mat-select formControlName="recommendation">
+                          @for (recommendation of recommendations; track recommendation) {
+                            <mat-option [value]="recommendation">{{
+                              recommendation
+                            }}</mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="full">
+                        <mat-label>Strengths</mat-label>
+                        <textarea matInput rows="3" formControlName="strengths"></textarea>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="full">
+                        <mat-label>Weaknesses</mat-label>
+                        <textarea matInput rows="3" formControlName="weaknesses"></textarea>
+                      </mat-form-field>
+                    </div>
+                    <p class="state-note">
+                      Recommendation updates the application stage: Hire →
+                      Offered, Reject → Rejected, Consider → stays in Interview.
+                    </p>
+                    <div class="form-actions">
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="savingFeedback()"
+                      >
+                        Save feedback
+                      </button>
+                      <button mat-button type="button" (click)="closeFeedback()">
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>

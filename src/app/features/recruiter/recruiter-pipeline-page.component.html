@@ -1,0 +1,73 @@
+<div class="recruiter-surface">
+  <div class="recruiter-toolbar">
+    <div>
+      <h2>Application Pipeline</h2>
+      <p>Move applicants between stages as they progress through your hiring process.</p>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Job posting</mat-label>
+      <mat-select
+        [(ngModel)]="jobId"
+        (selectionChange)="load()"
+      >
+        <mat-option value="">All postings</mat-option>
+        @for (job of jobs(); track job.id) {
+          <mat-option [value]="job.id">{{ job.title }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (loading()) {
+    <p class="state-note">Loading the pipeline…</p>
+  } @else {
+    <section class="kanban-board" aria-label="Application pipeline board">
+      @for (stage of columns; track stage) {
+        <div class="kanban-column">
+          <header class="kanban-column-head">
+            <h3>{{ stage }}</h3>
+            <span class="badge" [class]="stageBadgeClass(stage)">
+              {{ applicantsFor(stage).length }}
+            </span>
+          </header>
+          <div class="kanban-cards">
+            @if (applicantsFor(stage).length === 0) {
+              <p class="kanban-empty">No applicants here</p>
+            } @else {
+              @for (applicant of applicantsFor(stage); track applicant.applicationId) {
+                <article class="kanban-card">
+                  <header>
+                    <strong>{{ applicant.fullName }}</strong>
+                    <a
+                      [routerLink]="['/app/recruiter/applicants', applicant.applicationId]"
+                      [attr.aria-label]="'Open details for ' + applicant.fullName"
+                    >
+                      <mat-icon>open_in_new</mat-icon>
+                    </a>
+                  </header>
+                  <p class="kanban-job">{{ applicant.jobTitle }}</p>
+                  <p class="kanban-date">Applied {{ formatDate(applicant.appliedAtUtc) }}</p>
+                  @if (nextStages(stage).length > 0) {
+                    <footer class="kanban-actions">
+                      @for (next of nextStages(stage); track next) {
+                        <button
+                          mat-button
+                          type="button"
+                          [color]="next === 'Rejected' ? 'warn' : 'primary'"
+                          [disabled]="movingId() === applicant.applicationId"
+                          (click)="move(applicant, next)"
+                        >
+                          → {{ next }}
+                        </button>
+                      }
+                    </footer>
+                  }
+                </article>
+              }
+            }
+          </div>
+        </div>
+      }
+    </section>
+  }
+</div>

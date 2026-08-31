@@ -24,6 +24,7 @@ type NavItem = {
   link: string;
   requiresCompleteProfile?: boolean;
   requiredRoles?: string[];
+  section?: string;
 };
 
 @Component({
@@ -44,6 +45,9 @@ export class CandidateLayoutComponent {
   readonly isCandidate = computed(() =>
     (this.user()?.roles ?? []).includes("Candidate"),
   );
+  readonly isRecruiter = computed(() =>
+    (this.user()?.roles ?? []).includes("Recruiter"),
+  );
   readonly homeLink = computed(() => this.auth.homeUrl(this.user()));
   readonly profileComplete = computed(() => !!this.user()?.profileComplete);
   readonly roleLabel = computed(() =>
@@ -58,57 +62,151 @@ export class CandidateLayoutComponent {
       link: "/app/dashboard",
       requiresCompleteProfile: true,
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
     {
       label: "Resume Analysis",
       link: "/app/resume",
       requiresCompleteProfile: true,
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
     {
       label: "Job Match",
       link: "/app/job-match",
       requiresCompleteProfile: true,
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
     {
       label: "Job Search",
       link: "/app/jobs",
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
     {
       label: "My Applications",
       link: "/app/applications",
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
     {
       label: "Saved Jobs",
       link: "/app/saved-jobs",
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
     {
       label: "Mock Interviews",
       link: "/app/interviews/setup",
       requiresCompleteProfile: true,
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
-    { label: "Progress", link: "/app/progress", requiresCompleteProfile: true, requiredRoles: ["Candidate"] },
+    {
+      label: "Progress",
+      link: "/app/progress",
+      requiresCompleteProfile: true,
+      requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
+    },
     {
       label: "Career Coach",
       link: "/app/career-coach",
       requiresCompleteProfile: true,
       requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
     },
-    { label: "Recruiter Dashboard", link: "/app/recruiter", requiredRoles: ["Recruiter"] },
-    { label: "Admin Dashboard", link: "/app/admin/dashboard", requiredRoles: ["Admin"] },
-    { label: "User Management", link: "/app/admin/users", requiredRoles: ["Admin"] },
-    { label: "Roles & Permissions", link: "/app/admin/roles", requiredRoles: ["Admin"] },
-    { label: "Job Management", link: "/app/admin/jobs", requiredRoles: ["Admin"] },
-    { label: "Platform Activity", link: "/app/admin/activity", requiredRoles: ["Admin"] },
-    { label: "AI & System Health", link: "/app/admin/health", requiredRoles: ["Admin"] },
-    { label: "Reports & Analytics", link: "/app/admin/reports", requiredRoles: ["Admin"] },
-    { label: "Admin Settings", link: "/app/admin/settings", requiredRoles: ["Admin"] },
-    { label: "Profile & Settings", link: "/app/profile", requiredRoles: ["Candidate"] },
+    {
+      label: "Recruiter Dashboard",
+      link: "/app/recruiter",
+      requiredRoles: ["Recruiter"],
+      section: "RECRUITER TOOLS",
+    },
+    {
+      label: "Job Postings",
+      link: "/app/recruiter/jobs",
+      requiredRoles: ["Recruiter"],
+      section: "RECRUITER TOOLS",
+    },
+    {
+      label: "Applicants",
+      link: "/app/recruiter/applicants",
+      requiredRoles: ["Recruiter"],
+      section: "RECRUITER TOOLS",
+    },
+    {
+      label: "Application Pipeline",
+      link: "/app/recruiter/pipeline",
+      requiredRoles: ["Recruiter"],
+      section: "RECRUITER TOOLS",
+    },
+    {
+      label: "Interviews",
+      link: "/app/recruiter/interviews",
+      requiredRoles: ["Recruiter"],
+      section: "RECRUITER TOOLS",
+    },
+    {
+      label: "Recruiter Settings",
+      link: "/app/recruiter/settings",
+      requiredRoles: ["Recruiter"],
+      section: "RECRUITER TOOLS",
+    },
+    {
+      label: "Admin Dashboard",
+      link: "/app/admin/dashboard",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "User Management",
+      link: "/app/admin/users",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "Roles & Permissions",
+      link: "/app/admin/roles",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "Job Management",
+      link: "/app/admin/jobs",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "Platform Activity",
+      link: "/app/admin/activity",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "AI & System Health",
+      link: "/app/admin/health",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "Reports & Analytics",
+      link: "/app/admin/reports",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "Admin Settings",
+      link: "/app/admin/settings",
+      requiredRoles: ["Admin"],
+      section: "ADMINISTRATION",
+    },
+    {
+      label: "Profile & Settings",
+      link: "/app/profile",
+      requiredRoles: ["Candidate"],
+      section: "AI CAREER PREPARATION",
+    },
   ];
   readonly visibleNavItems = computed(() => {
     const roles = this.user()?.roles ?? [];
