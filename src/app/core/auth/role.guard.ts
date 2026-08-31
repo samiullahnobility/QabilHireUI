@@ -9,6 +9,6 @@ export function withRoles(...roles: string[]): CanActivateFn {
     const user = auth.currentUser();
     const allowed = (user?.roles ?? []).some((role) => roles.includes(role));
     if (allowed) return true;
-    return router.parseUrl("/app/dashboard");
+    return router.parseUrl(auth.homeUrl(user));
   };
 }

@@ -36,6 +36,6 @@ export const profileCompleteGuard: CanActivateFn = (_route, state) => {
 export const guestGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   return auth.getAccessToken()
-    ? inject(Router).createUrlTree(["/app/dashboard"])
+    ? inject(Router).parseUrl(auth.homeUrl())
     : true;
 };

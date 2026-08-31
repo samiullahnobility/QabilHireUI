@@ -41,6 +41,10 @@ export class CandidateLayoutComponent {
   readonly menuOpen = signal(false);
   readonly accountMenuOpen = signal(false);
   readonly user = this.auth.currentUser;
+  readonly isCandidate = computed(() =>
+    (this.user()?.roles ?? []).includes("Candidate"),
+  );
+  readonly homeLink = computed(() => this.auth.homeUrl(this.user()));
   readonly profileComplete = computed(() => !!this.user()?.profileComplete);
   readonly roleLabel = computed(() =>
     this.user()?.roles?.length ? this.user()!.roles.join(", ") : "Candidate",
@@ -53,16 +57,19 @@ export class CandidateLayoutComponent {
       label: "Dashboard",
       link: "/app/dashboard",
       requiresCompleteProfile: true,
+      requiredRoles: ["Candidate"],
     },
     {
       label: "Resume Analysis",
       link: "/app/resume",
       requiresCompleteProfile: true,
+      requiredRoles: ["Candidate"],
     },
     {
       label: "Job Match",
       link: "/app/job-match",
       requiresCompleteProfile: true,
+      requiredRoles: ["Candidate"],
     },
     {
       label: "Job Search",
@@ -93,9 +100,15 @@ export class CandidateLayoutComponent {
       requiredRoles: ["Candidate"],
     },
     { label: "Recruiter Dashboard", link: "/app/recruiter", requiredRoles: ["Recruiter"] },
+    { label: "Admin Dashboard", link: "/app/admin/dashboard", requiredRoles: ["Admin"] },
     { label: "User Management", link: "/app/admin/users", requiredRoles: ["Admin"] },
     { label: "Roles & Permissions", link: "/app/admin/roles", requiredRoles: ["Admin"] },
-    { label: "Profile & Settings", link: "/app/profile" },
+    { label: "Job Management", link: "/app/admin/jobs", requiredRoles: ["Admin"] },
+    { label: "Platform Activity", link: "/app/admin/activity", requiredRoles: ["Admin"] },
+    { label: "AI & System Health", link: "/app/admin/health", requiredRoles: ["Admin"] },
+    { label: "Reports & Analytics", link: "/app/admin/reports", requiredRoles: ["Admin"] },
+    { label: "Admin Settings", link: "/app/admin/settings", requiredRoles: ["Admin"] },
+    { label: "Profile & Settings", link: "/app/profile", requiredRoles: ["Candidate"] },
   ];
   readonly visibleNavItems = computed(() => {
     const roles = this.user()?.roles ?? [];

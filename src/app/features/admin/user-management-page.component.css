@@ -7,6 +7,24 @@
   color: var(--text-secondary);
   font-size: 15px;
 }
+.user-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.user-filters input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+}
+.empty-row {
+  padding: 32px;
+  color: var(--text-secondary);
+  text-align: center;
+}
 .table-card {
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -88,5 +106,8 @@ select {
   th,
   td {
     padding: 12px 14px;
+  }
+  .user-filters {
+    flex-direction: column;
   }
 }

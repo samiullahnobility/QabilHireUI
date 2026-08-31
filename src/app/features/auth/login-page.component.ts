@@ -53,11 +53,7 @@ export class LoginPageComponent {
         next: (response) => {
           this.notifications.success("Welcome back to QabilHire.");
           this.submitAttempted.set(false);
-          void this.router.navigateByUrl(
-            response.user.profileComplete
-              ? "/app/dashboard"
-              : "/onboarding/profile",
-          );
+          void this.router.navigateByUrl(this.auth.homeUrl(response.user));
         },
         error: (error) => this.notifications.error(error, "Unable to sign in."),
       });

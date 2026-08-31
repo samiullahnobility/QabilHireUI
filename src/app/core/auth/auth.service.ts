@@ -21,6 +21,12 @@ export class AuthService {
   );
   readonly isAuthenticated = signal(this.hasValidSession());
 
+  homeUrl(user: AuthResponse["user"] | null = this.currentUser()): string {
+    if (user?.roles.includes("Admin")) return "/app/admin/dashboard";
+    if (user?.roles.includes("Recruiter")) return "/app/recruiter";
+    return user?.profileComplete ? "/app/dashboard" : "/onboarding/profile";
+  }
+
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.api
       .post<AuthResponse, RegisterRequest>("auth/register", request)

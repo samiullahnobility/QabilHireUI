@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { finalize } from "rxjs";
@@ -21,6 +21,20 @@ export class UserManagementPageComponent {
   readonly loading = signal(true);
   readonly savingId = signal<string | null>(null);
   readonly roles = ["Candidate", "Recruiter", "Admin"];
+  readonly queryValue = signal("");
+  readonly statusValue = signal("all");
+  get query(): string { return this.queryValue(); }
+  set query(value: string) { this.queryValue.set(value); }
+  get status(): string { return this.statusValue(); }
+  set status(value: string) { this.statusValue.set(value); }
+  readonly filteredUsers = computed(() => {
+    const query = this.queryValue().trim().toLowerCase();
+    return this.users().filter((user) => {
+      const matchesQuery = !query || `${user.fullName} ${user.email} ${user.roles.join(" ")}`.toLowerCase().includes(query);
+      const state = user.lockedOut ? "locked" : user.emailConfirmed ? "active" : "unverified";
+      return matchesQuery && (this.statusValue() === "all" || state === this.statusValue());
+    });
+  });
 
   constructor() {
     this.load();

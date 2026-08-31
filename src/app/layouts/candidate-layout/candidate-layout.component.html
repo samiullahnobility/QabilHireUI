@@ -1,6 +1,6 @@
 <div class="candidate-shell">
   <aside class="sidebar" [class.open]="menuOpen()">
-    <a class="brand" routerLink="/app/dashboard" (click)="closeMenu()"
+    <a class="brand" [routerLink]="homeLink()" (click)="closeMenu()"
       ><span>Q</span><strong>QabilHire</strong></a
     >
     <p class="section-label">AI CAREER PREPARATION</p>
@@ -16,12 +16,14 @@
         >
       }
     </nav>
-    <a
-      class="interview-cta"
-      routerLink="/app/interviews/setup"
-      (click)="closeMenu()"
-      >Start Mock Interview</a
-    >
+    @if (isCandidate()) {
+      <a
+        class="interview-cta"
+        routerLink="/app/interviews/setup"
+        (click)="closeMenu()"
+        >Start Mock Interview</a
+      >
+    }
   </aside>
   @if (menuOpen()) {
     <button
@@ -87,20 +89,24 @@
                 ><span class="account-role">{{ roleLabel() }}</span>
               </div>
             </div>
-            <div class="completion">
-              <span>Profile completion</span
-              ><strong>{{
-                profileComplete() ? "Complete" : "In progress"
-              }}</strong>
-            </div>
+            @if (isCandidate()) {
+              <div class="completion">
+                <span>Profile completion</span
+                ><strong>{{
+                  profileComplete() ? "Complete" : "In progress"
+                }}</strong>
+              </div>
+            }
             <nav aria-label="Account actions">
-              <a
-                role="menuitem"
-                [routerLink]="profileLink()"
-                (click)="closeAccountMenu()"
-                >Profile / Account</a
-              >
-              @if (profileComplete()) {
+              @if (isCandidate()) {
+                <a
+                  role="menuitem"
+                  [routerLink]="profileLink()"
+                  (click)="closeAccountMenu()"
+                  >Profile / Account</a
+                >
+              }
+              @if (isCandidate() && profileComplete()) {
                 <a
                   role="menuitem"
                   routerLink="/app/profile/security"

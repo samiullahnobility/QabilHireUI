@@ -93,7 +93,7 @@ export const routes: Routes = [
   {
     path: "onboarding",
     component: CandidateLayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, withRoles("Candidate")],
     children: [
       {
         path: "profile",
@@ -144,6 +144,7 @@ export const routes: Routes = [
     children: [
       {
         path: "dashboard",
+        canActivate: [withRoles("Candidate")],
         loadComponent: () =>
           import("./features/dashboard/dashboard-page.component").then(
             (m) => m.DashboardPageComponent,
@@ -151,6 +152,7 @@ export const routes: Routes = [
       },
       {
         path: "progress",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Progress",
           subtitle: "Track readiness and improve day by day",
@@ -162,6 +164,7 @@ export const routes: Routes = [
       },
       {
         path: "career-coach",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Your personalized AI guide",
           subtitle: "Uses your profile, resume, matches, and results",
@@ -173,6 +176,7 @@ export const routes: Routes = [
       },
       {
         path: "profile",
+        canActivate: [withRoles("Candidate")],
         loadComponent: () =>
           import("./features/profile/profile-management-page.component").then(
             (m) => m.ProfileManagementPageComponent,
@@ -180,6 +184,7 @@ export const routes: Routes = [
       },
       {
         path: "resume",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Upload your resume",
           subtitle: "Get specific, actionable AI feedback",
@@ -191,6 +196,7 @@ export const routes: Routes = [
       },
       {
         path: "job-match",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Analyze a target opportunity",
           subtitle: "Paste a job description to understand your fit",
@@ -202,6 +208,7 @@ export const routes: Routes = [
       },
       {
         path: "job-match/history",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Job Match history",
           subtitle: "Review every opportunity you have analyzed",
@@ -213,6 +220,7 @@ export const routes: Routes = [
       },
       {
         path: "job-match/:id",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Job-match analysis",
           subtitle: "Understand your fit and improvement priorities",
@@ -224,6 +232,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/setup",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Configure your interview",
           subtitle: "Choose practice or realistic simulation",
@@ -235,6 +244,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/history",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Interview history",
           subtitle: "Review every practice interview you completed",
@@ -246,6 +256,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/session/:id",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Interview ready",
           subtitle: "Review your generated question set",
@@ -257,6 +268,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/:id/microphone-test",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Microphone test",
           subtitle: "Check audio before starting your voice interview",
@@ -268,6 +280,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/:id/room",
+        canActivate: [withRoles("Candidate")],
         data: { hideSearch: true },
         loadComponent: () =>
           import("./features/interviews/interview-room-page.component").then(
@@ -276,6 +289,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/:id/complete",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Interview completed",
           subtitle: "Your answers were saved",
@@ -287,6 +301,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/:id/results",
+        canActivate: [withRoles("Candidate")],
         data: { hideSearch: true },
         loadComponent: () =>
           import("./features/interviews/interview-results-page.component").then(
@@ -295,6 +310,7 @@ export const routes: Routes = [
       },
       {
         path: "interviews/:id/feedback",
+        canActivate: [withRoles("Candidate")],
         data: { hideSearch: true },
         loadComponent: () =>
           import("./features/interviews/interview-feedback-page.component").then(
@@ -371,6 +387,18 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "admin/dashboard",
+        canActivate: [withRoles("Admin")],
+        data: {
+          title: "Admin dashboard",
+          subtitle: "Platform operations at a glance",
+        },
+        loadComponent: () =>
+          import("./features/admin/admin-dashboard-page.component").then(
+            (m) => m.AdminDashboardPageComponent,
+          ),
+      },
+      {
         path: "admin/users",
         canActivate: [withRoles("Admin")],
         data: {
@@ -395,7 +423,68 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "admin/jobs",
+        canActivate: [withRoles("Admin")],
+        data: {
+          title: "Job management",
+          subtitle: "Moderate listings across the platform",
+        },
+        loadComponent: () =>
+          import("./features/admin/job-management-page.component").then(
+            (m) => m.JobManagementPageComponent,
+          ),
+      },
+      {
+        path: "admin/activity",
+        canActivate: [withRoles("Admin")],
+        data: {
+          title: "Platform activity",
+          subtitle: "Review registrations, jobs, and applications",
+        },
+        loadComponent: () =>
+          import("./features/admin/platform-activity-page.component").then(
+            (m) => m.PlatformActivityPageComponent,
+          ),
+      },
+      {
+        path: "admin/health",
+        canActivate: [withRoles("Admin")],
+        data: {
+          title: "AI usage & system health",
+          subtitle: "Check provider readiness and AI workloads",
+        },
+        loadComponent: () =>
+          import("./features/admin/system-health-page.component").then(
+            (m) => m.SystemHealthPageComponent,
+          ),
+      },
+      {
+        path: "admin/reports",
+        canActivate: [withRoles("Admin")],
+        data: {
+          title: "Reports & analytics",
+          subtitle: "Understand platform adoption and outcomes",
+        },
+        loadComponent: () =>
+          import("./features/admin/reports-analytics-page.component").then(
+            (m) => m.ReportsAnalyticsPageComponent,
+          ),
+      },
+      {
+        path: "admin/settings",
+        canActivate: [withRoles("Admin")],
+        data: {
+          title: "Admin settings",
+          subtitle: "Review configuration and account security",
+        },
+        loadComponent: () =>
+          import("./features/admin/admin-settings-page.component").then(
+            (m) => m.AdminSettingsPageComponent,
+          ),
+      },
+      {
         path: "resume/:id/analysis",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Resume analysis",
           subtitle: "Specific improvements for your target role",
@@ -407,6 +496,7 @@ export const routes: Routes = [
       },
       {
         path: "resume/:id/edit",
+        canActivate: [withRoles("Candidate")],
         data: {
           title: "Review extracted information",
           subtitle: "Confirm or correct what the AI found in your resume",
@@ -419,6 +509,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/edit",
+        canActivate: [withRoles("Candidate")],
         canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
           import("./features/profile/profile-page.component").then(
@@ -427,6 +518,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/personal",
+        canActivate: [withRoles("Candidate")],
         data: { section: "personal" },
         canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
@@ -436,6 +528,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/career",
+        canActivate: [withRoles("Candidate")],
         data: { section: "career" },
         canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
@@ -445,6 +538,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/skills-experience",
+        canActivate: [withRoles("Candidate")],
         data: { section: "skills" },
         canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
@@ -454,6 +548,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/interview-preferences",
+        canActivate: [withRoles("Candidate")],
         data: { section: "interview" },
         canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
@@ -463,6 +558,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/resume",
+        canActivate: [withRoles("Candidate")],
         loadComponent: () =>
           import("./features/resume/resume-management-page.component").then(
             (m) => m.ResumeManagementPageComponent,
@@ -470,6 +566,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/security",
+        canActivate: [withRoles("Candidate")],
         data: { section: "security" },
         loadComponent: () =>
           import("./features/profile/profile-section-page.component").then(
@@ -478,6 +575,7 @@ export const routes: Routes = [
       },
       {
         path: "profile/privacy",
+        canActivate: [withRoles("Candidate")],
         data: { section: "privacy" },
         loadComponent: () =>
           import("./features/profile/profile-section-page.component").then(
