@@ -374,6 +374,199 @@
       }
     </section>
   </form>
+} @else if (section === "security") {
+  <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+    <section class="panel">
+      @if (passwordSubmitted && passwordForm.invalid) {
+        <p class="form-alert">
+          Please complete all fields correctly before changing your password.
+        </p>
+      }
+      <div class="fields">
+        <mat-form-field appearance="outline" class="wide">
+          <mat-label>Current password</mat-label>
+          <input
+            matInput
+            type="password"
+            required
+            formControlName="currentPassword"
+            autocomplete="current-password"
+          />
+          @if (
+            (passwordSubmitted ||
+              passwordForm.controls.currentPassword.touched) &&
+            passwordForm.controls.currentPassword.invalid
+          ) {
+            <mat-error>Your current password is required.</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>New password</mat-label>
+          <input
+            matInput
+            type="password"
+            required
+            formControlName="newPassword"
+            autocomplete="new-password"
+          />
+          @if (
+            (passwordSubmitted || passwordForm.controls.newPassword.touched) &&
+            passwordForm.controls.newPassword.invalid
+          ) {
+            <mat-error>Use at least 8 characters.</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm new password</mat-label>
+          <input
+            matInput
+            type="password"
+            required
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+          />
+          @if (
+            (passwordSubmitted ||
+              passwordForm.controls.confirmPassword.touched) &&
+            passwordForm.controls.confirmPassword.invalid
+          ) {
+            <mat-error>Re-enter your new password.</mat-error>
+          } @else if (
+            (passwordSubmitted ||
+              passwordForm.controls.confirmPassword.touched) &&
+            passwordForm.hasError("mismatch")
+          ) {
+            <mat-error>The passwords do not match.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <p class="save-hint">
+        Changing your password signs you out on all devices, including this
+        one.
+      </p>
+      <div class="save-bar">
+        <a routerLink="/app/profile">Cancel</a>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="securityBusy()"
+        >
+          {{ securityBusy() ? "Changing password..." : "Change password" }}
+        </button>
+      </div>
+    </section>
+  </form>
+} @else if (section === "privacy") {
+  <section class="panel privacy-panel">
+    <div class="privacy-block">
+      <h2>Your data</h2>
+      <p>
+        QabilHire stores your profile, resumes, job matches, interview history,
+        and improvement plans so you can prepare effectively. Uploaded resume
+        files are kept in secure cloud storage and AI processing uses your
+        content only to produce your analysis results.
+      </p>
+      <ul>
+        <li>Your data is used only for your own preparation.</li>
+        <li>You can export a copy of everything at any time.</li>
+        <li>You can delete your data or your account at any time.</li>
+      </ul>
+    </div>
+    <div class="privacy-block">
+      <h2>Export your data</h2>
+      <p>Download a JSON copy of everything stored on QabilHire.</p>
+      <button
+        mat-stroked-button
+        color="primary"
+        type="button"
+        (click)="exportData()"
+        [disabled]="exporting()"
+      >
+        {{ exporting() ? "Preparing export..." : "Download my data" }}
+      </button>
+    </div>
+    <div class="privacy-block">
+      <h2>Delete my data</h2>
+      <p>
+        Removes your profile, resumes, job matches, interviews, and improvement
+        plans. Your account and sign-in remain intact.
+      </p>
+      @if (!confirmingDataDelete()) {
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="confirmingDataDelete.set(true)"
+        >
+          Delete my data
+        </button>
+      } @else {
+        <p class="confirm-note">
+          This permanently removes all of your stored data. This action cannot
+          be undone.
+        </p>
+        <div class="confirm-actions">
+          <button
+            mat-flat-button
+            color="warn"
+            type="button"
+            (click)="deleteAllData()"
+            [disabled]="deletingData()"
+          >
+            {{ deletingData() ? "Deleting..." : "Yes, delete my data" }}
+          </button>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="confirmingDataDelete.set(false)"
+          >
+            Cancel
+          </button>
+        </div>
+      }
+    </div>
+    <div class="privacy-block">
+      <h2>Delete my account</h2>
+      <p>
+        Permanently deletes your account and all of your data, and signs you out
+        everywhere.
+      </p>
+      @if (!confirmingAccountDelete()) {
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="confirmingAccountDelete.set(true)"
+        >
+          Delete my account
+        </button>
+      } @else {
+        <p class="confirm-note">
+          This deletes your QabilHire account and every piece of data attached
+          to it. This action cannot be undone.
+        </p>
+        <div class="confirm-actions">
+          <button
+            mat-flat-button
+            color="warn"
+            type="button"
+            (click)="deleteAccount()"
+            [disabled]="deletingAccount()"
+          >
+            {{ deletingAccount() ? "Deleting..." : "Yes, delete my account" }}
+          </button>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="confirmingAccountDelete.set(false)"
+          >
+            Cancel
+          </button>
+        </div>
+      }
+    </div>
+  </section>
 } @else {
   <section class="panel unavailable">
     <span class="status">Planned</span>
@@ -383,20 +576,6 @@
         Use this page to manage the saved resume used for analysis and matching.
       </p>
       <a routerLink="/app/profile/resume">Open resume management</a>
-    }
-    @if (section === "security") {
-      <h2>Account security tools are coming next</h2>
-      <p>
-        This screen will support authenticated password changes, session
-        history, and signing out other devices.
-      </p>
-    }
-    @if (section === "privacy") {
-      <h2>Privacy controls are coming next</h2>
-      <p>
-        This screen will support a personal-data export and a protected
-        account-deletion workflow.
-      </p>
     }
     <a routerLink="/app/profile">Back to profile &amp; settings</a>
   </section>

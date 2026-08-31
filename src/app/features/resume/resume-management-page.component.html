@@ -43,7 +43,19 @@
         <button type="button" (click)="toggleArchive(resume.id)">
           {{ resume.isArchived ? "Restore" : "Archive" }}
         </button>
-        <button type="button" (click)="delete(resume.id)">Delete resume</button>
+        @if (confirmingDelete() === resume.id) {
+          <span class="confirm-note">Delete this resume permanently?</span>
+          <button type="button" class="confirm-delete" (click)="delete(resume.id)">
+            Yes, delete
+          </button>
+          <button type="button" class="confirm-cancel" (click)="cancelDelete()">
+            Cancel
+          </button>
+        } @else {
+          <button type="button" (click)="requestDelete(resume.id)">
+            Delete resume
+          </button>
+        }
       </div>
     </section>
   }

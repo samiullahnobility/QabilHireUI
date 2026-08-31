@@ -1,0 +1,89 @@
+<header class="view-title">
+  <div>
+    <h1>Seven-day improvement plan</h1>
+    <p>A focused roadmap based on your latest interview.</p>
+  </div>
+  <a mat-stroked-button color="primary" routerLink="/app/interviews/history"
+    >View interview history</a
+  >
+</header>
+
+@if (loading()) {
+  <p class="plan-state">Loading your improvement plan...</p>
+} @else if (!hasPlan() || !plan()) {
+  <div class="plan-state empty">
+    <h2>No improvement plan yet</h2>
+    <p>
+      Complete a mock interview and generate your AI evaluation to receive a
+      focused seven-day plan.
+    </p>
+    <a mat-flat-button color="primary" routerLink="/app/interviews/setup"
+      >Start a mock interview</a
+    >
+  </div>
+} @else {
+  <section class="goal-banner">
+    <div>
+      <p class="goal-label">Readiness goal · {{ plan()!.targetRole }}</p>
+      <p class="goal-value">{{ plan()!.goalFrom }}% → {{ plan()!.goalTo }}%</p>
+      <p class="goal-count">
+        {{ plan()!.completedCount }} of {{ plan()!.items.length }} activities
+        completed
+      </p>
+      <div
+        class="goal-bar"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="progressPercent()"
+      >
+        <span [style.width.%]="progressPercent()"></span>
+      </div>
+    </div>
+    <button mat-flat-button type="button" (click)="startToday()">
+      {{
+        todayItem()?.title?.toLowerCase()?.includes("mock interview")
+          ? "Start today's interview"
+          : "Start today's activity"
+      }}
+    </button>
+  </section>
+
+  <ul class="activity-list">
+    @for (item of plan()!.items; track item.day) {
+      <li
+        class="activity"
+        [class.completed]="item.isCompleted"
+        [class.today]="item.isToday"
+      >
+        <button
+          type="button"
+          class="activity-status"
+          [attr.aria-label]="
+            item.isCompleted
+              ? 'Mark Day ' + item.day + ' as not completed'
+              : 'Mark Day ' + item.day + ' as completed'
+          "
+          [disabled]="toggling() === item.day.toString()"
+          (click)="toggle(item)"
+        >
+          @if (item.isCompleted) {
+            <span class="status-check">✓</span>
+          } @else {
+            <span>{{ item.day }}</span>
+          }
+        </button>
+        <p class="activity-title">
+          <strong>Day {{ item.day }}</strong> · {{ item.title }}
+        </p>
+        <span
+          class="activity-badge"
+          [class.badge-completed]="item.isCompleted"
+          [class.badge-today]="item.isToday"
+        >
+          {{ item.isCompleted ? "Completed" : item.isToday ? "Today" : "Upcoming" }}
+        </span>
+      </li>
+    }
+  </ul>
+}

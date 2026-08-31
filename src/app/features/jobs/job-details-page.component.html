@@ -1,0 +1,75 @@
+<main class="details-page">
+  @if (loading()) {
+    <p class="state-note">Loading job details…</p>
+  } @else {
+    @if (job(); as job) {
+      <section class="details-card">
+      <div class="details-head">
+        <div>
+          <h2>{{ job.title }}</h2>
+          <p class="company">{{ job.company }}</p>
+        </div>
+        <div class="meta-col">
+          <span>{{ job.workType }}</span>
+          @if (job.location) {
+            <span>{{ job.location }}</span>
+          }
+          @if (job.salaryRange) {
+            <span>{{ job.salaryRange }}</span>
+          }
+          <small>Posted by {{ job.recruiterName }}</small>
+        </div>
+      </div>
+      @if (job.requiredSkills.length) {
+        <div class="skills-row">
+          @for (skill of job.requiredSkills; track skill) {
+            <span class="skill-tag">{{ skill }}</span>
+          }
+        </div>
+      }
+      <p class="description">{{ job.description }}</p>
+      <div class="details-actions">
+        @if (job.hasApplied) {
+          @if (confirmingWithdraw()) {
+            <span class="withdraw-note">Withdraw this application?</span>
+            <button mat-flat-button color="warn" type="button" (click)="withdraw()">
+              Yes, withdraw
+            </button>
+            <button mat-stroked-button type="button" (click)="cancelWithdraw()">
+              Cancel
+            </button>
+          } @else {
+            <span class="applied-label">You applied to this job</span>
+            <button mat-stroked-button type="button" (click)="requestWithdraw()">
+              Withdraw application
+            </button>
+          }
+        } @else {
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="busy()"
+            (click)="apply()"
+          >
+            {{ busy() ? "Submitting…" : "Apply now" }}
+          </button>
+        }
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="busy()"
+          (click)="toggleSave()"
+        >
+          {{ job.isSaved ? "Remove from saved" : "Save job" }}
+        </button>
+      </div>
+      </section>
+    } @else {
+      <section class="empty-card">
+        <h2>Job not found</h2>
+        <p>This listing may have been closed or removed.</p>
+      </section>
+    }
+  }
+</main>

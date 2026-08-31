@@ -82,6 +82,30 @@ export class AuthService {
       .pipe(finalize(() => this.clearSession()));
   }
 
+  changePassword(request: {
+    currentPassword: string;
+    newPassword: string;
+  }): Observable<{ message: string; emailEnabled: boolean }> {
+    return this.api.post<
+      { message: string; emailEnabled: boolean },
+      { currentPassword: string; newPassword: string }
+    >("auth/change-password", request);
+  }
+
+  deleteAccount(): Observable<void> {
+    return this.api
+      .delete<void>("auth/account")
+      .pipe(finalize(() => this.clearSession()));
+  }
+
+  exportData(): Observable<unknown> {
+    return this.api.get<unknown>("privacy/export");
+  }
+
+  deleteAllData(): Observable<void> {
+    return this.api.delete<void>("privacy/data");
+  }
+
   clearLocalSession(): void {
     this.clearSession();
   }

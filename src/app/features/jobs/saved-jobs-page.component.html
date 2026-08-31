@@ -1,0 +1,42 @@
+<main class="list-page">
+  @if (loading()) {
+    <p class="state-note">Loading saved jobs…</p>
+  } @else if (jobs().length === 0) {
+    <section class="empty-card">
+      <h2>No saved jobs</h2>
+      <p>Save interesting roles while browsing and find them here.</p>
+      <a mat-flat-button color="primary" routerLink="/app/jobs">Browse jobs</a>
+    </section>
+  } @else {
+    <section class="cards">
+      @for (job of jobs(); track job.id) {
+        <article class="row-card">
+          <div class="row-main">
+            <h2>
+              <a [routerLink]="['/app/jobs', job.jobPostingId]">{{
+                job.jobTitle
+              }}</a>
+            </h2>
+            <p>{{ job.company }}</p>
+            <div class="meta">
+              <span>{{ job.workType }}</span>
+              @if (job.location) {
+                <span>{{ job.location }}</span>
+              }
+              @if (job.salaryRange) {
+                <span>{{ job.salaryRange }}</span>
+              }
+            </div>
+          </div>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="unsave(job.id, job.jobPostingId)"
+          >
+            Remove
+          </button>
+        </article>
+      }
+    </section>
+  }
+</main>

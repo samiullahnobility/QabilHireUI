@@ -48,3 +48,7 @@ export interface ResumeAnalysisData {
   missingKeywords: string[];
   suggestions: string[];
 }
+
+export type ResumeUploadProgress =
+  | { kind: "progress"; percent: number }
+  | { kind: "complete"; resume: ResumeResponse };

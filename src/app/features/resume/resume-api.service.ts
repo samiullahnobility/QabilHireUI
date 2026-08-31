@@ -1,7 +1,8 @@
 import { inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { HttpEventType, HttpResponse } from "@angular/common/http";
+import { filter, map, Observable } from "rxjs";
 import { ApiService } from "../../core/services/api.service";
-import { ResumeResponse } from "./resume-api.models";
+import { ResumeResponse, ResumeUploadProgress } from "./resume-api.models";
 
 @Injectable({ providedIn: "root" })
 export class ResumeApiService {
@@ -17,6 +18,34 @@ export class ResumeApiService {
     const formData = new FormData();
     formData.append("file", file);
     return this.api.postForm<ResumeResponse>("resumes", formData);
+  }
+  uploadWithProgress(file: File): Observable<ResumeUploadProgress> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.api.postFormEvents<ResumeResponse>("resumes", formData).pipe(
+      filter(
+        (event) =>
+          event.type === HttpEventType.UploadProgress ||
+          event.type === HttpEventType.Response,
+      ),
+      map((event): ResumeUploadProgress => {
+        if (event.type === HttpEventType.Response) {
+          const response = event as HttpResponse<ResumeResponse>;
+          return {
+            kind: "complete",
+            resume: response.body ?? ({} as ResumeResponse),
+          };
+        }
+        const progress = event as { loaded?: number; total?: number };
+        return {
+          kind: "progress",
+          percent:
+            progress.total && progress.total > 0
+              ? Math.round((100 * (progress.loaded ?? 0)) / progress.total)
+              : 0,
+        };
+      }),
+    );
   }
   extract(id: string): Observable<ResumeResponse> {
     return this.api.post<ResumeResponse, Record<string, never>>(

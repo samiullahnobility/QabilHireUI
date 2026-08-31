@@ -24,6 +24,45 @@
       </section>
     </div>
   </main>
+} @else if (micBlocked()) {
+  <main class="interview-room dark">
+    <header>
+      <h1>{{ question()?.category }} Interview</h1>
+      <span class="timer-badge warning">Microphone blocked</span>
+    </header>
+    <div class="room-grid">
+      <aside class="interviewer-panel">
+        <div class="ai-circle"></div>
+        <h2>AI Interviewer</h2>
+        <p>Waiting for microphone access</p>
+      </aside>
+      <section class="mic-card">
+        <div class="mic-mark"></div>
+        <h2>Microphone access is required</h2>
+        <p>
+          Voice interviews need your microphone. Allow access in your browser,
+          or continue with typed answers.
+        </p>
+        <div class="mic-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="retryMicrophone()"
+          >
+            Allow microphone
+          </button>
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="useTextAnswer()"
+          >
+            Type my answer instead
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
 } @else if (preparing()) {
   <main class="interview-room dark">
     <header>

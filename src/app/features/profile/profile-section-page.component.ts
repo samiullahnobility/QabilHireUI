@@ -4,13 +4,20 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from "@angular/forms";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSelectModule } from "@angular/material/select";
 import { finalize } from "rxjs";
+import { AuthService } from "../../core/auth/auth.service";
 import { NotificationService } from "../../core/services/notification.service";
 import { ProfileDraftService } from "../onboarding/profile-draft.service";
 
@@ -40,8 +47,10 @@ type ProfileSection =
 })
 export class ProfileSectionPageComponent {
   private readonly draft = inject(ProfileDraftService);
+  private readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
   readonly section = inject(ActivatedRoute).snapshot.data[
     "section"
   ] as ProfileSection;
@@ -479,6 +488,24 @@ export class ProfileSectionPageComponent {
     skills: ["", Validators.required],
     skillLevel: [""],
   });
+  readonly passwordForm = this.fb.nonNullable.group(
+    {
+      currentPassword: ["", Validators.required],
+      newPassword: [
+        "",
+        [Validators.required, Validators.minLength(8), Validators.maxLength(128)],
+      ],
+      confirmPassword: ["", Validators.required],
+    },
+    { validators: this.passwordsMatch },
+  );
+  passwordSubmitted = false;
+  readonly securityBusy = signal(false);
+  readonly exporting = signal(false);
+  readonly confirmingDataDelete = signal(false);
+  readonly deletingData = signal(false);
+  readonly confirmingAccountDelete = signal(false);
+  readonly deletingAccount = signal(false);
 
   constructor() {
     if (this.isEditable) {
@@ -582,6 +609,91 @@ export class ProfileSectionPageComponent {
         error: (error) =>
           this.notifications.error(error, "Unable to update your profile."),
       });
+  }
+  changePassword(): void {
+    this.passwordSubmitted = true;
+    if (this.passwordForm.invalid || this.securityBusy()) {
+      return;
+    }
+    this.securityBusy.set(true);
+    this.auth
+      .changePassword(this.passwordForm.getRawValue())
+      .pipe(finalize(() => this.securityBusy.set(false)))
+      .subscribe({
+        next: (response) => {
+          this.notifications.success(response.message);
+          this.auth.clearLocalSession();
+          this.router.navigate(["/auth/login"]);
+        },
+        error: (error) =>
+          this.notifications.error(error, "Unable to change your password."),
+      });
+  }
+  exportData(): void {
+    if (this.exporting()) {
+      return;
+    }
+    this.exporting.set(true);
+    this.auth
+      .exportData()
+      .pipe(finalize(() => this.exporting.set(false)))
+      .subscribe({
+        next: (data) => {
+          const blob = new Blob([JSON.stringify(data, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const anchor = document.createElement("a");
+          anchor.href = url;
+          anchor.download = "qabilhire-data-export.json";
+          anchor.click();
+          URL.revokeObjectURL(url);
+          this.notifications.success("Your data export was downloaded.");
+        },
+        error: (error) =>
+          this.notifications.error(error, "Unable to export your data."),
+      });
+  }
+  deleteAllData(): void {
+    if (this.deletingData()) {
+      return;
+    }
+    this.deletingData.set(true);
+    this.auth
+      .deleteAllData()
+      .pipe(finalize(() => this.deletingData.set(false)))
+      .subscribe({
+        next: () => {
+          this.confirmingDataDelete.set(false);
+          this.notifications.success("All of your stored data was deleted.");
+        },
+        error: (error) =>
+          this.notifications.error(error, "Unable to delete your data."),
+      });
+  }
+  deleteAccount(): void {
+    if (this.deletingAccount()) {
+      return;
+    }
+    this.deletingAccount.set(true);
+    this.auth
+      .deleteAccount()
+      .pipe(finalize(() => this.deletingAccount.set(false)))
+      .subscribe({
+        next: () => {
+          this.notifications.success("Your account was deleted.");
+          this.router.navigate(["/"]);
+        },
+        error: (error) =>
+          this.notifications.error(error, "Unable to delete your account."),
+      });
+  }
+  private passwordsMatch(group: AbstractControl): ValidationErrors | null {
+    const password = group.get("newPassword")?.value;
+    const confirm = group.get("confirmPassword")?.value;
+    return password && confirm && password !== confirm
+      ? { mismatch: true }
+      : null;
   }
   private syncSkills(): void {
     this.form.controls.skills.setValue([...this.selectedSkills].join(", "), {

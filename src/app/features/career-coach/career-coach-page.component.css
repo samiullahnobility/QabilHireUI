@@ -1,0 +1,138 @@
+.coach {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 190px);
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 28px 16px;
+}
+.coach-intro {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+  padding: 72px 32px 40px;
+  text-align: center;
+}
+.intro-mark {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: #0a5f4e;
+  color: #fff;
+  font-size: 36px;
+  font-weight: 800;
+}
+.coach-intro h2 {
+  max-width: 620px;
+  margin: 0;
+  color: #0f172a;
+  font-size: 24px;
+  line-height: 1.45;
+}
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.quick-chip {
+  padding: 12px 20px;
+  border: 1px solid #b8e9d6;
+  border-radius: 999px;
+  background: #f0faf6;
+  color: #0a5f4e;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.quick-chip:hover {
+  background: #dcf3ea;
+  transform: translateY(-1px);
+}
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+  padding: 8px 0 24px;
+}
+.bubble {
+  max-width: 78%;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+}
+.bubble.user {
+  align-self: flex-end;
+  border-color: transparent;
+  background: #0a5f4e;
+}
+.bubble-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #0a5f4e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.bubble.user .bubble-label {
+  color: #b8e9d6;
+}
+.bubble p {
+  margin: 0;
+  color: #1e293b;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.bubble.user p {
+  color: #fff;
+}
+.thinking {
+  color: #64748b !important;
+  font-style: italic;
+}
+.coach-input {
+  display: flex;
+  gap: 12px;
+  position: sticky;
+  bottom: 0;
+  padding: 12px 0 20px;
+  background: var(--bg, #f8fafc);
+}
+.coach-input input {
+  flex: 1;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+}
+.coach-input input:focus {
+  outline: 2px solid #0a5f4e;
+  outline-offset: 1px;
+}
+.coach-input button {
+  border-radius: 999px;
+  padding: 0 26px;
+}
+@media (max-width: 640px) {
+  .coach {
+    padding: 16px 14px 8px;
+    min-height: calc(100vh - 160px);
+  }
+  .bubble {
+    max-width: 92%;
+  }
+  .coach-intro {
+    padding-top: 40px;
+  }
+}

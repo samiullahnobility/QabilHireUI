@@ -1,6 +1,9 @@
 <header class="interview-title">
-  <h1>Configure your interview</h1>
-  <p>Choose practice or realistic simulation</p>
+  <div>
+    <h1>Configure your interview</h1>
+    <p>Choose practice or realistic simulation</p>
+  </div>
+  <a routerLink="/app/interviews/history">View interview history</a>
 </header>
 
 <form class="setup-layout" [formGroup]="form" (ngSubmit)="submit()">

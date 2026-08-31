@@ -1,0 +1,52 @@
+<main class="coach">
+  @if (messages().length === 0) {
+    <section class="coach-intro">
+      <div class="intro-mark">Q</div>
+      <h2>
+        Ask about your career — every answer is grounded in your profile, resume,
+        and match history.
+      </h2>
+      <div class="quick-actions">
+        @for (prompt of quickPrompts; track prompt) {
+          <button type="button" class="quick-chip" (click)="send(prompt)">
+            {{ prompt }}
+          </button>
+        }
+      </div>
+    </section>
+  }
+  <section class="thread" aria-live="polite">
+    @for (message of messages(); track $index) {
+      <article class="bubble" [class.user]="message.role === 'user'">
+        <span class="bubble-label">{{
+          message.role === "user" ? "You" : "Career Coach"
+        }}</span>
+        <p>{{ message.content }}</p>
+      </article>
+    }
+    @if (busy()) {
+      <article class="bubble">
+        <span class="bubble-label">Career Coach</span>
+        <p class="thinking">Thinking…</p>
+      </article>
+    }
+  </section>
+  <form class="coach-input" (ngSubmit)="send()">
+    <input
+      type="text"
+      [(ngModel)]="draft"
+      name="draft"
+      placeholder="Ask your career coach…"
+      aria-label="Ask your career coach"
+      [disabled]="busy()"
+    />
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="busy() || !draft.trim()"
+    >
+      Send
+    </button>
+  </form>
+</main>

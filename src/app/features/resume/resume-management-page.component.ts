@@ -24,6 +24,7 @@ export class ResumeManagementPageComponent {
   readonly loading = signal(true);
   readonly resumes = signal<ResumeResponse[]>([]);
   readonly working = signal<string | null>(null);
+  readonly confirmingDelete = signal<string | null>(null);
 
   constructor() {
     this.refresh();
@@ -41,7 +42,16 @@ export class ResumeManagementPageComponent {
       });
   }
 
+  requestDelete(id: string): void {
+    this.confirmingDelete.set(id);
+  }
+
+  cancelDelete(): void {
+    this.confirmingDelete.set(null);
+  }
+
   delete(id: string): void {
+    this.confirmingDelete.set(null);
     this.working.set("Deleting resume...");
     this.api
       .delete(id)

@@ -1,0 +1,113 @@
+<header class="view-title">
+  <div>
+    <a routerLink="/app/interviews/setup">← Configure a new interview</a>
+    <h1>Interview history</h1>
+    <p>Review every practice interview you have completed.</p>
+  </div>
+  <div class="header-actions">
+    <a mat-stroked-button routerLink="/app/interviews/compare"
+      >Compare attempts</a
+    >
+    <a mat-flat-button color="primary" routerLink="/app/interviews/setup"
+      >Start new interview</a
+    >
+  </div>
+</header>
+<section class="history-card">
+  <div class="history-filters">
+    <mat-form-field appearance="outline"
+      ><mat-label>Search interviews</mat-label
+      ><input
+        matInput
+        type="search"
+        placeholder="Target role"
+        [value]="search()"
+        (input)="search.set($any($event.target).value)"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>Type</mat-label
+      ><mat-select [value]="type()" (selectionChange)="type.set($event.value)"
+        ><mat-option value="all">All types</mat-option>
+        @for (item of ["HR", "Technical", "Behavioral", "Project-based", "Mixed"]; track item) {
+          <mat-option [value]="item">{{ item }}</mat-option>
+        }</mat-select
+      ></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>Status</mat-label
+      ><mat-select [value]="status()" (selectionChange)="status.set($event.value)"
+        ><mat-option value="all">All statuses</mat-option>
+        @for (item of ["Ready", "InProgress", "Completed", "Evaluated"]; track item) {
+          <mat-option [value]="item">{{ item }}</mat-option>
+        }</mat-select
+      ></mat-form-field
+    >
+    <button mat-stroked-button type="button" (click)="clearFilters()">
+      Clear filters
+    </button>
+  </div>
+  @if (loading()) {
+    <p class="history-state">Loading your interviews...</p>
+  } @else if (filteredSessions().length) {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Interview</th>
+            <th>Type</th>
+            <th>Score</th>
+            <th>Date</th>
+            <th><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredSessions(); track item.id) {
+            <tr>
+              <td>
+                <strong>{{ item.targetRole }}</strong>
+                <span
+                  class="status-badge"
+                  [class.in-progress]="item.status === 'InProgress'"
+                  [class.completed]="item.status === 'Completed'"
+                  [class.evaluated]="item.status === 'Evaluated'"
+                  >{{ item.status }}</span
+                >
+              </td>
+              <td>{{ item.category }}</td>
+              <td>
+                <strong>{{ item.score ?? "—" }}</strong>
+                @if (item.score !== null && item.score !== undefined) {
+                  <span class="score-percent">%</span>
+                }
+              </td>
+              <td>{{ formatDate(item.createdAtUtc) }}</td>
+              <td>
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  type="button"
+                  [disabled]="generating() === item.id"
+                  (click)="open(item)"
+                >
+                  {{
+                    generating() === item.id
+                      ? "Generating results…"
+                      : actionFor(item).label
+                  }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="history-state">
+      <h2>No interviews found</h2>
+      <p>Complete a mock interview to see your history here.</p>
+      <a mat-flat-button color="primary" routerLink="/app/interviews/setup"
+        >Start a mock interview</a
+      >
+    </div>
+  }
+</section>

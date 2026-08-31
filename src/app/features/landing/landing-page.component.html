@@ -2,12 +2,12 @@
   <section class="hero">
     <div class="hero-copy">
       <mat-chip class="tag" color="primary" selected
-        >AI-powered interview preparation</mat-chip
+        >AI-powered career preparation</mat-chip
       >
       <h1>Practice smarter. Improve faster.<br />Interview with confidence.</h1>
       <p>
-        Analyze your resume, measure job fit, practice adaptive AI interviews,
-        and follow a personalized improvement plan.
+        Analyze your resume, find matching roles, practice adaptive AI
+        interviews, and follow a personalized improvement plan.
       </p>
       <div class="actions">
         <a mat-flat-button color="primary" routerLink="/auth/register"
@@ -23,7 +23,7 @@
         <div class="stats">
           <mat-card class="stat" appearance="outlined">
             <div class="dot green"></div>
-            <div><strong>82%</strong><span>Overall readiness</span></div>
+            <div><strong>{{ readiness() }}%</strong><span>Overall readiness</span></div>
           </mat-card>
           <mat-card class="stat" appearance="outlined">
             <div class="dot blue"></div>
@@ -34,55 +34,64 @@
           <span>Readiness</span
           ><mat-progress-bar
             mode="determinate"
-            value="82"
+            [value]="readiness()"
             color="accent"
           ></mat-progress-bar
-          ><b>82%</b>
+          ><b>{{ readiness() }}%</b>
         </div>
         <div class="metric">
           <span>Communication</span
-          ><mat-progress-bar mode="determinate" value="74"></mat-progress-bar
-          ><b>74%</b>
+          ><mat-progress-bar
+            mode="determinate"
+            [value]="communication()"
+          ></mat-progress-bar
+          ><b>{{ communication() }}%</b>
         </div>
         <div class="metric">
           <span>Confidence</span
           ><mat-progress-bar
             mode="determinate"
-            value="68"
+            [value]="confidence()"
             color="warn"
           ></mat-progress-bar
-          ><b>68%</b>
+          ><b>{{ confidence() }}%</b>
         </div>
       </mat-card-content>
     </mat-card>
   </section>
 
   <section class="cards">
-    <mat-card class="card" appearance="outlined"
+    <mat-card class="card" appearance="outlined" appReveal
+      ><h3>Search jobs</h3>
+      <p>
+        Browse open roles matched to your profile and apply in one click.
+      </p></mat-card
+    >
+    <mat-card class="card" appearance="outlined" appReveal [delay]="60"
       ><h3>Analyze</h3>
       <p>
         Identify your strengths, skills, and areas that need improvement.
       </p></mat-card
     >
-    <mat-card class="card" appearance="outlined"
+    <mat-card class="card" appearance="outlined" appReveal [delay]="120"
       ><h3>Match</h3>
       <p>
         Compare your profile with the requirements of your target role.
       </p></mat-card
     >
-    <mat-card class="card" appearance="outlined"
+    <mat-card class="card" appearance="outlined" appReveal [delay]="180"
       ><h3>Practice</h3>
       <p>
         Prepare with interview questions relevant to your target position.
       </p></mat-card
     >
-    <mat-card class="card" appearance="outlined"
+    <mat-card class="card" appearance="outlined" appReveal [delay]="240"
       ><h3>Evaluate</h3>
       <p>
         Review your interview performance and identify improvement areas.
       </p></mat-card
     >
-    <mat-card class="card" appearance="outlined"
+    <mat-card class="card" appearance="outlined" appReveal [delay]="300"
       ><h3>Improve</h3>
       <p>
         Follow personalized recommendations to strengthen your readiness.
@@ -91,7 +100,7 @@
   </section>
 
   <section class="home-section" id="features">
-    <div>
+    <div appReveal>
       <span class="section-label">Features</span>
       <h2>One workspace for focused interview preparation.</h2>
       <p>
@@ -101,29 +110,79 @@
       <a mat-stroked-button routerLink="/features">Explore all features</a>
     </div>
     <img
+      appReveal
+      [delay]="120"
       src="/assets/images/interview-coaching.png"
       alt="Candidate using QabilHire interview coaching"
     />
   </section>
 
+  <section class="home-section reverse" id="jobs">
+    <div appReveal>
+      <span class="section-label">Job marketplace</span>
+      <h2>From practice to the right job posting.</h2>
+      <p>
+        Search active roles, see how well your profile matches, apply in one
+        click, and track every application — with saved jobs for later.
+      </p>
+      <ul class="feature-list">
+        <li>Match percentage on every role</li>
+        <li>One-click apply and withdraw</li>
+        <li>Save roles to revisit anytime</li>
+      </ul>
+      <a mat-stroked-button routerLink="/features">See all features</a>
+    </div>
+    <img
+      appReveal
+      [delay]="120"
+      src="/assets/images/job-marketplace.png"
+      alt="Job marketplace with match scores and applications"
+    />
+  </section>
+
+  <section class="home-section" id="coach">
+    <div appReveal>
+      <span class="section-label">Career coach</span>
+      <h2>Keep improving between interviews.</h2>
+      <p>
+        Ask your personal AI coach anything — grounded in your profile, resume,
+        and results. Compare attempts side by side to see exactly what changed.
+      </p>
+      <ul class="feature-list">
+        <li>Answers grounded in your data</li>
+        <li>Attempt comparison with score deltas</li>
+        <li>Seven-day improvement plan</li>
+      </ul>
+      <a mat-stroked-button routerLink="/how-it-works">See the process</a>
+    </div>
+    <img
+      appReveal
+      [delay]="120"
+      src="/assets/images/career-coach.png"
+      alt="AI career coach chat with improvement plan"
+    />
+  </section>
+
   <section class="home-section reverse" id="how-it-works">
-    <div>
+    <div appReveal>
       <span class="section-label">How it works</span>
-      <h2>Go from resume to interview-ready in four steps.</h2>
+      <h2>Go from resume to interview-ready — and your next role.</h2>
       <p>
         Add your context, review your match, practice realistic questions, and
-        act on feedback at your own pace.
+        act on feedback — then find roles and track your growth.
       </p>
       <a mat-stroked-button routerLink="/how-it-works">See the process</a>
     </div>
     <img
+      appReveal
+      [delay]="120"
       src="/assets/images/how-it-works.png"
-      alt="Four-step interview preparation journey"
+      alt="Six-step interview preparation journey"
     />
   </section>
 
   <section class="home-section" id="benefits">
-    <div>
+    <div appReveal>
       <span class="section-label">Benefits</span>
       <h2>Spend less time guessing and make every practice count.</h2>
       <p>
@@ -133,12 +192,14 @@
       <a mat-stroked-button routerLink="/benefits">View the benefits</a>
     </div>
     <img
+      appReveal
+      [delay]="120"
       src="/assets/images/candidate-benefits.png"
       alt="Candidate celebrating improved interview readiness"
     />
   </section>
 
-  <section class="trust-strip" id="responsible-ai">
+  <section class="trust-strip" id="responsible-ai" appReveal>
     <div>
       <span class="section-label">Responsible AI</span>
       <h2>AI coaching that keeps people in control.</h2>

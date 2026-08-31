@@ -87,3 +87,15 @@
 .resume-actions button {
   background: #ef4444;
 }
+.confirm-note {
+  display: inline-flex;
+  align-items: center;
+  color: #b91c1c;
+  font-weight: 700;
+}
+.confirm-delete {
+  background: #b91c1c;
+}
+.confirm-cancel {
+  background: #64748b;
+}

@@ -14,6 +14,7 @@ export interface InterviewSession {
   mode: string;
   responseMode: string;
   status: string;
+  score?: number | null;
   questionCount: number;
   createdAtUtc: string;
   updatedAtUtc: string;
@@ -75,4 +76,23 @@ export interface InterviewResult {
   summary: string;
   roadmap: string[];
   questions: InterviewQuestionFeedback[];
+}
+
+export interface ImprovementPlanItem {
+  id: string;
+  day: number;
+  title: string;
+  isCompleted: boolean;
+  isToday: boolean;
+  completedAtUtc?: string | null;
+}
+
+export interface ImprovementPlan {
+  id: string;
+  sessionId: string;
+  targetRole: string;
+  goalFrom: number;
+  goalTo: number;
+  completedCount: number;
+  items: ImprovementPlanItem[];
 }

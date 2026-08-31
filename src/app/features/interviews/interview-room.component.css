@@ -283,6 +283,43 @@
 .network-card button {
   margin-top: 30px;
 }
+.mic-card {
+  display: flex;
+  min-height: 330px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+}
+.dark .mic-card {
+  background: #1e293b;
+}
+.mic-mark {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+.mic-card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+.mic-card p {
+  margin: 0;
+  color: #94a3b8;
+}
+.mic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 30px;
+}
 .room-state {
   padding: 60px;
   border: 1px solid var(--border);

@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpEvent, HttpRequest } from "@angular/common/http";
 import { defer, finalize, Observable } from "rxjs";
 import { API_BASE_URL } from "../configuration/api.config";
 import { ApiActivityService } from "./api-activity.service";
@@ -31,6 +31,20 @@ export class ApiService {
       this.http.post<TResponse>(`${API_BASE_URL}/${path}`, body, {
         withCredentials: true,
       }),
+    );
+  }
+
+  postFormEvents<TResponse>(
+    path: string,
+    body: FormData,
+  ): Observable<HttpEvent<TResponse>> {
+    return this.track(path, "POST", () =>
+      this.http.request<TResponse>(
+        new HttpRequest("POST", `${API_BASE_URL}/${path}`, body, {
+          withCredentials: true,
+          reportProgress: true,
+        }),
+      ),
     );
   }
 
@@ -70,6 +84,14 @@ export class ApiService {
     if (path === "auth/forgot-password")
       return "Sending your password-reset email...";
     if (path === "auth/reset-password") return "Resetting your password...";
+    if (path === "auth/change-password") return "Changing your password...";
+    if (path === "auth/account" && method === "DELETE")
+      return "Deleting your account...";
+    if (path.startsWith("dashboard") && method === "GET")
+      return "Loading your dashboard...";
+    if (path === "privacy/export") return "Preparing your data export...";
+    if (path === "privacy/data" && method === "DELETE")
+      return "Deleting your stored data...";
     if (/resumes\/[^/]+\/extract$/.test(path))
       return "Extracting your resume with AI...";
     if (/resumes\/[^/]+\/analyze$/.test(path))
@@ -99,6 +121,10 @@ export class ApiService {
       return "Generating your interview questions with AI...";
     if (path.startsWith("interviews") && method === "GET")
       return "Loading your interview...";
+    if (path.startsWith("improvement-plans") && method === "GET")
+      return "Loading your improvement plan...";
+    if (path.startsWith("improvement-plans") && method === "PUT")
+      return "Updating your improvement plan...";
     if (/interviews\/[^/]+\/start$/.test(path))
       return "Starting your interview...";
     if (/interviews\/[^/]+\/answers$/.test(path))

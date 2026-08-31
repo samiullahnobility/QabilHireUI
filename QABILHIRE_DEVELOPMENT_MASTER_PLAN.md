@@ -559,7 +559,7 @@ This work starts only after Stage A is complete.
 
 - [ ] Refine and quality-test the Qwen interview-question generation introduced in Phase 8.
 - [x] Integrate Alibaba `qwen3-asr-flash` for short interview-answer transcription using temporary private Supabase storage and immediate cleanup.
-- [ ] Allow transcript review and correction before evaluation.
+- [x] Allow transcript review and correction before evaluation (the interview room places the transcript in an editable answer textarea before submit).
 - [ ] Evaluate answers with structured rubrics.
 - [ ] Generate overall interview summary.
 - [ ] Generate the seven-day improvement plan.
@@ -703,13 +703,13 @@ Only one item should normally be marked **In progress**.
 | P0       | Rotate and remove all exposed credentials                                          | Deferred by owner               | Repository scan, local API start, provider checks, deployed health check      |
 | P1       | Implement AI interview setup, persisted session, and five Qwen-generated questions | Implemented                     | API/UI production builds, migration, schema validation, ownership checks      |
 | P2       | Build microphone test and interview room with typed fallback                       | Implemented                     | API/UI builds, migration, five-question persisted typed flow                  |
-| P3       | Implement AI interview evaluation and Figma result screens                         | **Next**                        | Completed session through question-level results                              |
-| P4       | Implement seven-day improvement plan and progress tracking                         | Pending                         | Results-to-plan flow and persisted completion state                           |
-| P5       | Complete dashboard summary API and real recent activity                            | Pending                         | New/returning candidate dashboard states                                      |
-| P6       | Finish resume and AI-output hardening                                              | Partially implemented           | File signatures, storage deletion, strict output validation, end-to-end tests |
-| P7       | Complete authentication, shell, settings, and privacy gaps                         | Partially implemented           | Manual verification, responsive/accessibility checks, API tests               |
-| P8       | Harden and verify the complete MVP                                                 | Pending                         | Full automated critical path and deployment verification                      |
-| P9       | Integrate Alibaba speech services                                                  | Blocked by interview foundation | Speech failure and typed-fallback tests                                       |
+| P3       | Implement AI interview evaluation and Figma result screens                         | Implemented                     | Completed session through question-level results                              |
+| P4       | Implement seven-day improvement plan and progress tracking                         | Implemented                     | Results-to-plan flow and persisted completion state                           |
+| P5       | Complete dashboard summary API and real recent activity                            | Implemented                     | New/returning candidate dashboard states                                      |
+| P6       | Finish resume and AI-output hardening                                              | Implemented                     | File signatures, storage deletion, strict output validation, end-to-end tests |
+| P7       | Complete authentication, shell, settings, and privacy gaps                         | Implemented                     | Manual verification, responsive/accessibility checks, API tests               |
+| P8       | Harden and verify the complete MVP                                                 | Partially implemented           | Full automated critical path and deployment verification                      |
+| P9       | Integrate Alibaba speech services                                                  | Implemented                      | Manual speech check; failure and typed-fallback tests (excluded)              |
 
 ## 21. Progress Update Template
 
@@ -1344,3 +1344,188 @@ Verified:
 
 - Release API build completed with zero warnings and zero errors.
 - Angular production build completed successfully.
+
+### 2026-08-29 - Interview history and seven-day improvement plan
+
+Status: Implemented; database deployment verification required
+
+Implemented:
+
+- Added interview history page listing every interview with type, score, date, and status-aware actions (view results, generate results, continue, start).
+- Added interview session list score from stored evaluation averages.
+- Added deterministic seven-day improvement plan generated from the stored four-item results roadmap plus fixed communication, mock interview, and review days.
+- Added ImprovementPlan and ImprovementPlanItem entities with completion tracking endpoints and the AddImprovementPlans EF Core migration.
+- Added Figma-aligned Progress screen with readiness goal banner, progress bar, and Completed/Today/Upcoming daily activity statuses.
+- Added results-to-plan navigation and interview history link from the Progress screen.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors.
+- Angular production build completed successfully.
+
+Remaining:
+
+- Apply the AddImprovementPlans migration to the deployed database.
+- Then implement Phase 11 account settings, privacy, and deletion controls.
+
+### 2026-08-29 - Account settings, privacy, and deletion controls
+
+Status: Implemented; database deployment verification required
+
+Implemented:
+
+- Added authenticated change-password endpoint that revokes refresh tokens, clears the session cookie, and optionally sends a confirmation email.
+- Added authenticated account-deletion endpoint that removes the identity record and uploaded resume files.
+- Added PrivacyController with personal-data export (JSON) and delete-all-data endpoints that purge every owned record in FK-safe order.
+- Added Figma 20-aligned Password & security screen with current/new/confirm password validation and sign-out-on-change behavior.
+- Added Figma 39-aligned Privacy & data screen with consent summary, JSON data export download, and two-step delete-my-data and delete-my-account confirmations.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors.
+- Angular production build completed successfully.
+
+Remaining:
+
+- Apply the AddImprovementPlans migration to the deployed database.
+
+### 2026-08-29 - Resume/AI-output hardening and auth/shell/privacy gap fixes
+
+Status: Implemented; database deployment verification required
+
+Implemented:
+
+- P6: Added PDF/DOCX magic-byte signature validation, server-controlled storage paths, storage rollback when the upload database save fails, and storage-object deletion when a resume is deleted.
+- P6: Extraction failures now persist a Failed resume status; AI extraction and analysis outputs are strictly validated (structure, score ranges, required lists) before persistence.
+- P6: Resume upload now supports drag-and-drop, client-side file validation, byte-level upload progress, extraction retry from the resume library, and two-step delete confirmation on the management screen.
+- P7: Account deletion now purges every owned record in FK-safe order before removing the identity record (previously failed for users with data).
+- P7: Reset-password screen now enforces the 8-character minimum and password-match validation with inline errors.
+- P7: Candidate shell nav links expose aria-current for screen readers; logout always returns to the login screen even when the logout call fails.
+
+Verified:
+
+- API compile check completed with zero warnings and zero errors.
+- Angular type-check (tsc --noEmit) completed with zero errors.
+
+Remaining:
+
+- Apply the AddImprovementPlans migration to the deployed database.
+- Run end-to-end upload/extraction and auth-flow verification against the deployed API.
+
+### 2026-08-29 - P8 MVP hardening subset: security headers, AI rate limits, and audits
+
+Status: Implemented; tests and deployment verification pending
+
+Implemented:
+
+- Added SecurityHeadersMiddleware applying X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, Cross-Origin-Opener-Policy, Strict-Transport-Security (HTTPS only), and a Content-Security-Policy (strict for API responses, Swagger-compatible for docs paths).
+- Added an AiProvider fixed-window rate limit (default 10/minute, configurable) applied to every AI-calling endpoint: resume extract, resume analyze, job-match create, interview create, interview evaluate, and audio transcribe.
+- Verified the CORS policy uses an explicit origin allowlist with credentials and the configured origins are present.
+- Audited every controller endpoint for candidate ownership filters (profile, resume, job-match, interview, improvement-plan, dashboard, privacy) with no gaps found.
+- Verified request logging and the global exception handler emit no sensitive content (method/path/status/trace only).
+
+Verified:
+
+- API compile check completed with zero warnings and zero errors.
+
+Remaining:
+
+- Automated API integration, Angular unit, and Playwright critical-path tests (deferred per owner instruction).
+- Desktop/tablet/mobile layout and keyboard-only/focus manual passes against the running app.
+- Migrations-from-empty-database and production deployment verification.
+
+### 2026-08-29 - Critical P8 leftovers: route lazy-loading and upload Remove confirmation
+
+Status: Implemented; production build verification pending
+
+Implemented:
+
+- Converted every feature route (public, auth, onboarding, and app sections) to loadComponent lazy loading while keeping the two layouts and guards eager; all route data (titles, subtitles, hideSearch) and canDeactivate/canActivate guards preserved.
+- Added a two-step confirmation (Yes, remove / Cancel) to the resume library Remove action on the upload screen, matching the management screen behavior.
+
+Verified:
+
+- Angular type-check (tsc --noEmit) completed with zero errors.
+
+Remaining:
+
+- Run the Angular production build and smoke-test navigation between lazy routes.
+- Apply the AddImprovementPlans migration to the deployed database.
+
+### 2026-08-29 - Dedicated auth layout and P9 speech remainder verification
+
+Status: Implemented; production build verification pending
+
+Implemented:
+
+- Added a dedicated AuthLayoutComponent (bare router-outlet shell) so auth pages render without the public marketing topbar; moved login, register, forgot-password, and reset-password under the top-level auth route group with URLs unchanged, and updated the shared auth-layout to use 100vh now that the topbar no longer applies.
+- Verified the P9 transcript review item: the interview room already places the ASR transcript into the editable answer textarea for correction before submit, so the remaining speech gap is closed; marked Phase 15 done and promoted P9 to Implemented in the queue.
+
+Verified:
+
+- Angular type-check (tsc --noEmit) completed with zero errors.
+
+Remaining:
+
+- Run the Angular production build and visually verify all four auth screens without the marketing topbar.
+- Apply the AddImprovementPlans migration to the deployed database.
+### 2026-08-29 - AI Career Coach screen and microphone-permission error state
+
+Status: Implemented; production build verification pending
+
+Implemented:
+
+- Added a backend career-coach endpoint (CareerCoachController, CareerCoachAdvisor) that grounds advice in the candidate's profile, latest resume, and recent job matches; extended AlibabaChatCompletionClient with a plain-text completion path and applied the AiProvider rate limit.
+- Added the Career Coach screen (Figma 19): chat UI with quick prompts, optimistic message append, and context-aware replies; wired the existing nav link to /app/career-coach.
+- Added a dedicated microphone-permission error state in the interview room (Figma 34): a NotAllowedError from getUserMedia now renders a dedicated explanation screen with Retry microphone and Type my answers instead actions.
+
+Verified:
+
+- API compile check completed with zero warnings and zero errors.
+- Angular type-check (tsc --noEmit) completed with zero errors.
+
+Remaining:
+
+- Run the Angular production build and exercise the career-coach chat and mic-error fallback flows against the deployed API.
+
+### 2026-08-29 - Job marketplace, recruiter dashboard, admin RBAC, and attempt comparison
+
+Status: Implemented; EF migration and production build verification pending
+
+Implemented:
+
+- Added JobPosting, JobApplication, and SavedJob entities with EF Fluent configuration (jsonb skills, unique application/save indexes, cascades) plus repository and unit-of-work wiring.
+- Added candidate marketplace endpoints (search, detail, apply/withdraw, save/unsave, applications, saved jobs), recruiter endpoints (CRUD and applicants with counts), and admin endpoints (user list, role change, account lock, role catalog) with ownership filtering and self-protection guards.
+- Seeded Candidate, Recruiter, and Admin roles with five demo users (recruiter@qabilhire.com and admin@qabilhire.com added).
+- Built the job marketplace screens (Figma 21-24: search, details, applications, saved jobs), recruiter dashboard (Figma 25), user management and roles screens (Figma 26-27), and compare interview attempts (Figma 38) with a delta column for score changes.
+- Added a withRoles route guard, role-filtered navigation, a role-aware profile-complete guard (Recruiter/Admin bypass candidate onboarding), and wired eight new lazy routes; added a Compare attempts entry point on interview history.
+
+Verified:
+
+- API compile check completed with zero warnings and zero errors.
+- Angular type-check (tsc --noEmit) completed with zero errors.
+
+Remaining:
+
+- Generate and apply a new EF migration for JobPosting, JobApplication, and SavedJob on the deployed database.
+- Run the Angular production build and smoke-test marketplace, recruiter, and admin flows with seeded demo users.
+- Apply the AddImprovementPlans migration to the deployed database.
+### 2026-08-29 - Landing pages updated for the new workflow with animations
+
+Status: Implemented; production build verification pending
+
+Implemented:
+
+- Updated the landing page for the expanded workflow: hero copy now mentions finding matching roles, a Search jobs card joins the workflow cards row, and two new sections cover the job marketplace (search, match, apply, saved jobs) and the AI career coach with attempt comparison.
+- Generated two new marketing illustrations in the existing style (job-marketplace.png, career-coach.png) and added them to the assets.
+- Updated the features page with three new cards (job marketplace, application tracking, AI career coach) and the how-it-works page with two new steps (find your next role, track your growth), now six steps.
+- Added a reusable RevealDirective (IntersectionObserver scroll reveal with optional stagger delay) and global reveal styles, applied across the landing, features, and how-it-works pages.
+- Added load animations: hero entrance with staggered preview, animated hero metric progress bars, floating preview card, pulsing stat dots, card hover lift, image hover zoom, animated trust-strip gradient, and prefers-reduced-motion support.
+
+Verified:
+
+- Angular type-check (tsc --noEmit) completed with zero errors.
+
+Remaining:
+
+- Run the Angular production build and visually verify the landing, features, and how-it-works pages across breakpoints.

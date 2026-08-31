@@ -1,7 +1,7 @@
 .auth {
   position: relative;
   isolation: isolate;
-  min-height: calc(100vh - 76px);
+  min-height: 100vh;
   display: grid;
   grid-template-columns: minmax(500px, 44%) 1fr;
   background: #064e3b;

@@ -5,10 +5,12 @@
     >
     <p class="section-label">AI CAREER PREPARATION</p>
     <nav aria-label="Candidate navigation">
-      @for (item of navItems; track item.link) {
+      @for (item of visibleNavItems(); track item.link) {
         <a
           [routerLink]="item.link"
           routerLinkActive="active"
+          #navLink="routerLinkActive"
+          [attr.aria-current]="navLink.isActive ? 'page' : null"
           (click)="onNavClick($event, item)"
           >{{ item.label }}</a
         >

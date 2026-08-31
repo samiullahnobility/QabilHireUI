@@ -68,6 +68,13 @@
           <li>{{ item }}</li>
         }
       </ol>
+      <a
+        mat-flat-button
+        color="primary"
+        [routerLink]="['/app/progress']"
+        [queryParams]="{ session: r.sessionId }"
+        >Start my seven-day plan</a
+      >
     </section>
   </section>
 }

@@ -1,0 +1,104 @@
+.details-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 28px 40px;
+}
+.state-note {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+.details-card {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #fff;
+}
+.details-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.details-head h2 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  line-height: 1.25;
+}
+.company {
+  margin: 0;
+  color: #0a5f4e;
+  font-weight: 700;
+}
+.meta-col {
+  display: grid;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: right;
+}
+.meta-col small {
+  color: #94a3b8;
+}
+.skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0;
+}
+.skill-tag {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #f0faf6;
+  color: #0a5f4e;
+  font-size: 13px;
+  font-weight: 700;
+}
+.description {
+  color: #334155;
+  font-size: 16px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.details-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.applied-label {
+  color: #0b8a5b;
+  font-weight: 700;
+}
+.withdraw-note {
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 700;
+}
+.empty-card {
+  padding: 48px;
+  border: 1px dashed var(--border);
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+}
+.empty-card h2 {
+  margin: 0 0 8px;
+}
+.empty-card p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+@media (max-width: 640px) {
+  .details-page {
+    padding: 16px 14px 32px;
+  }
+  .details-head {
+    flex-direction: column;
+  }
+  .meta-col {
+    text-align: left;
+  }
+}

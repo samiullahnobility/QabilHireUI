@@ -1,49 +1,131 @@
-<header class="view-title">
-  <h1>Good morning, {{ firstName }}</h1>
-  <p>Your next best preparation actions</p>
-</header>
-<section class="readiness">
-  <div><small>Job-readiness score</small><strong>82%</strong></div>
-  <p>
-    Focus next on system-design communication and quantified resume
-    achievements.
-  </p>
-  <a routerLink="/app/interviews/setup">Start Mock Interview</a>
-</section>
-<section class="metrics" aria-label="Candidate metrics">
-  <article>
-    <i class="blue"></i><strong>76%</strong><span>Resume score</span>
-  </article>
-  <article>
-    <i class="mint"></i><strong>84%</strong><span>Current job match</span>
-  </article>
-  <article>
-    <i class="green"></i><strong>12</strong><span>Interviews completed</span>
-  </article>
-  <article>
-    <i class="orange"></i><strong>78%</strong
-    ><span>Average interview score</span>
-  </article>
-</section>
-<section class="dashboard-grid">
-  <article class="trend">
-    <h2>Performance trend</h2>
-    @for (week of weeks; track week.label) {
-      <div class="week">
-        <span>{{ week.label }}</span>
-        <div>
-          <i [style.width.%]="week.score" [class.good]="week.score >= 70"></i>
-        </div>
-        <strong>{{ week.score }}%</strong>
+@if (loading()) {
+  <p class="dashboard-state">Loading your dashboard...</p>
+} @else {
+  @if (summary(); as dashboard) {
+  <header class="view-title">
+    <h1>{{ dashboard.greeting }}, {{ dashboard.firstName }}</h1>
+    <p>Your next best preparation actions</p>
+  </header>
+
+  @if (!dashboard.profileComplete) {
+    <section class="profile-notice">
+      <div>
+        <h2>Complete your profile</h2>
+        <p>
+          Finish your career profile so every analysis and interview is
+          personalized.
+        </p>
       </div>
+      <a routerLink="/app/profile">Complete profile</a>
+    </section>
+  }
+
+  <section class="readiness">
+    <div>
+      <small>Job-readiness score</small>
+      <strong>{{ formatScore(dashboard.readinessScore) }}</strong>
+    </div>
+    <p>{{ dashboard.readinessFocus }}</p>
+    <a [routerLink]="dashboard.nextAction.route">{{
+      dashboard.nextAction.buttonLabel
+    }}</a>
+  </section>
+
+  <section class="metrics" aria-label="Candidate metrics">
+    <article>
+      <i class="blue"></i
+      ><strong>{{ formatScore(dashboard.resumeScore) }}</strong
+      ><span>Resume score</span>
+    </article>
+    <article>
+      <i class="mint"></i
+      ><strong>{{ formatScore(dashboard.jobMatchScore) }}</strong
+      ><span>Current job match</span>
+    </article>
+    <article>
+      <i class="green"></i
+      ><strong>{{ dashboard.interviewsCompleted }}</strong
+      ><span>Interviews completed</span>
+    </article>
+    <article>
+      <i class="orange"></i
+      ><strong>{{ formatScore(dashboard.averageInterviewScore) }}</strong
+      ><span>Average interview score</span>
+    </article>
+  </section>
+
+  <nav class="quick-actions" aria-label="Quick actions">
+    <a routerLink="/app/resume">
+      <strong>Resume analysis</strong>
+      <span>Upload and improve your resume</span>
+    </a>
+    <a routerLink="/app/job-match">
+      <strong>Job match</strong>
+      <span>Analyze a target opportunity</span>
+    </a>
+    <a routerLink="/app/interviews/setup">
+      <strong>Mock interview</strong>
+      <span>Practice with AI feedback</span>
+    </a>
+  </nav>
+
+  <section class="dashboard-grid">
+    <article class="trend">
+      <h2>Performance trend</h2>
+      @if (hasTrend()) {
+        @for (point of dashboard.trend; track point.label) {
+          <div class="week">
+            <span>{{ point.label }}</span>
+            <div>
+              <i
+                [style.width.%]="point.score"
+                [class.good]="point.score >= 70"
+              ></i>
+            </div>
+            <strong>{{ point.score }}%</strong>
+          </div>
+        }
+      } @else {
+        <p class="card-empty">
+          No scored interviews yet. Complete a mock interview to start your
+          trend.
+        </p>
+      }
+    </article>
+    <article class="recommendation">
+      <h2>Recommended next action</h2>
+      <p>{{ dashboard.nextAction.description }}</p>
+      <a [routerLink]="dashboard.nextAction.route">{{
+        dashboard.nextAction.buttonLabel
+      }}</a>
+    </article>
+  </section>
+
+  <section class="activity">
+    <h2>Recent activity</h2>
+    @if (hasActivity()) {
+      <ul>
+        @for (item of dashboard.recentActivity; track $index) {
+          <li>
+            <i class="dot {{ item.type }}"></i>
+            <div>
+              <a [routerLink]="item.route">{{ item.title }}</a>
+              <p>{{ item.description }}</p>
+            </div>
+            <time>{{ timeAgo(item.occurredAtUtc) }}</time>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="card-empty">
+        No activity yet — upload your resume or start a mock interview to get
+        going.
+      </p>
     }
-  </article>
-  <article class="recommendation">
-    <h2>Recommended next action</h2>
-    <p>
-      Practice a 10-question technical interview focused on APIs, SQL
-      optimization, and architecture.
+  </section>
+  } @else {
+    <p class="dashboard-state">
+      Your dashboard could not be loaded. Refresh to try again.
     </p>
-    <a routerLink="/app/interviews/setup">Start recommended practice</a>
-  </article>
-</section>
+  }
+}

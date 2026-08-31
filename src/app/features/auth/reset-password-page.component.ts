@@ -4,7 +4,13 @@ import {
   inject,
   signal,
 } from "@angular/core";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -33,10 +39,16 @@ export class ResetPasswordPageComponent {
   private readonly router = inject(Router);
   readonly submitting = signal(false);
   readonly submitAttempted = signal(false);
-  form = new FormBuilder().nonNullable.group({
-    password: ["", Validators.required],
-    confirmPassword: ["", Validators.required],
-  });
+  form = new FormBuilder().nonNullable.group(
+    {
+      password: [
+        "",
+        [Validators.required, Validators.minLength(8), Validators.maxLength(128)],
+      ],
+      confirmPassword: ["", Validators.required],
+    },
+    { validators: this.passwordsMatch },
+  );
 
   submit(): void {
     if (this.form.invalid || this.submitting()) {
@@ -55,10 +67,6 @@ export class ResetPasswordPageComponent {
       );
       return;
     }
-    if (value.password !== value.confirmPassword) {
-      this.notifications.error(null, "Passwords do not match.");
-      return;
-    }
 
     this.submitting.set(true);
     this.auth
@@ -75,5 +83,13 @@ export class ResetPasswordPageComponent {
         error: (error) =>
           this.notifications.error(error, "Unable to reset your password."),
       });
+  }
+
+  private passwordsMatch(group: AbstractControl): ValidationErrors | null {
+    const password = group.get("password")?.value;
+    const confirm = group.get("confirmPassword")?.value;
+    return password && confirm && password !== confirm
+      ? { mismatch: true }
+      : null;
   }
 }

@@ -302,3 +302,77 @@
   white-space: nowrap;
   cursor: pointer;
 }
+.upload-error {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 700;
+}
+.drop-card {
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+.drop-card.drag-active {
+  border-color: #0b8a5b;
+  border-style: dashed;
+  background: #dff7ec;
+  transform: scale(1.01);
+}
+.progress-track {
+  height: 8px;
+  margin: 12px 0 0;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+.progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+  transition: width 0.2s ease;
+}
+.resume-name .failed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.retry-link {
+  padding: 9px 12px;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  background: #fffbeb;
+  color: #b45309;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.remove-note {
+  align-self: center;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.delete-link.confirm {
+  background: #fee2e2;
+}
+.cancel-link {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}

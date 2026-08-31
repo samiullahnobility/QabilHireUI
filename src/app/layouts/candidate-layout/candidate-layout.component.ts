@@ -23,6 +23,7 @@ type NavItem = {
   label: string;
   link: string;
   requiresCompleteProfile?: boolean;
+  requiredRoles?: string[];
 };
 
 @Component({
@@ -64,18 +65,46 @@ export class CandidateLayoutComponent {
       requiresCompleteProfile: true,
     },
     {
+      label: "Job Search",
+      link: "/app/jobs",
+      requiredRoles: ["Candidate"],
+    },
+    {
+      label: "My Applications",
+      link: "/app/applications",
+      requiredRoles: ["Candidate"],
+    },
+    {
+      label: "Saved Jobs",
+      link: "/app/saved-jobs",
+      requiredRoles: ["Candidate"],
+    },
+    {
       label: "Mock Interviews",
       link: "/app/interviews/setup",
       requiresCompleteProfile: true,
+      requiredRoles: ["Candidate"],
     },
-    { label: "Progress", link: "/app/progress", requiresCompleteProfile: true },
+    { label: "Progress", link: "/app/progress", requiresCompleteProfile: true, requiredRoles: ["Candidate"] },
     {
       label: "Career Coach",
       link: "/app/career-coach",
       requiresCompleteProfile: true,
+      requiredRoles: ["Candidate"],
     },
+    { label: "Recruiter Dashboard", link: "/app/recruiter", requiredRoles: ["Recruiter"] },
+    { label: "User Management", link: "/app/admin/users", requiredRoles: ["Admin"] },
+    { label: "Roles & Permissions", link: "/app/admin/roles", requiredRoles: ["Admin"] },
     { label: "Profile & Settings", link: "/app/profile" },
   ];
+  readonly visibleNavItems = computed(() => {
+    const roles = this.user()?.roles ?? [];
+    return this.navItems.filter(
+      (item) =>
+        !item.requiredRoles ||
+        item.requiredRoles.some((role) => roles.includes(role)),
+    );
+  });
   readonly pageData = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
@@ -137,8 +166,9 @@ export class CandidateLayoutComponent {
   }
   logout(): void {
     this.closeAccountMenu();
-    this.auth
-      .logout()
-      .subscribe({ next: () => void this.router.navigateByUrl("/auth/login") });
+    this.auth.logout().subscribe({
+      next: () => void this.router.navigateByUrl("/auth/login"),
+      error: () => void this.router.navigateByUrl("/auth/login"),
+    });
   }
 }

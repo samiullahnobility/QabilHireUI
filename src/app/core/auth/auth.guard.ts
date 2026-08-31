@@ -23,6 +23,11 @@ export const profileCompleteGuard: CanActivateFn = (_route, state) => {
     });
   }
 
+  // Recruiter and Admin accounts never complete candidate onboarding.
+  if (!user.roles.includes("Candidate")) {
+    return true;
+  }
+
   return user.profileComplete
     ? true
     : router.createUrlTree(["/onboarding/profile"]);

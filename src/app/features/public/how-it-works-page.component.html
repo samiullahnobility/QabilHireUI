@@ -3,10 +3,10 @@
   <section class="hero">
     <div>
       <span class="eyebrow">Simple, focused preparation</span>
-      <h1>From resume to interview-ready in four steps.</h1>
+      <h1>From resume to interview-ready — and your next role.</h1>
       <p class="lead">
         QabilHire turns your real experience and target job into a personalized
-        practice journey.
+        practice journey, then connects it to the jobs you want.
       </p>
       <div class="actions">
         <a mat-flat-button routerLink="/auth/register">Create your plan</a>
@@ -14,7 +14,7 @@
     </div>
     <img
       src="/assets/images/how-it-works.png"
-      alt="Four-step AI interview preparation journey"
+      alt="Six-step AI interview preparation journey"
     />
   </section>
   <section class="section">
@@ -26,14 +26,14 @@
       </p>
     </div>
     <div class="grid">
-      <mat-card appearance="outlined"
+      <mat-card appearance="outlined" appReveal
         ><span>01</span>
         <h3>Add your context</h3>
         <p>
           Upload your resume and paste the job description you are targeting.
         </p></mat-card
       >
-      <mat-card appearance="outlined"
+      <mat-card appearance="outlined" appReveal [delay]="60"
         ><span>02</span>
         <h3>Review your match</h3>
         <p>
@@ -41,18 +41,34 @@
           focus areas.
         </p></mat-card
       >
-      <mat-card appearance="outlined"
+      <mat-card appearance="outlined" appReveal [delay]="120"
         ><span>03</span>
         <h3>Practice realistically</h3>
         <p>
           Answer adaptive questions by voice or text in a calm environment.
         </p></mat-card
       >
-      <mat-card appearance="outlined"
+      <mat-card appearance="outlined" appReveal [delay]="180"
         ><span>04</span>
         <h3>Act on feedback</h3>
         <p>
           Use specific recommendations and a prioritized improvement plan.
+        </p></mat-card
+      >
+      <mat-card appearance="outlined" appReveal [delay]="240"
+        ><span>05</span>
+        <h3>Find your next role</h3>
+        <p>
+          Search the job marketplace, apply in one click, and save roles for
+          later.
+        </p></mat-card
+      >
+      <mat-card appearance="outlined" appReveal [delay]="300"
+        ><span>06</span>
+        <h3>Track your growth</h3>
+        <p>
+          Compare attempts side by side, ask your AI coach, and follow the
+          seven-day plan.
         </p></mat-card
       >
     </div>

@@ -1,0 +1,65 @@
+<main class="jobs-page">
+  <form class="search-bar" (ngSubmit)="load()">
+    <input
+      type="search"
+      [(ngModel)]="searchTerm"
+      name="search"
+      placeholder="Search by title, company, or location…"
+      aria-label="Search jobs"
+    />
+    <button mat-flat-button color="primary" type="submit">Search</button>
+  </form>
+  <div class="filter-row" role="group" aria-label="Work type filter">
+    @for (workType of workTypes; track workType) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="activeWorkType() === workType"
+        (click)="selectWorkType(workType)"
+      >
+        {{ workType }}
+      </button>
+    }
+  </div>
+  @if (loading()) {
+    <p class="state-note">Loading job listings…</p>
+  } @else if (jobs().length === 0) {
+    <section class="empty-card">
+      <h2>No jobs found</h2>
+      <p>Try a different search or work-type filter.</p>
+    </section>
+  } @else {
+    <section class="job-grid">
+      @for (job of jobs(); track job.id) {
+        <a class="job-card" [routerLink]="['/app/jobs', job.id]">
+          <div class="job-head">
+            <h2>{{ job.title }}</h2>
+            @if (job.hasApplied) {
+              <span class="applied-badge">Applied</span>
+            } @else if (job.isSaved) {
+              <span class="saved-badge">Saved</span>
+            }
+          </div>
+          <p class="company">{{ job.company }}</p>
+          <div class="meta-row">
+            <span>{{ job.workType }}</span>
+            @if (job.location) {
+              <span>{{ job.location }}</span>
+            }
+            @if (job.salaryRange) {
+              <span>{{ job.salaryRange }}</span>
+            }
+          </div>
+          @if (job.requiredSkills.length) {
+            <div class="skills-row">
+              @for (skill of job.requiredSkills.slice(0, 4); track skill) {
+                <span class="skill-tag">{{ skill }}</span>
+              }
+            </div>
+          }
+          <p class="posted">Posted {{ daysAgo(job.postedAtUtc) }}</p>
+        </a>
+      }
+    </section>
+  }
+</main>

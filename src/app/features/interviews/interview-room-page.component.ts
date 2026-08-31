@@ -39,6 +39,7 @@ export class InterviewRoomPageComponent implements OnDestroy {
   readonly preparing = signal(false);
   readonly online = signal(navigator.onLine);
   readonly recording = signal(false);
+  readonly micBlocked = signal(false);
   readonly elapsed = signal(0);
   answer = "";
   private readonly onlineHandler = () => this.online.set(true);
@@ -90,6 +91,7 @@ export class InterviewRoomPageComponent implements OnDestroy {
       return;
     }
     try {
+      this.micBlocked.set(false);
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.audioChunks = [];
       this.recorder = new MediaRecorder(this.stream, {
@@ -104,12 +106,23 @@ export class InterviewRoomPageComponent implements OnDestroy {
         () => this.stopAndTranscribe(),
         290000,
       );
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "NotAllowedError") {
+        this.micBlocked.set(true);
+        return;
+      }
       this.notifications.error(
         null,
         "Microphone is unavailable. Use the text answer instead.",
       );
     }
+  }
+  retryMicrophone(): void {
+    this.micBlocked.set(false);
+    void this.toggleRecording();
+  }
+  useTextAnswer(): void {
+    this.micBlocked.set(false);
   }
   private stopAndTranscribe(): void {
     const q = this.question();

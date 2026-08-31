@@ -1,0 +1,49 @@
+<main class="list-page">
+  @if (loading()) {
+    <p class="state-note">Loading your applications…</p>
+  } @else if (applications().length === 0) {
+    <section class="empty-card">
+      <h2>No applications yet</h2>
+      <p>Browse open roles and apply to the ones that fit you.</p>
+      <a mat-flat-button color="primary" routerLink="/app/jobs">Find jobs</a>
+    </section>
+  } @else {
+    <section class="cards">
+      @for (application of applications(); track application.id) {
+        <article class="row-card">
+          <div class="row-main">
+            <h2>
+              <a [routerLink]="['/app/jobs', application.jobPostingId]">{{
+                application.jobTitle
+              }}</a>
+            </h2>
+            <p>{{ application.company }}</p>
+            <div class="meta">
+              <span>{{ application.workType }}</span>
+              @if (application.location) {
+                <span>{{ application.location }}</span>
+              }
+              <span>Applied {{ formatDate(application.appliedAtUtc) }}</span>
+            </div>
+          </div>
+          <div class="row-side">
+            <span class="status-badge">{{ application.status }}</span>
+            @if (confirmingId() === application.id) {
+              <span class="confirm-note">Withdraw?</span>
+              <button mat-flat-button color="warn" type="button" (click)="withdraw(application.id, application.jobPostingId)">
+                Yes
+              </button>
+              <button mat-stroked-button type="button" (click)="cancelWithdraw()">
+                No
+              </button>
+            } @else {
+              <button mat-stroked-button type="button" (click)="requestWithdraw(application.id)">
+                Withdraw
+              </button>
+            }
+          </div>
+        </article>
+      }
+    </section>
+  }
+</main>

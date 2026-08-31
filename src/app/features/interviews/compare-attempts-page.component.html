@@ -1,0 +1,189 @@
+@if (loading()) {
+  <section class="state">
+    <span class="spinner"></span>
+    <h2>Loading your attempts…</h2>
+  </section>
+} @else if (failed()) {
+  <section class="state">
+    <h2>Comparison is not available</h2>
+    <p>We could not load your interview attempts.</p>
+    <button mat-flat-button color="primary" (click)="load()">Try again</button>
+  </section>
+} @else if (sessions().length === 0) {
+  <section class="state">
+    <h2>No evaluated attempts yet</h2>
+    <p>Complete and evaluate at least two interviews to compare them.</p>
+    <a mat-flat-button color="primary" routerLink="/app/interviews/history"
+      >Go to interview history</a
+    >
+  </section>
+} @else if (sessions().length === 1) {
+  <section class="state">
+    <h2>One more attempt needed</h2>
+    <p>
+      You have one evaluated interview. Complete another one to compare your
+      growth.
+    </p>
+    <a mat-flat-button color="primary" routerLink="/app/interviews/setup"
+      >Start a new interview</a
+    >
+  </section>
+} @else {
+  <section class="compare-page">
+    <header>
+      <h1>Compare interview attempts</h1>
+      <p>See how your scores changed between two evaluated interviews.</p>
+    </header>
+    <div class="pickers">
+      <mat-form-field appearance="outline">
+        <mat-label>Earlier attempt</mat-label>
+        <mat-select
+          [value]="leftId()"
+          (selectionChange)="setLeft($event.value)"
+        >
+          @for (item of sessions(); track item.id) {
+            <mat-option [value]="item.id">{{ optionLabel(item) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <span class="versus">VS</span>
+      <mat-form-field appearance="outline">
+        <mat-label>Later attempt</mat-label>
+        <mat-select
+          [value]="rightId()"
+          (selectionChange)="setRight($event.value)"
+        >
+          @for (item of sessions(); track item.id) {
+            <mat-option [value]="item.id">{{ optionLabel(item) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    @if (left() && right()) {
+      @let a = left()!;
+      @let b = right()!;
+      <div class="attempt-grid">
+        <article class="attempt">
+          <div class="attempt-head">
+            <h2>{{ a.targetRole }}</h2>
+            <p>
+              {{ a.category }} · {{ a.mode }} ·
+              {{ a.completedAtUtc | date: "mediumDate" }}
+            </p>
+          </div>
+          <div class="score-hero">
+            <strong>{{ a.scores.overall }}%</strong>
+            <em>{{
+              a.scores.overall >= 80
+                ? "Interview ready"
+                : a.scores.overall >= 60
+                  ? "Developing"
+                  : "Needs practice"
+            }}</em>
+          </div>
+          <ul class="metric-list">
+            @for (metric of metrics; track metric[0]) {
+              <li>
+                <h3>
+                  {{ metric[1] }} <b>{{ a.scores[metric[0]] }}%</b>
+                </h3>
+                <div><i [style.width.%]="a.scores[metric[0]]"></i></div>
+              </li>
+            }
+          </ul>
+          <a
+            mat-stroked-button
+            [routerLink]="['/app/interviews', a.sessionId, 'results']"
+            >View full results</a
+          >
+        </article>
+        <aside
+          class="delta-column"
+          [class.pos]="overallDelta() > 0"
+          [class.neg]="overallDelta() < 0"
+        >
+          <div class="overall-delta">
+            <span>Overall change</span>
+            <strong>{{ deltaText("overall") }} pts</strong>
+            <em>{{ verdict() }}</em>
+          </div>
+          <h3 class="delta-title">Per-skill change</h3>
+          @for (metric of metrics; track metric[0]) {
+            <div class="delta-row">
+              <span>{{ metric[1] }}</span>
+              <b
+                [class.pos]="deltaFor(metric[0]) > 0"
+                [class.neg]="deltaFor(metric[0]) < 0"
+                >{{ deltaText(metric[0]) }}</b
+              >
+            </div>
+          }
+        </aside>
+        <article class="attempt">
+          <div class="attempt-head">
+            <h2>{{ b.targetRole }}</h2>
+            <p>
+              {{ b.category }} · {{ b.mode }} ·
+              {{ b.completedAtUtc | date: "mediumDate" }}
+            </p>
+          </div>
+          <div class="score-hero">
+            <strong>{{ b.scores.overall }}%</strong>
+            <em>{{
+              b.scores.overall >= 80
+                ? "Interview ready"
+                : b.scores.overall >= 60
+                  ? "Developing"
+                  : "Needs practice"
+            }}</em>
+          </div>
+          <ul class="metric-list">
+            @for (metric of metrics; track metric[0]) {
+              <li>
+                <h3>
+                  {{ metric[1] }} <b>{{ b.scores[metric[0]] }}%</b>
+                </h3>
+                <div><i [style.width.%]="b.scores[metric[0]]"></i></div>
+              </li>
+            }
+          </ul>
+          <a
+            mat-stroked-button
+            [routerLink]="['/app/interviews', b.sessionId, 'results']"
+            >View full results</a
+          >
+        </article>
+      </div>
+      <section class="focus-grid">
+        <article>
+          <h3>Earlier attempt focus</h3>
+          <p><b>Strongest:</b> {{ a.strongestArea }}</p>
+          <p><b>Priority:</b> {{ a.priorityArea }}</p>
+        </article>
+        <article>
+          <h3>Later attempt focus</h3>
+          <p><b>Strongest:</b> {{ b.strongestArea }}</p>
+          <p><b>Priority:</b> {{ b.priorityArea }}</p>
+        </article>
+      </section>
+      <section class="roadmap-grid">
+        <article>
+          <h3>Roadmap — earlier attempt</h3>
+          <ol>
+            @for (item of a.roadmap; track item) {
+              <li>{{ item }}</li>
+            }
+          </ol>
+        </article>
+        <article>
+          <h3>Roadmap — later attempt</h3>
+          <ol>
+            @for (item of b.roadmap; track item) {
+              <li>{{ item }}</li>
+            }
+          </ol>
+        </article>
+      </section>
+    }
+  </section>
+}

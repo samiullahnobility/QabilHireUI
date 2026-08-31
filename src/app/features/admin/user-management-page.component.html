@@ -1,0 +1,62 @@
+<main class="admin-page">
+  @if (loading()) {
+    <p class="state-note">Loading users…</p>
+  } @else {
+    <section class="table-card">
+      <div class="table-head">
+        <h2>Users</h2>
+        <span class="count">{{ users().length }} accounts</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Role</th>
+              <th scope="col">Status</th>
+              <th scope="col">Joined</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr>
+                <td>
+                  <strong>{{ user.fullName }}</strong>
+                  <small>{{ user.email }}</small>
+                </td>
+                <td>
+                  <select
+                    [ngModel]="primaryRole(user)"
+                    (ngModelChange)="changeRole(user, $event)"
+                    [disabled]="savingId() === user.id"
+                  >
+                    @for (role of roles; track role) {
+                      <option [value]="role">{{ role }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <span class="state-badge" [class.locked]="user.lockedOut">{{
+                    user.lockedOut ? "Locked" : user.emailConfirmed ? "Active" : "Unverified"
+                  }}</span>
+                </td>
+                <td>{{ formatDate(user.createdAtUtc) }}</td>
+                <td>
+                  <button
+                    mat-stroked-button
+                    type="button"
+                    [disabled]="savingId() === user.id"
+                    (click)="toggleLock(user)"
+                  >
+                    {{ user.lockedOut ? "Unlock" : "Lock" }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</main>

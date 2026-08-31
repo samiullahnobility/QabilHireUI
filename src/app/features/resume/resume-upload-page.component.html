@@ -7,9 +7,19 @@
 @if (uploadMessage()) {
   <p class="upload-success" role="status">{{ uploadMessage() }}</p>
 }
-<section class="drop-card">
+@if (uploadError()) {
+  <p class="upload-error" role="alert">{{ uploadError() }}</p>
+}
+<section
+  class="drop-card"
+  [class.drag-active]="dragActive()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+  aria-label="Upload resume drop zone"
+>
   <h2>Upload your resume</h2>
-  <p>PDF or DOCX · Maximum 10 MB</p>
+  <p>Drag and drop here, or choose a file · PDF or DOCX · Maximum 10 MB</p>
   <input
     #fileInput
     class="file-input"
@@ -29,6 +39,17 @@
     <span class="status">Ready</span>
   </section>
 }
+@if (uploading() && progress() > 0) {
+  <div
+    class="progress-track"
+    role="progressbar"
+    [attr.aria-valuenow]="progress()"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <span class="progress-fill" [style.width.%]="progress()"></span>
+  </div>
+}
 <footer class="upload-footer">
   <p>Encrypted and used only for your personal feedback.</p>
   @if (selectedFile()) {
@@ -42,7 +63,7 @@
         uploading()
           ? extracting()
             ? "Extracting resume..."
-            : "Uploading..."
+            : "Uploading... " + progress() + "%"
           : "Analyze resume"
       }}
     </button>
@@ -70,6 +91,9 @@
               @if (resume.isArchived) {
                 <span class="archived">Archived</span>
               }
+              @if (resume.status === "Failed") {
+                <span class="failed">Extraction failed</span>
+              }
             </div>
             <p>
               {{ resume.fileName }} · {{ displayedSize(resume) }} ·
@@ -86,6 +110,15 @@
           </div>
           <div class="resume-links">
             <a [routerLink]="['/app/resume', resume.id, 'edit']">Review</a>
+            @if (resume.status === "Failed") {
+              <button
+                type="button"
+                class="retry-link"
+                (click)="retryExtraction(resume.id)"
+              >
+                Retry
+              </button>
+            }
             @if (resume.analysisJson) {
               <a
                 class="primary-link"
@@ -93,13 +126,31 @@
                 >View analysis</a
               >
             }
-            <button
-              type="button"
-              class="delete-link"
-              (click)="deleteResume(resume.id)"
-            >
-              Remove
-            </button>
+            @if (confirmingRemove() === resume.id) {
+              <span class="remove-note">Remove this resume?</span>
+              <button
+                type="button"
+                class="delete-link confirm"
+                (click)="deleteResume(resume.id)"
+              >
+                Yes, remove
+              </button>
+              <button
+                type="button"
+                class="cancel-link"
+                (click)="cancelRemove()"
+              >
+                Cancel
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="delete-link"
+                (click)="requestRemove(resume.id)"
+              >
+                Remove
+              </button>
+            }
           </div>
         </article>
       }

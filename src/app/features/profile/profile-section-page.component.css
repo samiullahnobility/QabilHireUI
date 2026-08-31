@@ -299,6 +299,50 @@ fieldset p {
 .save-bar button:disabled {
   opacity: 0.65;
 }
+.save-hint {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.privacy-panel {
+  gap: 0;
+  padding: 8px 32px;
+}
+.privacy-block {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.privacy-block:last-child {
+  border-bottom: 0;
+}
+.privacy-block h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.privacy-block p {
+  max-width: 620px;
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.privacy-block ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+.confirm-note {
+  color: #b91c1c !important;
+  font-weight: 600;
+}
+.confirm-actions {
+  display: flex;
+  gap: 14px;
+}
+.confirm-actions button {
+  min-height: 40px;
+}
 .unavailable {
   padding: 48px;
 }

@@ -3,6 +3,8 @@ import { ApiService } from "../../core/services/api.service";
 import {
   ActiveInterviewQuestion,
   CreateInterviewSessionRequest,
+  ImprovementPlan,
+  ImprovementPlanItem,
   InterviewResult,
   InterviewSession,
   SubmitInterviewAnswerResponse,
@@ -61,5 +63,21 @@ export class InterviewApiService {
   }
   results(id: string) {
     return this.api.get<InterviewResult>(`interviews/${id}/results`);
+  }
+  improvementPlanLatest() {
+    return this.api.get<ImprovementPlan>("improvement-plans/latest");
+  }
+  improvementPlanForSession(sessionId: string) {
+    return this.api.get<ImprovementPlan>(`improvement-plans/${sessionId}`);
+  }
+  setImprovementPlanItemCompleted(
+    planId: string,
+    itemId: string,
+    completed: boolean,
+  ) {
+    return this.api.put<
+      ImprovementPlanItem,
+      { completed: boolean }
+    >(`improvement-plans/${planId}/items/${itemId}`, { completed });
   }
 }

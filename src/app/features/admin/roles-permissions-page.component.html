@@ -1,0 +1,25 @@
+<main class="roles-page">
+  @if (loading()) {
+    <p class="state-note">Loading roles…</p>
+  } @else {
+    <section class="role-grid">
+      @for (role of roles(); track role.name) {
+        <article class="role-card">
+          <div class="role-head">
+            <h2>{{ role.name }}</h2>
+            <span class="member-count">{{ role.memberCount }} members</span>
+          </div>
+          <p class="role-description">{{ role.description }}</p>
+          <h3>Permissions</h3>
+          <ul>
+            @for (permission of role.permissions; track permission) {
+              <li>
+                <span class="check">✓</span>{{ permission }}
+              </li>
+            }
+          </ul>
+        </article>
+      }
+    </section>
+  }
+</main>

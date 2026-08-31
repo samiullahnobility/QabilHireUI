@@ -8,7 +8,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { finalize } from "rxjs";
 import { NotificationService } from "../../core/services/notification.service";
 import { ProfileDraftService } from "../onboarding/profile-draft.service";
@@ -22,6 +22,7 @@ import { InterviewApiService } from "./interview-api.service";
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    RouterLink,
   ],
   templateUrl: "./interview-setup-page.component.html",
   styleUrl: "./interview.component.css",
