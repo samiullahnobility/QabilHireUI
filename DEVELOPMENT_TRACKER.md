@@ -1,110 +1,52 @@
 # QabilHire Development Tracker
 
-Last updated: 2026-08-21
+Last updated: 2026-09-01
 
-## Repository layout
+This is the short operational tracker. The detailed scope, history, and decisions live in `QABILHIRE_DEVELOPMENT_MASTER_PLAN.md`.
 
-| Area                     | Location        | Repository      | Purpose                                            |
-| ------------------------ | --------------- | --------------- | -------------------------------------------------- |
-| Shared project documents | `/`             | Not tracked yet | Product context and cross-project planning         |
-| Angular frontend         | `/QabilHireUI`  | `QabilHireUI`   | Candidate-facing web application                   |
-| ASP.NET Core backend     | `/QabilHireAPI` | `QabilHireAPI`  | API, persistence, authentication, and integrations |
+## Current Product State
 
-Git identity for both application repositories:
+QabilHire now supports three protected roles:
 
-- Name: `samiullahnobility`
-- Email: `samiullah.nobility@gmail.com`
+| Role | Implemented experience |
+| ---- | ---------------------- |
+| Candidate | Onboarding, profile, resume AI analysis, job matching, AI interview, results, improvement plans, progress, job marketplace, career coach, settings, privacy, and data deletion |
+| Recruiter | Dashboard, job posting CRUD, applicants, applicant detail, pipeline, interviews, and settings |
+| Admin | Dashboard, users, roles, account locks, job moderation, activity, reports, AI/system health, and settings |
 
-## Current phase
+## Completed Locally
 
-Foundation and UX hardening. Complete deterministic candidate workflows and
-validation before integrating Qwen or speech services.
+- [x] ASP.NET Core layered API, Identity/JWT/refresh sessions, role-aware authorization, rate limiting, security headers, safe error handling, and CORS allowlist.
+- [x] Candidate, Recruiter, and Admin roles seeded; public registration creates only a Candidate.
+- [x] Candidate career journey, including typed and voice-assisted interview paths with transcript editing and fallback states.
+- [x] Private resume storage, PDF/DOCX signature validation, extraction, analysis, retry, and deletion behavior.
+- [x] Job marketplace and recruiter portal, backed by `JobPosting`, `JobApplication`, `SavedJob`, and recruiter-profile persistence.
+- [x] Admin operations portal, backed by role management, account-lock, moderation, reporting, system-health, telemetry, and audit endpoints.
+- [x] Persistent AI provider telemetry (`AiProviderRequestLog`) and administrator audit logs (`AdminAuditLog`).
+- [x] EF migrations created for candidate, interview, improvement-plan, recruiter, telemetry, and audit data. `AddTelemetryAndAdminAudit` was applied to the local database.
+- [x] Lazy-loaded Angular feature routes, role-aware navigation, dedicated auth layout, and Material Icons global font setup.
+- [x] Latest API Release build and Angular production build completed successfully.
 
-## Work status
+## Pending Verification
 
-### Repository setup
+- [ ] Rotate all credentials that were exposed in tracked configuration or chat. Remove secrets from tracked files and Git history before any public release.
+- [ ] Apply all outstanding migrations to Railway PostgreSQL and smoke-test the deployed API.
+- [ ] Confirm Railway Swagger/OpenAPI exposure is configured as intended for production; a 404 at `/swagger/index.html` is expected when Swagger is development-only.
+- [ ] Verify Vercel UI deployment against the deployed API for Candidate, Recruiter, and Admin accounts.
+- [ ] Verify live Alibaba AI workflows and temporary Supabase audio storage with production configuration.
+- [ ] Add deferred API integration, Angular unit, and Playwright critical-path tests.
+- [ ] Complete desktop/tablet/mobile, keyboard-focus, loading, error, retry, and empty-state walkthroughs.
 
-- [x] Keep shared project context in the parent workspace.
-- [x] Create the development tracker in the parent workspace.
-- [x] Initialize the UI repository and commit the imported Angular baseline.
-- [x] Initialize the API repository and commit its initial structure.
-- [ ] Create and connect remote repositories.
-- [ ] Decide how shared parent documents will be synchronized across systems.
+## Next Work Order
 
-### Frontend foundation
+1. Resolve credential hygiene and Railway migration/deployment verification.
+2. Smoke-test all three role journeys with deployed accounts.
+3. Add automated coverage for auth, profile, resume, job application, recruiter pipeline, and admin operations.
+4. Complete responsive and accessibility hardening from the manual test findings.
 
-- [x] Audit the Angular template and retain reusable structural files.
-- [x] Remove AdminMart demo pages, widgets, navigation, branding, and assets.
-- [ ] Configure QabilHire design tokens and Angular Material theme.
-- [ ] Establish public, authentication, and candidate layouts.
-- [ ] Establish lazy-loaded feature routing.
-- [x] Add reusable loading, empty, validation, error, and success states.
-- [x] Verify production build after cleanup.
+## Update Rules
 
-### Non-AI pages — first priority
-
-- [x] Landing page.
-- [x] Sign-in page.
-- [x] Registration page.
-- [ ] Forgot-password page.
-- [ ] Candidate dashboard shell.
-- [x] Profile setup and profile management.
-- [x] Resume upload and local file validation UI.
-- [ ] Extracted-resume information editor using mock data.
-- [x] Job-description input form and AI-backed Job Match analysis.
-- [x] Persisted Job Match results history with search and score/level filters.
-- [x] Job Match input and persisted results screens with AI-backed API integration.
-- [ ] Interview setup page.
-- [ ] Microphone permission and device test page.
-- [ ] Interview room UI with typed-answer fallback.
-- [ ] Static/mock interview results and question feedback pages.
-- [ ] Static/mock seven-day improvement-plan page.
-- [ ] Progress, settings, privacy, and deletion-control pages.
-
-### Backend foundation — no AI dependency
-
-- [ ] Scaffold ASP.NET Core Web API.
-- [ ] Add central exception handling and structured logging.
-- [ ] Add SQL Server and Entity Framework Core.
-- [ ] Add Identity, access tokens, refresh tokens, and ownership checks.
-- [ ] Add candidate profile endpoints.
-- [ ] Add secure resume upload and local PDF/DOCX extraction.
-- [ ] Add job-description and interview-session persistence.
-- [ ] Publish OpenAPI and connect a typed Angular client.
-
-### AI and speech integration — later phase
-
-- [ ] Qwen resume analysis.
-- [ ] Qwen job matching.
-- [ ] Interview-question generation.
-- [ ] Alibaba speech-to-text.
-- [ ] Answer evaluation and interview summary.
-- [ ] Improvement-plan generation.
-- [ ] Deterministic mock fallback for the live demonstration.
-
-## Decision log
-
-| Date       | Decision                                                              | Reason                                                                                |
-| ---------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| 2026-08-18 | Maintain separate UI and API repositories.                            | Allows independent history, deployment, and access control.                           |
-| 2026-08-18 | Keep shared documents at the parent workspace level.                  | Gives both projects one common source of product and planning context.                |
-| 2026-08-18 | Develop non-AI pages and workflows first.                             | Delivers a testable product shell before external service integration.                |
-| 2026-08-18 | Preserve only the reusable Angular shell from the Modernize template. | Keeps proven layout infrastructure without carrying demo product code into QabilHire. |
-
-## Update rules
-
-1. Update this file after each completed development task.
-2. Mark an item complete after manual verification and a successful build where applicable.
-3. Record blockers and important architecture decisions in the decision log.
-4. Keep credentials and candidate data out of this tracker and both repositories.
-5. Use Material components for interactive UI and never add browser-native confirmation alerts.
-6. Treat persisted select values as contracts: template option values must match API strings exactly.
-7. Do not mark UX work complete without manually checking validation, success, error, dirty-state, and responsive states.
-8. For resume extraction, preserve arbitrary source formats and validate structured output before saving.
-
-## Next verified tasks
-
-- [ ] Manual walkthrough across registration, onboarding, profile sections, resume upload/removal, and unsaved navigation.
-- [ ] Verify desktop/mobile layouts and Material dialog behavior.
-- [ ] Confirm resume size persistence and profile value round-tripping through the running application.
-- [ ] Continue dashboard, interview, results, and improvement-plan implementation.
+1. Update this tracker and the master plan after a meaningful implementation or verification task.
+2. Mark an item complete only when the stated verification has actually run.
+3. Keep secrets, tokens, connection strings, and personal candidate data out of documentation.
+4. Preserve role boundaries: only authenticated claims determine candidate, recruiter, or admin access.

@@ -21,6 +21,8 @@
   --text: #0f172a;
   --text-secondary: #64748b;
   --border: #e2e8f0;
+  --mat-form-field-container-height: 44px;
+  --mat-form-field-container-vertical-padding: 10px;
 }
 
 html,

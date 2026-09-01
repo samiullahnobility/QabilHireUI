@@ -1,6 +1,6 @@
 # QabilHire Development Master Plan
 
-Last updated: 2026-08-27
+Last updated: 2026-09-01
 
 ## 1. Purpose
 
@@ -10,7 +10,7 @@ The previous context and tracker documents remain useful historical references, 
 
 ## 2. Product Goal
 
-QabilHire is a candidate-focused career and interview-preparation platform. The MVP must let a candidate complete this journey:
+QabilHire is a role-based hiring and career platform. The MVP supports candidates, recruiters, and administrators. A candidate must be able to complete this journey:
 
 1. Create an account or sign in.
 2. Complete a candidate profile.
@@ -25,7 +25,7 @@ QabilHire is a candidate-focused career and interview-preparation platform. The 
 11. Receive a seven-day improvement plan.
 12. Track recent activity and progress.
 
-The MVP is candidate-only. Recruiter and administrator portals are outside the current scope.
+Recruiters can publish jobs, manage applicants and pipelines, and record interview activity. Administrators can manage users, roles, jobs, platform activity, reports, configuration visibility, AI telemetry, and audit history.
 
 ## 3. Delivery Strategy
 
@@ -71,6 +71,10 @@ The UI and API are separate Git repositories. This master plan lives at the shar
 - [x] Access token stored for the browser session.
 - [x] Toast notifications implemented.
 - [x] Angular production build verified on 2026-08-19.
+- [x] Candidate dashboard, interview flow, improvement plan, progress, settings, privacy, job marketplace, and AI career coach implemented.
+- [x] Recruiter portal implemented: dashboard, job management, applicants, pipeline, interviews, and settings.
+- [x] Admin portal implemented: dashboard, users, roles, job moderation, activity, reports, system health, and settings.
+- [x] Admin dashboard uses Material icons and operational summaries; the Material Icons font is loaded globally.
 
 ### Completed backend work
 
@@ -88,6 +92,9 @@ The UI and API are separate Git repositories. This master plan lives at the shar
 - [x] Swagger/OpenAPI enabled in development.
 - [x] Health endpoint implemented.
 - [x] Docker and Railway deployment configuration added.
+- [x] Candidate, Recruiter, and Admin roles seeded; public registration remains Candidate-only.
+- [x] Marketplace, recruiter, admin, AI telemetry, and admin audit endpoints implemented.
+- [x] `AddRecruiterPortal` and `AddTelemetryAndAdminAudit` migrations created; telemetry/audit migration applied to the local database.
 
 ### Known baseline gaps
 
@@ -99,10 +106,12 @@ The UI and API are separate Git repositories. This master plan lives at the shar
 - [x] Rotating refresh tokens and server-side revocation are implemented.
 - [x] Candidate roles are included in the frontend auth response model.
 - [ ] Automated authentication integration tests are deferred by the project owner; broader MVP tests remain planned for hardening.
-- [x] Public and candidate layouts are separated; a dedicated auth layout remains pending.
-- [ ] Major feature routes are not lazy-loaded.
+- [x] Public, authentication, and role-aware application layouts are separated.
+- [x] Major feature routes are lazy-loaded.
 - [x] Candidate profile, resume management/analysis, and manual job-match workflows are implemented.
-- [ ] Mock interviews, results, improvement plans, progress, and complete settings/privacy workflows are not implemented.
+- [x] Interviews, results, improvement plans, progress, account settings, and privacy/data deletion workflows are implemented.
+- [ ] Automated integration, unit, and end-to-end coverage remains pending by owner decision.
+- [ ] Deployed Railway/Vercel smoke testing and migration verification remain pending.
 
 ## 6. Immediate Security Blocker
 
@@ -213,6 +222,33 @@ Controllers must remain thin. Business workflows belong in application services.
 /app/privacy
 ```
 
+### Protected recruiter routes
+
+```text
+/app/recruiter
+/app/recruiter/jobs
+/app/recruiter/jobs/new
+/app/recruiter/jobs/:id/edit
+/app/recruiter/applicants
+/app/recruiter/applicants/:id
+/app/recruiter/pipeline
+/app/recruiter/interviews
+/app/recruiter/settings
+```
+
+### Protected administrator routes
+
+```text
+/app/admin/dashboard
+/app/admin/users
+/app/admin/roles
+/app/admin/jobs
+/app/admin/activity
+/app/admin/health
+/app/admin/reports
+/app/admin/settings
+```
+
 ## 9. Core Data Model
 
 | Entity                | Purpose                                                                                            |
@@ -229,6 +265,12 @@ Controllers must remain thin. Business workflows belong in application services.
 | `InterviewEvaluation` | Per-question scores and feedback                                                                   |
 | `ImprovementPlan`     | Candidate improvement plan linked to an interview                                                  |
 | `ImprovementPlanItem` | Daily task, completion state, and learning objective                                               |
+| `JobPosting`          | Recruiter-owned job listing, status, skills, and job details                                       |
+| `JobApplication`      | Candidate application to a posting, with pipeline stage                                            |
+| `SavedJob`            | Candidate bookmark for a job posting                                                               |
+| `RecruiterProfile`    | Recruiter organization and contact settings                                                        |
+| `AiProviderRequestLog`| Persistent AI request outcome, latency, provider, and operation telemetry                          |
+| `AdminAuditLog`       | Persistent role, lock, job-moderation, and security audit event                                    |
 
 All candidate-owned entities must include a user ownership relationship, creation timestamp, and appropriate update timestamp.
 
@@ -698,18 +740,15 @@ Stop the locally running API before rebuilding when its output DLLs are locked.
 
 Only one item should normally be marked **In progress**.
 
-| Priority | Work item                                                                          | Status                          | Verification                                                                  |
-| -------- | ---------------------------------------------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------- |
-| P0       | Rotate and remove all exposed credentials                                          | Deferred by owner               | Repository scan, local API start, provider checks, deployed health check      |
-| P1       | Implement AI interview setup, persisted session, and five Qwen-generated questions | Implemented                     | API/UI production builds, migration, schema validation, ownership checks      |
-| P2       | Build microphone test and interview room with typed fallback                       | Implemented                     | API/UI builds, migration, five-question persisted typed flow                  |
-| P3       | Implement AI interview evaluation and Figma result screens                         | Implemented                     | Completed session through question-level results                              |
-| P4       | Implement seven-day improvement plan and progress tracking                         | Implemented                     | Results-to-plan flow and persisted completion state                           |
-| P5       | Complete dashboard summary API and real recent activity                            | Implemented                     | New/returning candidate dashboard states                                      |
-| P6       | Finish resume and AI-output hardening                                              | Implemented                     | File signatures, storage deletion, strict output validation, end-to-end tests |
-| P7       | Complete authentication, shell, settings, and privacy gaps                         | Implemented                     | Manual verification, responsive/accessibility checks, API tests               |
-| P8       | Harden and verify the complete MVP                                                 | Partially implemented           | Full automated critical path and deployment verification                      |
-| P9       | Integrate Alibaba speech services                                                  | Implemented                      | Manual speech check; failure and typed-fallback tests (excluded)              |
+| Priority | Work item | Status | Verification |
+| -------- | --------- | ------ | ------------ |
+| P0 | Rotate and remove all exposed credentials | Deferred by owner | Repository/history scan, deployment configuration review, deployed health check |
+| P1 | Apply all outstanding migrations to Railway PostgreSQL | Pending | `dotnet ef database update` against the deployed connection and endpoint smoke test |
+| P2 | Verify deployed candidate, recruiter, and admin role journeys | Pending | Manual role-based smoke test across desktop and mobile |
+| P3 | Verify live Alibaba AI and temporary audio storage | Pending | Resume, match, interview, evaluation, career-coach, and transcription flows |
+| P4 | Add automated API, Angular, and Playwright critical-path tests | Pending | CI test execution |
+| P5 | Accessibility and responsive hardening | Pending | Keyboard/focus and desktop/tablet/mobile manual passes |
+| P6 | Admin telemetry and audit reporting | Implemented locally | Local migration applied; dashboard and activity endpoints verified by build |
 
 ## 21. Progress Update Template
 
@@ -1529,3 +1568,32 @@ Verified:
 Remaining:
 
 - Run the Angular production build and visually verify the landing, features, and how-it-works pages across breakpoints.
+
+### 2026-09-01 - Project scan, role portals, and admin operations reconciliation
+
+Status: Implemented locally; deployed verification and automated tests pending
+
+This entry supersedes older candidate-only scope statements and earlier remaining-item notes where they conflict.
+
+Implemented:
+
+- Candidate flow is implemented through authentication, onboarding, profile, resume extraction/analysis, job match, AI interview, results, improvement plan, progress, career coach, settings, privacy export, and deletion controls.
+- Job marketplace is implemented with job search, job detail, apply/withdraw, saved jobs, and application tracking.
+- Recruiter flow is implemented with dashboard, job CRUD, applicants, applicant detail, pipeline, interviews, and profile/settings screens.
+- Admin flow is implemented with a distinct dashboard, user/role management, account lock controls, job moderation, platform activity, reports, system health, and settings screens.
+- Persistent `AiProviderRequestLog` telemetry records AI provider operation outcomes and latency. Persistent `AdminAuditLog` records role, lock, job-moderation, and administrator security events.
+- `AddRecruiterPortal` and `AddTelemetryAndAdminAudit` migrations exist. `AddTelemetryAndAdminAudit` was applied to the local database.
+- The Angular admin dashboard has been improved with Material icons, metrics, activity indicators, quick actions, and operational highlight panels. The global Material Icons font configuration was added.
+
+Verified:
+
+- Release API build completed with zero warnings and zero errors after telemetry/audit implementation.
+- Angular production build completed successfully after the admin dashboard update.
+
+Remaining:
+
+- Deploy and apply all pending migrations to Railway PostgreSQL, then smoke-test the deployed API and UI.
+- Verify each AI provider workflow with configured production credentials and the private temporary-audio bucket.
+- Add the deferred API integration, Angular unit, and Playwright critical-path tests.
+- Complete manual responsive, keyboard-focus, and accessible-state verification.
+- Rotate and remove exposed credentials before sharing or production release.
