@@ -64,7 +64,12 @@ export class MicrophoneTestPageComponent implements OnDestroy {
       this.testing.set(false);
     }
   }
-  continue(): void {
+  async continue(): Promise<void> {
+    if (this.starting() || this.testing()) return;
+    if (!this.granted()) {
+      await this.test();
+      if (!this.granted()) return;
+    }
     this.starting.set(true);
     this.stop();
     this.api
@@ -78,6 +83,7 @@ export class MicrophoneTestPageComponent implements OnDestroy {
       });
   }
   useText(): void {
+    if (this.starting()) return;
     this.starting.set(true);
     this.stop();
     this.api

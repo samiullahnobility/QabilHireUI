@@ -24,6 +24,25 @@
       </section>
     </div>
   </main>
+} @else if (timedOut()) {
+  <main class="interview-room dark">
+    <header>
+      <h1>Interview time ended</h1>
+      <span class="timer-badge warning">00:00 remaining</span>
+    </header>
+    <div class="room-grid">
+      <aside class="interviewer-panel">
+        <div class="ai-circle timeout-circle"></div>
+        <h2>Time limit reached</h2>
+        <p>Your submitted answers remain saved.</p>
+      </aside>
+      <section class="timeout-card">
+        <h2>This interview has timed out</h2>
+        <p>The 15-minute time limit has ended. You cannot submit additional answers for this interview.</p>
+        <button mat-flat-button color="primary" type="button" routerLink="/app/interviews/history">Return to interview history</button>
+      </section>
+    </div>
+  </main>
 } @else if (micBlocked()) {
   <main class="interview-room dark">
     <header>

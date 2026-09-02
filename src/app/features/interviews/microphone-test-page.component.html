@@ -46,6 +46,30 @@
       ><i [style.height.px]="27 + level() * 0.4"></i
       ><i [style.height.px]="38 + level() * 0.3"></i>
     </div>
+    <div
+      class="mic-test-status"
+      [class.success]="granted()"
+      [class.failed]="blocked()"
+    >
+      <strong>
+        {{
+          granted()
+            ? "Microphone test successful"
+            : testing()
+              ? "Testing microphone..."
+              : "Microphone not tested yet"
+        }}
+      </strong>
+      <span>
+        {{
+          granted()
+            ? "Your microphone is ready. Continue to start the interview."
+            : testing()
+              ? "Please speak naturally while we check your input."
+              : "Click Test and continue to verify access and start."
+        }}
+      </span>
+    </div>
     <span class="quality-pill">{{
       granted() ? "Signal detected: " + level() + "%" : "Ready to test"
     }}</span>
@@ -56,10 +80,18 @@
         mat-flat-button
         color="primary"
         type="button"
-        [disabled]="!granted() || starting()"
+        [disabled]="testing() || starting()"
         (click)="continue()"
       >
-        {{ starting() ? "Starting..." : "Continue" }}
+        {{
+          starting()
+            ? "Starting..."
+            : testing()
+              ? "Testing..."
+              : granted()
+                ? "Continue"
+                : "Test and continue"
+        }}
       </button>
     </div>
   </section>

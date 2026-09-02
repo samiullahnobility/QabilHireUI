@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { finalize } from "rxjs";
 import { NotificationService } from "../../core/services/notification.service";
 import { InterviewApiService } from "./interview-api.service";
@@ -16,7 +16,7 @@ import { ActiveInterviewQuestion } from "./interview.models";
 @Component({
   standalone: true,
   selector: "app-interview-room-page",
-  imports: [FormsModule, MatButtonModule],
+  imports: [FormsModule, MatButtonModule, RouterLink],
   templateUrl: "./interview-room-page.component.html",
   styleUrl: "./interview-room.component.css",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +31,7 @@ export class InterviewRoomPageComponent implements OnDestroy {
   private recorder: MediaRecorder | null = null;
   private stream: MediaStream | null = null;
   private audioChunks: BlobPart[] = [];
+  private audioMimeType = "audio/webm";
   readonly id = this.route.snapshot.paramMap.get("id")!;
   readonly question = signal<ActiveInterviewQuestion | null>(null);
   readonly loading = signal(true);
@@ -40,6 +41,7 @@ export class InterviewRoomPageComponent implements OnDestroy {
   readonly online = signal(navigator.onLine);
   readonly recording = signal(false);
   readonly micBlocked = signal(false);
+  readonly timedOut = signal(false);
   readonly elapsed = signal(0);
   answer = "";
   private readonly onlineHandler = () => this.online.set(true);
@@ -48,10 +50,7 @@ export class InterviewRoomPageComponent implements OnDestroy {
     window.addEventListener("online", this.onlineHandler);
     window.addEventListener("offline", this.offlineHandler);
     this.load();
-    this.timerId = window.setInterval(
-      () => this.elapsed.update((v) => v + 1),
-      1000,
-    );
+    this.timerId = window.setInterval(() => this.tickTimer(), 1000);
   }
   get timeLabel(): string {
     const remaining = Math.max(0, 15 * 60 - this.elapsed());
@@ -77,15 +76,19 @@ export class InterviewRoomPageComponent implements OnDestroy {
               ),
             ),
           );
+          if (this.elapsed() >= 15 * 60) this.endForTimeout();
         },
-        error: (error) =>
-          this.notifications.error(
-            error,
-            "Unable to load the active question.",
-          ),
+        error: (error) => {
+          if (error?.status === 409 && error?.error?.message === "Interview time has ended.") {
+            this.endForTimeout();
+            return;
+          }
+          this.notifications.error(error, "Unable to load the active question.");
+        },
       });
   }
   async toggleRecording(): Promise<void> {
+    if (this.timedOut()) return;
     if (this.recording()) {
       this.stopAndTranscribe();
       return;
@@ -94,8 +97,9 @@ export class InterviewRoomPageComponent implements OnDestroy {
       this.micBlocked.set(false);
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.audioChunks = [];
+      this.audioMimeType = this.supportedAudioMimeType();
       this.recorder = new MediaRecorder(this.stream, {
-        mimeType: "audio/webm",
+        mimeType: this.audioMimeType,
       });
       this.recorder.ondataavailable = (event) => {
         if (event.data.size) this.audioChunks.push(event.data);
@@ -132,7 +136,16 @@ export class InterviewRoomPageComponent implements OnDestroy {
     this.transcribing.set(true);
     this.recorder.onstop = () => {
       this.stream?.getTracks().forEach((t) => t.stop());
-      const audio = new Blob(this.audioChunks, { type: "audio/webm" });
+      const audio = new Blob(this.audioChunks, { type: this.audioMimeType });
+      if (audio.size === 0) {
+        this.transcribing.set(false);
+        this.audioChunks = [];
+        this.notifications.error(
+          null,
+          "No audio was captured. Please record again or type your answer.",
+        );
+        return;
+      }
       this.api
         .transcribe(this.id, q.questionId, audio)
         .pipe(finalize(() => this.transcribing.set(false)))
@@ -150,6 +163,7 @@ export class InterviewRoomPageComponent implements OnDestroy {
           },
         });
     };
+    this.recorder.requestData();
     this.recorder.stop();
   }
   submit(): void {
@@ -160,7 +174,8 @@ export class InterviewRoomPageComponent implements OnDestroy {
       this.submitting() ||
       this.transcribing() ||
       this.recording() ||
-      !this.online()
+      !this.online() ||
+      this.timedOut()
     )
       return;
     this.submitting.set(true);
@@ -203,5 +218,35 @@ export class InterviewRoomPageComponent implements OnDestroy {
     window.removeEventListener("offline", this.offlineHandler);
     this.stream?.getTracks().forEach((t) => t.stop());
     this.audioChunks = [];
+  }
+  private tickTimer(): void {
+    if (this.timedOut()) return;
+    this.elapsed.update((value) => value + 1);
+    if (this.elapsed() >= 15 * 60) this.endForTimeout();
+  }
+  private endForTimeout(): void {
+    if (this.timedOut()) return;
+    this.elapsed.set(15 * 60);
+    this.timedOut.set(true);
+    clearInterval(this.timerId);
+    clearTimeout(this.recordingTimeout);
+    this.recording.set(false);
+    this.transcribing.set(false);
+    this.recorder?.stop();
+    this.stream?.getTracks().forEach((track) => track.stop());
+    this.audioChunks = [];
+  }
+  private supportedAudioMimeType(): string {
+    const types = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/ogg;codecs=opus",
+      "audio/ogg",
+      "audio/mp4",
+    ];
+    return (
+      types.find((type) => MediaRecorder.isTypeSupported(type)) ??
+      "audio/webm"
+    );
   }
 }

@@ -1,5 +1,9 @@
 .view-title {
-  margin: -96px 0 50px;
+  margin: 0 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
   pointer-events: none;
 }
 .view-title h1 {
@@ -12,29 +16,50 @@
   color: var(--text-secondary);
   font-size: 14px;
 }
-.readiness {
-  display: grid;
-  grid-template-columns: 110px 1fr auto;
+.readiness-score {
+  display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 28px 32px;
-  border-radius: 18px;
-  background: #075b48;
-  color: #fff;
+  gap: 12px;
+  pointer-events: auto;
 }
-.readiness small {
+.score-ring {
+  --score: 0;
+  position: relative;
+  display: grid;
+  width: 112px;
+  height: 112px;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) calc(var(--score) * 1%), #d1fae5 0);
+}
+.score-ring::after {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+  content: "";
+}
+.score-ring strong {
+  position: relative;
+  z-index: 1;
+  font-size: 25px;
+}
+.readiness-score span,
+.readiness-score small {
   display: block;
-  color: #a7e6d2;
 }
-.readiness strong {
-  display: block;
-  margin-top: 12px;
-  font-size: 46px;
+.readiness-score span {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 800;
 }
-.readiness p {
-  font-size: 16px;
+.readiness-score small {
+  max-width: 220px;
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
 }
-.readiness a,
 .recommendation a {
   padding: 14px 18px;
   border-radius: 10px;
@@ -301,13 +326,7 @@
     grid-template-columns: 1fr;
   }
   .view-title {
-    margin: 0 0 24px;
-  }
-  .readiness {
-    grid-template-columns: 1fr;
-  }
-  .readiness a {
-    justify-self: start;
+    margin-bottom: 24px;
   }
 }
 @media (max-width: 600px) {
@@ -317,10 +336,14 @@
   .week {
     grid-template-columns: 60px 1fr 42px;
   }
-  .readiness {
-    padding: 24px;
+  .view-title {
+    align-items: flex-start;
   }
-  .readiness p {
-    margin: 0;
+  .score-ring {
+    width: 88px;
+    height: 88px;
+  }
+  .score-ring strong {
+    font-size: 20px;
   }
 }

@@ -65,6 +65,41 @@
   font-size: 12px;
   font-weight: 700;
 }
+.mic-test-status {
+  display: grid;
+  max-width: 460px;
+  margin: 0 auto 18px;
+  padding: 14px 18px;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f6f8fa;
+  color: var(--text-secondary);
+}
+.mic-test-status strong {
+  color: #111827;
+  font-size: 15px;
+}
+.mic-test-status span {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.mic-test-status.success {
+  border-color: #9ee6cf;
+  background: #e7faf4;
+  color: #047857;
+}
+.mic-test-status.success strong {
+  color: #007f5f;
+}
+.mic-test-status.failed {
+  border-color: #fecaca;
+  background: #fff0f0;
+  color: #b42318;
+}
+.mic-test-status.failed strong {
+  color: #d92d20;
+}
 .microphone-actions,
 .permission-actions {
   display: flex;
@@ -161,7 +196,8 @@
 .dark .question-card,
 .dark .transcript-card,
 .dark .preparing-card,
-.dark .network-card {
+.dark .network-card,
+.dark .timeout-card {
   background: #1e293b;
 }
 .ai-circle {
@@ -181,7 +217,8 @@
 .question-card,
 .transcript-card,
 .preparing-card,
-.network-card {
+.network-card,
+.timeout-card {
   padding: 30px;
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -283,6 +320,21 @@
 .network-card button {
   margin-top: 30px;
 }
+.timeout-card {
+  display: flex;
+  min-height: 330px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-align: center;
+}
+.timeout-card h2 { margin: 0 0 10px; font-size: 22px; }
+.timeout-card p { max-width: 480px; margin: 0; color: #94a3b8; line-height: 1.55; }
+.timeout-card button { margin-top: 30px; }
+.timeout-circle { background: #f04444; }
 .mic-card {
   display: flex;
   min-height: 330px;

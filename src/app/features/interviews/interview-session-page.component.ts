@@ -46,11 +46,10 @@ export class InterviewSessionPageComponent {
     const session = this.session();
     if (!session || this.starting()) return;
     if (session.responseMode === "Voice") {
-      void this.router.navigate([
-        "/app/interviews",
-        session.id,
-        "microphone-test",
-      ]);
+      this.starting.set(true);
+      void this.router
+        .navigate(["/app/interviews", session.id, "microphone-test"])
+        .finally(() => this.starting.set(false));
       return;
     }
     this.starting.set(true);

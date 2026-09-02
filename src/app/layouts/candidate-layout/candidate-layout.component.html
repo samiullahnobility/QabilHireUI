@@ -54,12 +54,6 @@
           <p>{{ pageData()["subtitle"] }}</p>
         }
       </div>
-      @if (!pageData()["hideSearch"]) {
-        <label class="search"
-          ><span class="sr-only">Search</span
-          ><input type="search" placeholder="Search..."
-        /></label>
-      }
       <div class="account-menu" (click)="$event.stopPropagation()">
         <button
           class="header-avatar"

@@ -3,8 +3,27 @@
 } @else {
   @if (summary(); as dashboard) {
   <header class="view-title">
-    <h1>{{ dashboard.greeting }}, {{ dashboard.firstName }}</h1>
-    <p>Your next best preparation actions</p>
+    <div>
+      <h1>{{ dashboard.greeting }}, {{ dashboard.firstName }}</h1>
+      <p>Your next best preparation actions</p>
+    </div>
+    <section class="readiness-score" aria-label="Job-readiness score">
+      <div
+        class="score-ring"
+        role="progressbar"
+        aria-label="Job-readiness score"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="dashboard.readinessScore ?? 0"
+        [style.--score]="dashboard.readinessScore ?? 0"
+      >
+        <strong>{{ formatScore(dashboard.readinessScore) }}</strong>
+      </div>
+      <div>
+        <span>Job-readiness score</span>
+        <small>{{ dashboard.readinessFocus }}</small>
+      </div>
+    </section>
   </header>
 
   @if (!dashboard.profileComplete) {
@@ -19,17 +38,6 @@
       <a routerLink="/app/profile">Complete profile</a>
     </section>
   }
-
-  <section class="readiness">
-    <div>
-      <small>Job-readiness score</small>
-      <strong>{{ formatScore(dashboard.readinessScore) }}</strong>
-    </div>
-    <p>{{ dashboard.readinessFocus }}</p>
-    <a [routerLink]="dashboard.nextAction.route">{{
-      dashboard.nextAction.buttonLabel
-    }}</a>
-  </section>
 
   <section class="metrics" aria-label="Candidate metrics">
     <article>
